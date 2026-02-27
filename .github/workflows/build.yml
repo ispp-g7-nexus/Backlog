@@ -1,0 +1,92 @@
+name: Build & Deploy Backlog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'data/**'
+  workflow_dispatch:  # permite ejecutarlo manualmente desde GitHub
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install esbuild
+        run: npm install -g esbuild
+
+      - name: Prepare entry file
+        run: |
+          # Crear el entry file en src/ para que el import de JSON se resuelva correctamente
+          # (import rawData from '../data/nexus-backlog.json' → relativo a src/)
+          printf 'import { createRoot } from "react-dom/client";\n' > src/_entry.jsx
+          sed 's/^export default function App/function App/' src/nexus-backlog.jsx >> src/_entry.jsx
+          printf 'createRoot(document.getElementById("root")).render(<App />);\n' >> src/_entry.jsx
+
+      - name: Bundle JSX → JS
+        run: |
+          esbuild src/_entry.jsx \
+            --bundle \
+            --outfile=/tmp/bundle.js \
+            --platform=browser \
+            --jsx=automatic \
+            --minify
+          rm -f src/_entry.jsx
+
+      - name: Assemble HTML
+        run: |
+          cat > docs/index.html << 'HTMLEOF'
+          <!DOCTYPE html>
+          <html lang="es">
+          <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+            <title>NexUS — Product Backlog</title>
+            <style>
+              *{box-sizing:border-box;margin:0;padding:0}
+              body{background:#09090b;color:#e2e8f0;font-family:"Inter","Segoe UI",system-ui,sans-serif}
+              ::-webkit-scrollbar{width:6px;height:6px}
+              ::-webkit-scrollbar-track{background:#18181b}
+              ::-webkit-scrollbar-thumb{background:#3f3f46;border-radius:3px}
+              #root{min-height:100vh}
+            </style>
+          </head>
+          <body>
+            <div id="root"></div>
+            <script>
+          HTMLEOF
+          cat /tmp/bundle.js >> docs/index.html
+          echo '</script></body></html>' >> docs/index.html
+          # También copiar a dist/
+          cp docs/index.html dist/nexus-backlog.html
+          echo "✅ HTML generado: $(wc -c < docs/index.html) bytes"
+
+      - name: Commit compiled files
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dist/nexus-backlog.html docs/index.html
+          git diff --staged --quiet || git commit -m "chore: rebuild backlog [skip ci]"
+          git push
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages
+          commit_message: "deploy: backlog update ${{ github.sha }}"

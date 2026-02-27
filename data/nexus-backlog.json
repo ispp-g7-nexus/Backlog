@@ -1,0 +1,4740 @@
+{
+  "fetchedAt": "2026-02-26T12:26:53.863Z",
+  "total": 157,
+  "statuses": [
+    "Backlog",
+    "Ready",
+    "In progress",
+    "In review",
+    "Done"
+  ],
+  "priorities": [
+    "P0",
+    "P1",
+    "P2"
+  ],
+  "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL"
+  ],
+  "equipos": [
+    "All",
+    "Equipo A",
+    "Equipo B",
+    "Equipo C",
+    "Equipo D",
+    "Equipo Presentación",
+    "Coordinadores"
+  ],
+  "items": [
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58LQ",
+      "number": 93,
+      "title": "[NX-S1.49] Actualizar feedback (26/2)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D1-07: Actualizar feedback (26/2).\n- Estimación backlog: Sin estimar (backlog)\n- Referencia: D1-07\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/93",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "alereyper",
+          "name": "Alejandro de los Reyes Perez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/145146598?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:04Z",
+      "updatedAt": "2026-02-22T00:07:32Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58D8",
+      "number": 69,
+      "title": "[NX-S1.37] Formulario de perfil biográfico y preferencias",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-37: Formulario de perfil biográfico y preferencias.\n- Estimación backlog: M\n- Referencia: S1-37\n\n### 📍 Módulo / Área de la aplicación\nMatching\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/69",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "angelmateos1",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114919362?v=4"
+        },
+        {
+          "login": "Albgarsan",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115833908?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Matching",
+          "color": "33de80"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:35Z",
+      "updatedAt": "2026-02-23T18:52:02Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Ek",
+      "number": 72,
+      "title": "[NX-S1.40] Implementación de volcado de datos (entrenamiento con Forms)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-40: Implementación de volcado de datos (entrenamiento con Forms).\n- Estimación backlog: M\n- Referencia: S1-40\n\n### 📍 Módulo / Área de la aplicación\nMatching\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/72",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "pabpergas",
+          "name": "Pablo Pérez Gaspar",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/91946573?v=4"
+        },
+        {
+          "login": "CarlosGallero",
+          "name": "Carlos Gallero",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92226006?v=4"
+        },
+        {
+          "login": "pakillodecm",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115655698?v=4"
+        },
+        {
+          "login": "JesusGarPer",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/235187105?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Matching",
+          "color": "33de80"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:46Z",
+      "updatedAt": "2026-02-25T16:30:26Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl574Y",
+      "number": 37,
+      "title": "[NX-S1.05] Manual técnico inicial y manuales de usuario",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-05: Manual técnico inicial y manuales de usuario.\n- Estimación backlog: M\n- Referencia: S1-05\n\n### 📍 Módulo / Área de la aplicación\nInfraestructura\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/37",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "CarlosGallero",
+          "name": "Carlos Gallero",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92226006?v=4"
+        },
+        {
+          "login": "Albgarsan",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115833908?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Infraestructura",
+          "color": "f8ca15"
+        }
+      ],
+      "createdAt": "2026-02-21T21:07:34Z",
+      "updatedAt": "2026-02-23T18:50:00Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58CY",
+      "number": 64,
+      "title": "[NX-S1.32] Formulario para dar de alta a nuevos residentes",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-32: Formulario para dar de alta a nuevos residentes.\n- Estimación backlog: M\n- Referencia: S1-32\n\n### 📍 Módulo / Área de la aplicación\nOnboarding\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/64",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "pakillodecm",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115655698?v=4"
+        },
+        {
+          "login": "JesusGarPer",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/235187105?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Onboarding",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:16Z",
+      "updatedAt": "2026-02-23T18:51:07Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58JQ",
+      "number": 86,
+      "title": "[NX-S1.55] Documento de retrospectiva (Mad/Sad/Glad + Niko-Niko)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS1-05: Documento de retrospectiva (Mad/Sad/Glad + Niko-Niko).\n- Estimación backlog: S\n- Referencia: DS1-05\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/86",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:39Z",
+      "updatedAt": "2026-02-22T01:23:48Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58GU",
+      "number": 78,
+      "title": "[NX-S1.59] Sprint Weekly (27/2)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A1-04: Sprint Weekly (27/2).\n- Estimación backlog: XS\n- Referencia: A1-04\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/78",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:08Z",
+      "updatedAt": "2026-02-22T01:24:06Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58GA",
+      "number": 77,
+      "title": "[NX-S1.58] Clase 26/2",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A1-03: Clase 26/2.\n- Estimación backlog: S\n- Referencia: A1-03\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/77",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:04Z",
+      "updatedAt": "2026-02-22T01:23:57Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58DE",
+      "number": 66,
+      "title": "[NX-S1.34] Formulario de pre-inscripción y diseño de perfil inicial",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-34: Formulario de pre-inscripción y diseño de perfil inicial.\n- Estimación backlog: M\n- Referencia: S1-34\n\n### 📍 Módulo / Área de la aplicación\nOnboarding\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/66",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "pabpergas",
+          "name": "Pablo Pérez Gaspar",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/91946573?v=4"
+        },
+        {
+          "login": "CarlosGallero",
+          "name": "Carlos Gallero",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92226006?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Onboarding",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:24Z",
+      "updatedAt": "2026-02-23T18:51:17Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl573U",
+      "number": 34,
+      "title": "[NX-S1.02] Configuración de Pipeline CI/CD básico",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-02: Configuración de Pipeline CI/CD básico.\n- Estimación backlog: M\n- Referencia: S1-02\n\n### 📍 Módulo / Área de la aplicación\nInfraestructura\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/34",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "pabpergas",
+          "name": "Pablo Pérez Gaspar",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/91946573?v=4"
+        },
+        {
+          "login": "CarlosGallero",
+          "name": "Carlos Gallero",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92226006?v=4"
+        },
+        {
+          "login": "angelmateos1",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114919362?v=4"
+        },
+        {
+          "login": "pakillodecm",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115655698?v=4"
+        },
+        {
+          "login": "Albgarsan",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115833908?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Infraestructura",
+          "color": "f8ca15"
+        }
+      ],
+      "createdAt": "2026-02-21T21:07:22Z",
+      "updatedAt": "2026-02-23T18:40:45Z",
+      "closedAt": "2026-02-23T18:38:45Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl573o",
+      "number": 35,
+      "title": "[NX-S1.03] Setup de base de datos y estrategia de ramas",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-03: Setup de base de datos y estrategia de ramas.\n- Estimación backlog: S\n- Referencia: S1-03\n\n### 📍 Módulo / Área de la aplicación\nInfraestructura\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/35",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "pabpergas",
+          "name": "Pablo Pérez Gaspar",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/91946573?v=4"
+        },
+        {
+          "login": "CarlosGallero",
+          "name": "Carlos Gallero",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92226006?v=4"
+        },
+        {
+          "login": "angelmateos1",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114919362?v=4"
+        },
+        {
+          "login": "pakillodecm",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115655698?v=4"
+        },
+        {
+          "login": "Albgarsan",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115833908?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Infraestructura",
+          "color": "f8ca15"
+        }
+      ],
+      "createdAt": "2026-02-21T21:07:27Z",
+      "updatedAt": "2026-02-23T18:41:14Z",
+      "closedAt": "2026-02-23T18:38:57Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl573I",
+      "number": 33,
+      "title": "[NX-S1.01] Configuración del stack tecnológico y repositorios",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-01: Configuración del stack tecnológico y repositorios.\n- Estimación backlog: M\n- Referencia: S1-01\n\n### 📍 Módulo / Área de la aplicación\nInfraestructura\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/33",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "pabpergas",
+          "name": "Pablo Pérez Gaspar",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/91946573?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Infraestructura",
+          "color": "f8ca15"
+        }
+      ],
+      "createdAt": "2026-02-21T21:07:19Z",
+      "updatedAt": "2026-02-23T18:40:00Z",
+      "closedAt": "2026-02-23T18:38:51Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58I0",
+      "number": 85,
+      "title": "[NX-S1.54] Registro de cambios",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS1-04: Registro de cambios.\n- Estimación backlog: S\n- Referencia: DS1-04\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/85",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:35Z",
+      "updatedAt": "2026-02-22T01:12:00Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Jg",
+      "number": 87,
+      "title": "[NX-S1.43] Presentación 26/2",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D1-01: Presentación 26/2.\n- Estimación backlog: XL\n- Referencia: D1-01\n\n### 📍 Módulo / Área de la aplicación\nPresentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🔥 Urgente - Bloquea otras tareas / Urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/87",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "XL",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo Presentación",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:43Z",
+      "updatedAt": "2026-02-22T01:10:51Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58LA",
+      "number": 92,
+      "title": "[NX-S1.48] Actualizar feedback (19/2)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D1-06: Actualizar feedback (19/2).\n- Estimación backlog: Sin estimar (backlog)\n- Referencia: D1-06\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/92",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "alereyper",
+          "name": "Alejandro de los Reyes Perez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/145146598?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:00Z",
+      "updatedAt": "2026-02-24T16:53:52Z",
+      "closedAt": "2026-02-24T16:53:52Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58H4",
+      "number": 82,
+      "title": "[NX-S1.51] Dedication Template",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS1-01: Dedication Template.\n- Estimación backlog: S\n- Referencia: DS1-01\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/82",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:24Z",
+      "updatedAt": "2026-02-22T01:11:18Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58IE",
+      "number": 83,
+      "title": "[NX-S1.52] Burndown Chart",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS1-02: Burndown Chart.\n- Estimación backlog: S\n- Referencia: DS1-02\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/83",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:28Z",
+      "updatedAt": "2026-02-22T01:11:30Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Ik",
+      "number": 84,
+      "title": "[NX-S1.53] Registro de actas S1",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS1-03: Registro de actas S1.\n- Estimación backlog: S\n- Referencia: DS1-03\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/84",
+      "state": "OPEN",
+      "status": "In progress",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:31Z",
+      "updatedAt": "2026-02-22T01:11:42Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58HI",
+      "number": 80,
+      "title": "[NX-S1.61] Clase 5/3",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A1-06: Clase 5/3.\n- Estimación backlog: S\n- Referencia: A1-06\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/80",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:17Z",
+      "updatedAt": "2026-02-22T01:24:23Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Hg",
+      "number": 81,
+      "title": "[NX-S1.62] Sprint Retrospective (6/3)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A1-07: Sprint Retrospective (6/3).\n- Estimación backlog: XS\n- Referencia: A1-07\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/81",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:21Z",
+      "updatedAt": "2026-02-22T01:40:34Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Lk",
+      "number": 94,
+      "title": "[NX-S1.50] Actualizar feedback (5/3)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D1-08: Actualizar feedback (5/3).\n- Estimación backlog: Sin estimar (backlog)\n- Referencia: D1-08\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/94",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "alereyper",
+          "name": "Alejandro de los Reyes Perez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/145146598?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:07Z",
+      "updatedAt": "2026-02-22T00:07:43Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58G4",
+      "number": 79,
+      "title": "[NX-S1.60] Sprint Review (4/3)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A1-05: Sprint Review (4/3).\n- Estimación backlog: XS\n- Referencia: A1-05\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/79",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:14Z",
+      "updatedAt": "2026-02-22T01:24:15Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58FU",
+      "number": 75,
+      "title": "[NX-S1.56] Clase 19/2",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A1-01: Clase 19/2.\n- Estimación backlog: S\n- Referencia: A1-01\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/75",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:57Z",
+      "updatedAt": "2026-02-22T00:04:17Z",
+      "closedAt": "2026-02-22T00:04:17Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Fo",
+      "number": 76,
+      "title": "[NX-S1.57] Sprint Planning (20/2)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A1-02: Sprint Planning (20/2).\n- Estimación backlog: XS\n- Referencia: A1-02\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/76",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Coordinadores",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:00Z",
+      "updatedAt": "2026-02-22T01:22:50Z",
+      "closedAt": "2026-02-22T00:04:19Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl6TAs",
+      "number": 178,
+      "title": "[NX-S1.55] Creación de las tareas dentro del tablón Kanban",
+      "body": "### 🔍 Descripción\n\nSe añaden las tareas del backlog original al tablero kanban\n\n### 📍 Módulo / Área de la aplicación\n\nDocumentación\n\n### ➕ 'Otro':\n\n_No response_\n\n### ⚠️ Prioridad\n\n🔴 Alta - Debería hacerse lo antes posible\n\n### 🔔 Entrega correspondiente\n\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/178",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-22T01:59:58Z",
+      "updatedAt": "2026-02-22T02:00:50Z",
+      "closedAt": "2026-02-22T02:00:50Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl578M",
+      "number": 48,
+      "title": "[NX-S1.16] CRUD de sección Personal y CRUD de residentes",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-16: CRUD de sección Personal y CRUD de residentes.\n- Estimación backlog: M\n- Referencia: S1-16\n\n### 📍 Módulo / Área de la aplicación\nPanel admin\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/48",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo B",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Panel residencias",
+          "color": "f271b5"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:17Z",
+      "updatedAt": "2026-02-22T01:15:15Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl5778",
+      "number": 47,
+      "title": "[NX-S1.15] Interfaz de visualización de ocupación en tiempo real",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-15: Interfaz de visualización de ocupación en tiempo real.\n- Estimación backlog: S\n- Referencia: S1-15\n\n### 📍 Módulo / Área de la aplicación\nPanel admin\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/47",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo B",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Panel residencias",
+          "color": "f271b5"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:12Z",
+      "updatedAt": "2026-02-22T01:15:04Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl578g",
+      "number": 49,
+      "title": "[NX-S1.17] Lógica de asignación de residentes a habitaciones",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-17: Lógica de asignación de residentes a habitaciones.\n- Estimación backlog: M\n- Referencia: S1-17\n\n### 📍 Módulo / Área de la aplicación\nPanel admin\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/49",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo B",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Panel residencias",
+          "color": "f271b5"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:20Z",
+      "updatedAt": "2026-02-22T01:15:27Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl577s",
+      "number": 46,
+      "title": "[NX-S1.14] CRUD de habitaciones y listado completo de residentes",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-14: CRUD de habitaciones y listado completo de residentes.\n- Estimación backlog: M\n- Referencia: S1-14\n\n### 📍 Módulo / Área de la aplicación\nPanel admin\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/46",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo B",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Panel residencias",
+          "color": "f271b5"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:08Z",
+      "updatedAt": "2026-02-22T01:14:55Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl577Q",
+      "number": 45,
+      "title": "[NX-S1.13] Dashboard administrativo inicial",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-13: Dashboard administrativo inicial.\n- Estimación backlog: M\n- Referencia: S1-13\n\n### 📍 Módulo / Área de la aplicación\nPanel admin\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/45",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo B",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Panel residencias",
+          "color": "f271b5"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:05Z",
+      "updatedAt": "2026-02-22T01:14:34Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58K4",
+      "number": 91,
+      "title": "[NX-S1.47] Plan de pilotaje",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D1-05: Plan de pilotaje.\n- Estimación backlog: M\n- Referencia: D1-05\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/91",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:57Z",
+      "updatedAt": "2026-02-22T01:19:52Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Kg",
+      "number": 90,
+      "title": "[NX-S1.46] Despliegue en la nube",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D1-04: Despliegue en la nube.\n- Estimación backlog: S\n- Referencia: D1-04\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/90",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:54Z",
+      "updatedAt": "2026-02-22T01:19:42Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58KQ",
+      "number": 89,
+      "title": "[NX-S1.45] Bootstrap ALM",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D1-03: Bootstrap ALM.\n- Estimación backlog: M\n- Referencia: D1-03\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/89",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:50Z",
+      "updatedAt": "2026-02-22T01:19:31Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58FE",
+      "number": 74,
+      "title": "[NX-S1.42] Integración de SonarQube y monitorización de calidad",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-42: Integración de SonarQube y monitorización de calidad.\n- Estimación backlog: M\n- Referencia: S1-42\n\n### 📍 Módulo / Área de la aplicación\nCalidad\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/74",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo B",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Calidad",
+          "color": "fb923c"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:53Z",
+      "updatedAt": "2026-02-22T01:19:24Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Es",
+      "number": 73,
+      "title": "[NX-S1.41] Estructura de pipeline de datos hacia el motor de matching",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-41: Estructura de pipeline de datos hacia el motor de matching.\n- Estimación backlog: L\n- Referencia: S1-41\n\n### 📍 Módulo / Área de la aplicación\nMatching\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🔴 Alta - Debería hacerse lo antes posible\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/73",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "L",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "pabpergas",
+          "name": "Pablo Pérez Gaspar",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/91946573?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Matching",
+          "color": "33de80"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:49Z",
+      "updatedAt": "2026-02-23T19:03:11Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58EU",
+      "number": 71,
+      "title": "[NX-S1.39] Configuración inicial de conexión con NexUS IA",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-39: Configuración inicial de conexión con NexUS IA.\n- Estimación backlog: L\n- Referencia: S1-39\n\n### 📍 Módulo / Área de la aplicación\nMatching\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🔴 Alta - Debería hacerse lo antes posible\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/71",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "L",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "angelmateos1",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114919362?v=4"
+        },
+        {
+          "login": "pakillodecm",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115655698?v=4"
+        },
+        {
+          "login": "JesusGarPer",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/235187105?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Matching",
+          "color": "33de80"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:42Z",
+      "updatedAt": "2026-02-23T18:48:35Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58EM",
+      "number": 70,
+      "title": "[NX-S1.38] Gestión de etiquetas (tags) personales para el algoritmo",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-38: Gestión de etiquetas (tags) personales para el algoritmo.\n- Estimación backlog: S\n- Referencia: S1-38\n\n### 📍 Módulo / Área de la aplicación\nMatching\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/70",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Matching",
+          "color": "33de80"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:39Z",
+      "updatedAt": "2026-02-22T01:18:45Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Dw",
+      "number": 68,
+      "title": "[NX-S1.36] Encriptación de contraseñas y datos sensibles",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-36: Encriptación de contraseñas y datos sensibles.\n- Estimación backlog: M\n- Referencia: S1-36\n\n### 📍 Módulo / Área de la aplicación\nCalidad\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/68",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "pausualin",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/93290811?v=4"
+        },
+        {
+          "login": "olgacangom",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/116502259?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Legal gdpr",
+          "color": "9d84fc"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:31Z",
+      "updatedAt": "2026-02-22T19:55:38Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Dc",
+      "number": 67,
+      "title": "[NX-S1.35] CRUD de objetos, definición de disponibilidad y condiciones de préstamo",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-35: CRUD de objetos, definición de disponibilidad y condiciones de préstamo.\n- Estimación backlog: M\n- Referencia: S1-35\n\n### 📍 Módulo / Área de la aplicación\nObjetos\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/67",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo A",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Objetos",
+          "color": "60a5fa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:27Z",
+      "updatedAt": "2026-02-22T01:18:17Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58C0",
+      "number": 65,
+      "title": "[NX-S1.33] Interfaz para firma digital de normas",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-33: Interfaz para firma digital de normas.\n- Estimación backlog: M\n- Referencia: S1-33\n\n### 📍 Módulo / Área de la aplicación\nOnboarding\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/65",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Onboarding",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:20Z",
+      "updatedAt": "2026-02-22T01:17:56Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58B8",
+      "number": 63,
+      "title": "[NX-S1.31] Vista de eventos e inscripción",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-31: Vista de eventos e inscripción.\n- Estimación backlog: S\n- Referencia: S1-31\n\n### 📍 Módulo / Área de la aplicación\nEventos\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/63",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo A",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Eventos",
+          "color": "37bbf5"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:12Z",
+      "updatedAt": "2026-02-22T01:17:41Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Bg",
+      "number": 62,
+      "title": "[NX-S1.30] Herramientas de moderación y gestión de asistencia",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-30: Herramientas de moderación y gestión de asistencia.\n- Estimación backlog: M\n- Referencia: S1-30\n\n### 📍 Módulo / Área de la aplicación\nEventos\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/62",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo A",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Eventos",
+          "color": "37bbf5"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:08Z",
+      "updatedAt": "2026-02-22T01:17:33Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58A8",
+      "number": 61,
+      "title": "[NX-S1.29] CRUD de eventos (interfaz compartida)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-29: CRUD de eventos (interfaz compartida).\n- Estimación backlog: M\n- Referencia: S1-29\n\n### 📍 Módulo / Área de la aplicación\nEventos\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/61",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo A",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Eventos",
+          "color": "37bbf5"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:04Z",
+      "updatedAt": "2026-02-22T01:17:25Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58AY",
+      "number": 60,
+      "title": "[NX-S1.28] Opción de cancelación de reservas propias",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-28: Opción de cancelación de reservas propias.\n- Estimación backlog: S\n- Referencia: S1-28\n\n### 📍 Módulo / Área de la aplicación\nEspacios comunes\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/60",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo B",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Reservas",
+          "color": "2cd2bd"
+        }
+      ],
+      "createdAt": "2026-02-21T21:09:01Z",
+      "updatedAt": "2026-02-22T01:17:17Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58AE",
+      "number": 59,
+      "title": "[NX-S1.27] Interfaz de consulta de disponibilidad y reserva de espacios",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-27: Interfaz de consulta de disponibilidad y reserva de espacios.\n- Estimación backlog: M\n- Referencia: S1-27\n\n### 📍 Módulo / Área de la aplicación\nEspacios comunes\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/59",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo B",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Reservas",
+          "color": "2cd2bd"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:57Z",
+      "updatedAt": "2026-02-22T01:17:11Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl57_4",
+      "number": 58,
+      "title": "[NX-S1.26] Panel de gestión y visualización de reservas",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-26: Panel de gestión y visualización de reservas.\n- Estimación backlog: M\n- Referencia: S1-26\n\n### 📍 Módulo / Área de la aplicación\nEspacios comunes\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/58",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo B",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Reservas",
+          "color": "2cd2bd"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:54Z",
+      "updatedAt": "2026-02-22T01:17:03Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl57_w",
+      "number": 57,
+      "title": "[NX-S1.25] Configuración de espacios, horarios y aforos",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-25: Configuración de espacios, horarios y aforos.\n- Estimación backlog: M\n- Referencia: S1-25\n\n### 📍 Módulo / Área de la aplicación\nEspacios comunes\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/57",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo B",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Reservas",
+          "color": "2cd2bd"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:50Z",
+      "updatedAt": "2026-02-22T01:16:53Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl57_Q",
+      "number": 56,
+      "title": "[NX-S1.24] Sistema de notificación visual (marca en pestaña de avisos)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-24: Sistema de notificación visual (marca en pestaña de avisos).\n- Estimación backlog: S\n- Referencia: S1-24\n\n### 📍 Módulo / Área de la aplicación\nAvisos\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/56",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "MartaRecio",
+          "name": "Marta Recio",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92688112?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Avisos",
+          "color": "2cd2bd"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:46Z",
+      "updatedAt": "2026-02-22T19:54:17Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl57_A",
+      "number": 55,
+      "title": "[NX-S1.23] CRUD de avisos para la residencia (con filtrado)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-23: CRUD de avisos para la residencia (con filtrado).\n- Estimación backlog: M\n- Referencia: S1-23\n\n### 📍 Módulo / Área de la aplicación\nAvisos\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/55",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "MartaRecio",
+          "name": "Marta Recio",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92688112?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Avisos",
+          "color": "2cd2bd"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:42Z",
+      "updatedAt": "2026-02-22T19:54:08Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl57-A",
+      "number": 53,
+      "title": "[NX-S1.21] Cambio de estado de incidencia y adición de comentarios rápidos",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-21: Cambio de estado de incidencia y adición de comentarios rápidos.\n- Estimación backlog: S\n- Referencia: S1-21\n\n### 📍 Módulo / Área de la aplicación\nIncidencias\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/53",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "olgacangom",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/116502259?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Incidencias",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:35Z",
+      "updatedAt": "2026-02-22T19:52:03Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl57-k",
+      "number": 54,
+      "title": "[NX-S1.22] Visualización de notas añadidas por el staff",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-22: Visualización de notas añadidas por el staff.\n- Estimación backlog: S\n- Referencia: S1-22\n\n### 📍 Módulo / Área de la aplicación\nIncidencias\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/54",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "cmurillog06",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115726054?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Incidencias",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:39Z",
+      "updatedAt": "2026-02-22T19:55:15Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl579g",
+      "number": 52,
+      "title": "[NX-S1.20] Vista global de todas las incidencias con filtrado (tipo/estado/prioridad)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-20: Vista global de todas las incidencias con filtrado (tipo/estado/prioridad).\n- Estimación backlog: M\n- Referencia: S1-20\n\n### 📍 Módulo / Área de la aplicación\nIncidencias\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/52",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "olgacangom",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/116502259?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Incidencias",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:31Z",
+      "updatedAt": "2026-02-22T19:51:54Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl579I",
+      "number": 51,
+      "title": "[NX-S1.19] Historial de incidencias propias",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-19: Historial de incidencias propias.\n- Estimación backlog: S\n- Referencia: S1-19\n\n### 📍 Módulo / Área de la aplicación\nIncidencias\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/51",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "pausualin",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/93290811?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Incidencias",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:28Z",
+      "updatedAt": "2026-02-22T19:52:52Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl578w",
+      "number": 50,
+      "title": "[NX-S1.18] Crear incidencia con descripción (interfaz común)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-18: Crear incidencia con descripción (interfaz común).\n- Estimación backlog: M\n- Referencia: S1-18\n\n### 📍 Módulo / Área de la aplicación\nIncidencias\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/50",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "pausualin",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/93290811?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Incidencias",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:24Z",
+      "updatedAt": "2026-02-22T19:52:19Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl5768",
+      "number": 44,
+      "title": "[NX-S1.12] Diseño de casos de prueba funcionales y testing de integración inicial",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-12: Diseño de casos de prueba funcionales y testing de integración inicial.\n- Estimación backlog: M\n- Referencia: S1-12\n\n### 📍 Módulo / Área de la aplicación\nDiseño UX/UI\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/44",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo A",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "UX / UI",
+          "color": "f8903b"
+        }
+      ],
+      "createdAt": "2026-02-21T21:08:01Z",
+      "updatedAt": "2026-02-22T01:14:17Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl576o",
+      "number": 43,
+      "title": "[NX-S1.11] Creación de wireframes de pantallas principales",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-11: Creación de wireframes de pantallas principales.\n- Estimación backlog: M\n- Referencia: S1-11\n\n### 📍 Módulo / Área de la aplicación\nDiseño UX/UI\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/43",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo A",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "UX / UI",
+          "color": "f8903b"
+        }
+      ],
+      "createdAt": "2026-02-21T21:07:57Z",
+      "updatedAt": "2026-02-22T01:14:08Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl576M",
+      "number": 42,
+      "title": "[NX-S1.10] Definición de paleta de colores, tipografía y sistema de componentes",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-10: Definición de paleta de colores, tipografía y sistema de componentes.\n- Estimación backlog: M\n- Referencia: S1-10\n\n### 📍 Módulo / Área de la aplicación\nDiseño UX/UI\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/42",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo A",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "UX / UI",
+          "color": "f8903b"
+        }
+      ],
+      "createdAt": "2026-02-21T21:07:53Z",
+      "updatedAt": "2026-02-22T01:13:57Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl5758",
+      "number": 41,
+      "title": "[NX-S1.09] Interfaz de visualización y edición de perfil básico",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-09: Interfaz de visualización y edición de perfil básico.\n- Estimación backlog: S\n- Referencia: S1-09\n\n### 📍 Módulo / Área de la aplicación\nAutenticación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/41",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "celiasuaco",
+          "name": "Celia Suárez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114919457?u=23555a61b7de25aa1cb0c62a22b09077e8d30e9b&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Autenticacion",
+          "color": "f070b3"
+        }
+      ],
+      "createdAt": "2026-02-21T21:07:49Z",
+      "updatedAt": "2026-02-22T19:53:20Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl575o",
+      "number": 40,
+      "title": "[NX-S1.08] Lógica de gestión de roles (Residencia, Residente, Personal)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-08: Lógica de gestión de roles (Residencia, Residente, Personal).\n- Estimación backlog: S\n- Referencia: S1-08\n\n### 📍 Módulo / Área de la aplicación\nAutenticación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/40",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "celiasuaco",
+          "name": "Celia Suárez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114919457?u=23555a61b7de25aa1cb0c62a22b09077e8d30e9b&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Autenticacion",
+          "color": "f070b3"
+        }
+      ],
+      "createdAt": "2026-02-21T21:07:45Z",
+      "updatedAt": "2026-02-22T19:53:09Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl575I",
+      "number": 39,
+      "title": "[NX-S1.07] Sistema de Login/Logout y recuperación de contraseña",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-07: Sistema de Login/Logout y recuperación de contraseña.\n- Estimación backlog: M\n- Referencia: S1-07\n\n### 📍 Módulo / Área de la aplicación\nAutenticación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/39",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "celiasuaco",
+          "name": "Celia Suárez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114919457?u=23555a61b7de25aa1cb0c62a22b09077e8d30e9b&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Autenticacion",
+          "color": "f070b3"
+        }
+      ],
+      "createdAt": "2026-02-21T21:07:42Z",
+      "updatedAt": "2026-02-22T19:51:35Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl574w",
+      "number": 38,
+      "title": "[NX-S1.06] Registro de usuarios con email",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-06: Registro de usuarios con email.\n- Estimación backlog: M\n- Referencia: S1-06\n\n### 📍 Módulo / Área de la aplicación\nAutenticación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/38",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo C",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "cmurillog06",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115726054?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Autenticacion",
+          "color": "f070b3"
+        }
+      ],
+      "createdAt": "2026-02-21T21:07:38Z",
+      "updatedAt": "2026-02-22T19:49:47Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl574E",
+      "number": 36,
+      "title": "[NX-S1.04] Despliegue en entornos de desarrollo y producción",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S1-04: Despliegue en entornos de desarrollo y producción.\n- Estimación backlog: L\n- Referencia: S1-04\n\n### 📍 Módulo / Área de la aplicación\nInfraestructura\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🔴 Alta - Debería hacerse lo antes posible\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/36",
+      "state": "OPEN",
+      "status": "Ready",
+      "priority": null,
+      "size": "L",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo D",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Infraestructura",
+          "color": "f8ca15"
+        }
+      ],
+      "createdAt": "2026-02-21T21:07:30Z",
+      "updatedAt": "2026-02-22T01:13:09Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl5zbs",
+      "number": 30,
+      "title": "Plantillas Issues",
+      "body": "### Título de la tarea\n\nCrear plantillas issues/fix\n\n### 📍 Módulo / Área de la aplicación\n\nOtro (especificar)\n\n### Si seleccionaste 'Otro', especifica aquí\n\nOrganización issues github\n\n### Prioridad\n\n🟢 Baja - Detalle menor\n\n### Descripción\n\nCrear las issue_templates para poder crear con las plantillas las issues de cada tarea a realizar en el proyecto.\n\n### Entrega correspondiente\n\nSprint 1\n\n### Tipo de issue\n\nNueva funcionalidad",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/30",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": null,
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "MartaRecio",
+          "name": "Marta Recio",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92688112?v=4"
+        }
+      ],
+      "labels": [],
+      "createdAt": "2026-02-21T19:42:57Z",
+      "updatedAt": "2026-02-21T20:56:54Z",
+      "closedAt": "2026-02-21T20:56:54Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgknRZY",
+      "number": 5,
+      "title": "Pre-commit",
+      "body": "Crear un hook sencillo para controlar los siguientes aspectos:\n- Mensaje de commit\n- Formato del código",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/5",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": null,
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [],
+      "createdAt": "2026-02-01T11:25:12Z",
+      "updatedAt": "2026-02-21T13:02:53Z",
+      "closedAt": "2026-02-21T13:02:53Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zglssbc",
+      "number": 14,
+      "title": "Revisión del entregable S0",
+      "body": "",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/14",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": null,
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        },
+        {
+          "login": "CarlosGallero",
+          "name": "Carlos Gallero",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92226006?v=4"
+        },
+        {
+          "login": "MartaRecio",
+          "name": "Marta Recio",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92688112?v=4"
+        },
+        {
+          "login": "mregidorgarcia",
+          "name": "Miguel Regidor García",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114395912?u=5c827274d957e5c400a717c52fb96607e06e7e70&v=4"
+        },
+        {
+          "login": "Igna0305",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115458823?v=4"
+        }
+      ],
+      "labels": [],
+      "createdAt": "2026-02-18T15:48:45Z",
+      "updatedAt": "2026-02-21T13:02:50Z",
+      "closedAt": "2026-02-21T13:02:50Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgknPmE",
+      "number": 2,
+      "title": "Mockups",
+      "body": "Crear mockups de todas las funcionalidades comentadas:\n\n- Tablón de anuncios digital para noticias importantes \n- Chat vecinal y foros \n- Reserva de espacios comunes\n- Reporte de incidencias\n- Votaciones y actas (IA)\n- Proveedores\n- Portal de pagos\n- Repositorio de documentos\n- Vista de ayudas: anuncios de vecinos que necesitan ayuda y otros que se ofrecen (ganan una compensación simbólica, +1pto) \n- Recibir paquetes \n- Diferenciación por experiencia de usuario: Resúmenes automáticos, modo \"vecino mayor\", tutorial interactivo, lenguaje humano (que todo el mundo entienda el mensaje fácilmente)",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/2",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": null,
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "pabpergas",
+          "name": "Pablo Pérez Gaspar",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/91946573?v=4"
+        },
+        {
+          "login": "pausualin",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/93290811?v=4"
+        },
+        {
+          "login": "angelmateos1",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114919362?v=4"
+        },
+        {
+          "login": "celiasuaco",
+          "name": "Celia Suárez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114919457?u=23555a61b7de25aa1cb0c62a22b09077e8d30e9b&v=4"
+        },
+        {
+          "login": "pakillodecm",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115655698?v=4"
+        }
+      ],
+      "labels": [],
+      "createdAt": "2026-02-01T11:00:22Z",
+      "updatedAt": "2026-02-21T13:02:46Z",
+      "closedAt": "2026-02-21T13:02:46Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgknQIg",
+      "number": 4,
+      "title": "Ciclo CI/CD",
+      "body": "Crear un pipeline sencillo para poder integrar y desplegar el código sin complicaciones.\n\nCI: develop y features\n- Tests\n- Conventional Commits\n- Formato del código\n\nCD: main\n- Despliegue en render\n",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/4",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": null,
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [],
+      "createdAt": "2026-02-01T11:08:33Z",
+      "updatedAt": "2026-02-21T13:02:46Z",
+      "closedAt": "2026-02-21T13:02:46Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zglMryw",
+      "number": 6,
+      "title": "Redactar plan de desarrollo de los 3 sprints",
+      "body": "Desarrollar el trabajo a realizar a lo largo de los sprints, así como la manera en la que se realizará  y cómo se organizará el equipo para conseguirlo",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/6",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": null,
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "Javiergutpas",
+          "name": "Javier Gutiérrez Pastor",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/72880498?v=4"
+        },
+        {
+          "login": "Nuno1610",
+          "name": "Nuno José del Pino Escalante",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/91965317?v=4"
+        },
+        {
+          "login": "javsorbla",
+          "name": "Javier Soria Blanco",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115951092?v=4"
+        },
+        {
+          "login": "alereyper",
+          "name": "Alejandro de los Reyes Perez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/145146598?v=4"
+        },
+        {
+          "login": "javcasrod1",
+          "name": "Javier Castilla Rodríguez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/197592044?u=a023f334f0e9408f681fef1c2ebbf8fb2ce08157&v=4"
+        }
+      ],
+      "labels": [],
+      "createdAt": "2026-02-10T16:58:31Z",
+      "updatedAt": "2026-02-18T15:33:02Z",
+      "closedAt": "2026-02-18T15:33:02Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgknPpE",
+      "number": 3,
+      "title": "Presentación 01/02/2026",
+      "body": "Realizar una presentación con los siguientes puntos a comentar:\n\n- Idea general\n- Análisis de competidores (mirando documento realizado)\n- Características generales\n- Qué nos diferencia del resto\n- Mockups",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/3",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": null,
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "MartaRecio",
+          "name": "Marta Recio",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92688112?v=4"
+        },
+        {
+          "login": "cmurillog06",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115726054?v=4"
+        }
+      ],
+      "labels": [],
+      "createdAt": "2026-02-01T11:00:57Z",
+      "updatedAt": "2026-02-10T16:58:52Z",
+      "closedAt": "2026-02-10T16:58:52Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zglM8fc",
+      "number": 7,
+      "title": "Redactar el stack tecnológico",
+      "body": "",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/7",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": null,
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        },
+        {
+          "login": "nicogomezclaraco",
+          "name": "nicgomcla",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/91954352?u=e0b92a8534433a16dfa9d704d02c14684e1e8f02&v=4"
+        }
+      ],
+      "labels": [],
+      "createdAt": "2026-02-10T18:00:28Z",
+      "updatedAt": "2026-02-10T23:16:10Z",
+      "closedAt": "2026-02-10T23:16:10Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgknPlQ",
+      "number": 1,
+      "title": "Documento de Análisis de competidores",
+      "body": "Redactar el documento de análisis de mercado. El objetivo es identificar nuestras funcionalidades core y validar las funcionalidades que nos diferencia del resto de las soluciones existentes.\n\nCompetidores a analizar:\nhttps://ziviapp.com/\nhttps://www.vecinosenred.es/\nhttps://www.tucomunidad.com/\nhttps://tucomunidapp.com/\nhttps://onzane.com/comunidades/app\nhttps://gestvecinos.softonic.com/\nhttps://www.fynkus.es/contabilidad-comunidad-propietarios-gratis/\nhttps://tusvecinos.es/tusvecinos/\nhttps://www.plusvecinos.com/",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/1",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": null,
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "Javiergutpas",
+          "name": "Javier Gutiérrez Pastor",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/72880498?v=4"
+        },
+        {
+          "login": "Nuno1610",
+          "name": "Nuno José del Pino Escalante",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/91965317?v=4"
+        },
+        {
+          "login": "CarlosGallero",
+          "name": "Carlos Gallero",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/92226006?v=4"
+        },
+        {
+          "login": "mregidorgarcia",
+          "name": "Miguel Regidor García",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114395912?u=5c827274d957e5c400a717c52fb96607e06e7e70&v=4"
+        },
+        {
+          "login": "JuanCardesa",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/114396718?u=d426777a31dad42b92eac65fe33055852db5ac16&v=4"
+        }
+      ],
+      "labels": [],
+      "createdAt": "2026-02-01T11:00:08Z",
+      "updatedAt": "2026-02-18T15:39:42Z",
+      "closedAt": "2026-02-18T15:39:42Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zglsQZY",
+      "number": 8,
+      "title": "Dedicación de los miembros del equipo",
+      "body": "Subir reporte de horas por miembro del equipo de Clockify y hoja de cálculo con la dedicación de los miembros",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/8",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": null,
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "javsorbla",
+          "name": "Javier Soria Blanco",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115951092?v=4"
+        }
+      ],
+      "labels": [],
+      "createdAt": "2026-02-18T14:22:24Z",
+      "updatedAt": "2026-02-18T16:11:49Z",
+      "closedAt": "2026-02-18T16:11:49Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zglso_I",
+      "number": 11,
+      "title": "Documento AI usage",
+      "body": "Redacción de un documento donde se especifica en que casos y con que razón se ha usado la IA generativa en estas semanas del proyecto.\n",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/11",
+      "state": "CLOSED",
+      "status": "Done",
+      "priority": null,
+      "size": null,
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": null,
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "Igna0305",
+          "name": null,
+          "avatarUrl": "https://avatars.githubusercontent.com/u/115458823?v=4"
+        }
+      ],
+      "labels": [],
+      "createdAt": "2026-02-18T15:39:31Z",
+      "updatedAt": "2026-02-18T15:42:22Z",
+      "closedAt": "2026-02-18T15:42:22Z"
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58L8",
+      "number": 95,
+      "title": "[NX-S2.01] Funcionalidad para adjuntar imágenes a incidencias",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-01: Funcionalidad para adjuntar imágenes a incidencias.\n- Estimación backlog: M\n- Referencia: S2-01\n\n### 📍 Módulo / Área de la aplicación\nIncidencias\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/95",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Incidencias",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:11Z",
+      "updatedAt": "2026-02-22T01:24:32Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58ME",
+      "number": 96,
+      "title": "[NX-S2.02] Notificaciones push/email sobre cambios en incidencias propias",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-02: Notificaciones push/email sobre cambios en incidencias propias.\n- Estimación backlog: M\n- Referencia: S2-02\n\n### 📍 Módulo / Área de la aplicación\nIncidencias\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/96",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Incidencias",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:14Z",
+      "updatedAt": "2026-02-22T01:24:40Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58MY",
+      "number": 97,
+      "title": "[NX-S2.03] Sistema de asignación de incidencias a proveedores/personal",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-03: Sistema de asignación de incidencias a proveedores/personal.\n- Estimación backlog: M\n- Referencia: S2-03\n\n### 📍 Módulo / Área de la aplicación\nIncidencias\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/97",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Incidencias",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:18Z",
+      "updatedAt": "2026-02-22T01:24:48Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Mo",
+      "number": 98,
+      "title": "[NX-S2.04] Interfaz de gestión por Steps y control de estado por subtask",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-04: Interfaz de gestión por Steps y control de estado por subtask.\n- Estimación backlog: M\n- Referencia: S2-04\n\n### 📍 Módulo / Área de la aplicación\nIncidencias\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/98",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Incidencias",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:22Z",
+      "updatedAt": "2026-02-22T01:24:56Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58M8",
+      "number": 99,
+      "title": "[NX-S2.05] Lógica de priorización automática de incidencias",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-05: Lógica de priorización automática de incidencias.\n- Estimación backlog: M\n- Referencia: S2-05\n\n### 📍 Módulo / Área de la aplicación\nIncidencias\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/99",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Incidencias",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:25Z",
+      "updatedAt": "2026-02-22T01:25:03Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58NU",
+      "number": 100,
+      "title": "[NX-S2.06] Visualización de disponibilidad en tiempo real",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-06: Visualización de disponibilidad en tiempo real.\n- Estimación backlog: S\n- Referencia: S2-06\n\n### 📍 Módulo / Área de la aplicación\nEspacios comunes\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/100",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Reservas",
+          "color": "2cd2bd"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:29Z",
+      "updatedAt": "2026-02-22T01:25:09Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Nk",
+      "number": 101,
+      "title": "[NX-S2.07] Sistema de recordatorios automáticos de reservas",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-07: Sistema de recordatorios automáticos de reservas.\n- Estimación backlog: M\n- Referencia: S2-07\n\n### 📍 Módulo / Área de la aplicación\nEspacios comunes\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/101",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Reservas",
+          "color": "2cd2bd"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:32Z",
+      "updatedAt": "2026-02-22T01:25:16Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Ns",
+      "number": 102,
+      "title": "[NX-S2.08] CRUD de chats y selección manual de participantes (ej. por evento)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-08: CRUD de chats y selección manual de participantes (ej. por evento).\n- Estimación backlog: M\n- Referencia: S2-08\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nComunicación\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/102",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Comunicacion",
+          "color": "a68af8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:36Z",
+      "updatedAt": "2026-02-22T01:25:22Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58OE",
+      "number": 103,
+      "title": "[NX-S2.09] Herramientas de moderación (borrado de mensajes/usuarios)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-09: Herramientas de moderación (borrado de mensajes/usuarios).\n- Estimación backlog: S\n- Referencia: S2-09\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nComunicación\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/103",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Comunicacion",
+          "color": "a68af8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:40Z",
+      "updatedAt": "2026-02-22T01:25:31Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58OY",
+      "number": 104,
+      "title": "[NX-S2.10] Gestión de FAQ dinámica",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-10: Gestión de FAQ dinámica.\n- Estimación backlog: M\n- Referencia: S2-10\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nComunicación\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/104",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Comunicacion",
+          "color": "a68af8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:43Z",
+      "updatedAt": "2026-02-22T01:25:38Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Oc",
+      "number": 105,
+      "title": "[NX-S2.11] Integración de flujo de alta con el módulo de Matching",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-11: Integración de flujo de alta con el módulo de Matching.\n- Estimación backlog: M\n- Referencia: S2-11\n\n### 📍 Módulo / Área de la aplicación\nOnboarding\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/105",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Onboarding",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:47Z",
+      "updatedAt": "2026-02-22T01:25:51Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Os",
+      "number": 106,
+      "title": "[NX-S2.12] Consulta de disponibilidad en tiempo real y solicitud de préstamo",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-12: Consulta de disponibilidad en tiempo real y solicitud de préstamo.\n- Estimación backlog: S\n- Referencia: S2-12\n\n### 📍 Módulo / Área de la aplicación\nObjetos\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/106",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Objetos",
+          "color": "60a5fa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:50Z",
+      "updatedAt": "2026-02-22T01:25:59Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58O8",
+      "number": 107,
+      "title": "[NX-S2.13] Interfaz para aceptar o rechazar solicitudes de préstamo",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-13: Interfaz para aceptar o rechazar solicitudes de préstamo.\n- Estimación backlog: M\n- Referencia: S2-13\n\n### 📍 Módulo / Área de la aplicación\nObjetos\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/107",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Objetos",
+          "color": "60a5fa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:54Z",
+      "updatedAt": "2026-02-22T01:26:09Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58PY",
+      "number": 108,
+      "title": "[NX-S2.14] Historial de uso y préstamos por objeto",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-14: Historial de uso y préstamos por objeto.\n- Estimación backlog: S\n- Referencia: S2-14\n\n### 📍 Módulo / Área de la aplicación\nObjetos\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/108",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Objetos",
+          "color": "60a5fa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:11:58Z",
+      "updatedAt": "2026-02-22T01:26:15Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Po",
+      "number": 109,
+      "title": "[NX-S2.15] Registro de llegada de paquete y asociación a residente",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-15: Registro de llegada de paquete y asociación a residente.\n- Estimación backlog: M\n- Referencia: S2-15\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nPaquetería\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/109",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Paqueteria",
+          "color": "49dc7f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:01Z",
+      "updatedAt": "2026-02-22T01:26:23Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58QA",
+      "number": 110,
+      "title": "[NX-S2.16] Notificación de llegada con código QR/numérico único",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-16: Notificación de llegada con código QR/numérico único.\n- Estimación backlog: M\n- Referencia: S2-16\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nPaquetería\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/110",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Paqueteria",
+          "color": "49dc7f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:05Z",
+      "updatedAt": "2026-02-22T01:26:31Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58QY",
+      "number": 111,
+      "title": "[NX-S2.17] Interfaz de verificación de código para entrega",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-17: Interfaz de verificación de código para entrega.\n- Estimación backlog: S\n- Referencia: S2-17\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nPaquetería\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/111",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Paqueteria",
+          "color": "49dc7f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:09Z",
+      "updatedAt": "2026-02-22T01:26:38Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58RM",
+      "number": 112,
+      "title": "[NX-S2.18] Checkbox de aceptación de Política de Privacidad y T&C",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-18: Checkbox de aceptación de Política de Privacidad y T&C.\n- Estimación backlog: S\n- Referencia: S2-18\n\n### 📍 Módulo / Área de la aplicación\nCalidad\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/112",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Legal gdpr",
+          "color": "9d84fc"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:13Z",
+      "updatedAt": "2026-02-22T01:26:46Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Ro",
+      "number": 113,
+      "title": "[NX-S2.19] Botón para descargar datos personales y solicitar eliminación de cuenta",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-19: Botón para descargar datos personales y solicitar eliminación de cuenta.\n- Estimación backlog: M\n- Referencia: S2-19\n\n### 📍 Módulo / Área de la aplicación\nCalidad\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/113",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Legal gdpr",
+          "color": "9d84fc"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:17Z",
+      "updatedAt": "2026-02-22T01:26:54Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58SA",
+      "number": 114,
+      "title": "[NX-S2.20] Visualización de lista de compañeros compatibles (Sugerencias)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-20: Visualización de lista de compañeros compatibles (Sugerencias).\n- Estimación backlog: M\n- Referencia: S2-20\n\n### 📍 Módulo / Área de la aplicación\nMatching\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/114",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Matching",
+          "color": "33de80"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:21Z",
+      "updatedAt": "2026-02-22T01:27:00Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58SI",
+      "number": 115,
+      "title": "[NX-S2.21] Buscador de Roommates con filtros específicos",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-21: Buscador de Roommates con filtros específicos.\n- Estimación backlog: M\n- Referencia: S2-21\n\n### 📍 Módulo / Área de la aplicación\nMatching\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/115",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Matching",
+          "color": "33de80"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:24Z",
+      "updatedAt": "2026-02-22T01:27:07Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Sk",
+      "number": 116,
+      "title": "[NX-S2.22] Interfaz de ajuste de parámetros (calibración de prioridades de la IA)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-22: Interfaz de ajuste de parámetros (calibración de prioridades de la IA).\n- Estimación backlog: M\n- Referencia: S2-22\n\n### 📍 Módulo / Área de la aplicación\nMatching\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/116",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Matching",
+          "color": "33de80"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:28Z",
+      "updatedAt": "2026-02-22T01:27:17Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Ss",
+      "number": 117,
+      "title": "[NX-S2.23] CRUD de menú semanal",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S2-23: CRUD de menú semanal.\n- Estimación backlog: M\n- Referencia: S2-23\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nComedor\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/117",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Comedor",
+          "color": "f171b4"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:32Z",
+      "updatedAt": "2026-02-22T01:27:25Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58S8",
+      "number": 118,
+      "title": "[NX-S2.39] Clase 12/3",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A2-01: Clase 12/3.\n- Estimación backlog: S\n- Referencia: A2-01\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/118",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:35Z",
+      "updatedAt": "2026-02-22T01:29:14Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58TM",
+      "number": 119,
+      "title": "[NX-S2.40] Sprint Planning (13/3)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A2-02: Sprint Planning (13/3).\n- Estimación backlog: XS\n- Referencia: A2-02\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/119",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:39Z",
+      "updatedAt": "2026-02-22T01:29:29Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58TY",
+      "number": 120,
+      "title": "[NX-S2.41] Clase 19/3",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A2-03: Clase 19/3.\n- Estimación backlog: S\n- Referencia: A2-03\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/120",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:43Z",
+      "updatedAt": "2026-02-22T01:29:35Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Tk",
+      "number": 121,
+      "title": "[NX-S2.42] Sprint Weekly (20/3)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A2-04: Sprint Weekly (20/3).\n- Estimación backlog: XS\n- Referencia: A2-04\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/121",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:46Z",
+      "updatedAt": "2026-02-22T01:29:43Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58T8",
+      "number": 122,
+      "title": "[NX-S2.43] Sprint Review (25/3)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A2-05: Sprint Review (25/3).\n- Estimación backlog: XS\n- Referencia: A2-05\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/122",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:50Z",
+      "updatedAt": "2026-02-22T01:29:49Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58UQ",
+      "number": 123,
+      "title": "[NX-S2.44] Clase 26/3",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A2-06: Clase 26/3.\n- Estimación backlog: S\n- Referencia: A2-06\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/123",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:53Z",
+      "updatedAt": "2026-02-22T01:29:54Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Uc",
+      "number": 124,
+      "title": "[NX-S2.45] Sprint Retrospective (27/3)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A2-07: Sprint Retrospective (27/3).\n- Estimación backlog: XS\n- Referencia: A2-07\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/124",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:12:57Z",
+      "updatedAt": "2026-02-22T01:30:08Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Jw",
+      "number": 88,
+      "title": "[NX-S1.44] Presentación 5/3",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D1-02: Presentación 5/3.\n- Estimación backlog: M\n- Referencia: D1-02\n\n### 📍 Módulo / Área de la aplicación\nPresentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 1",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/88",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo Presentación",
+      "milestone": "S1",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:10:46Z",
+      "updatedAt": "2026-02-22T01:23:40Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Uw",
+      "number": 125,
+      "title": "[NX-S2.32] Dedication Template",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS2-01: Dedication Template.\n- Estimación backlog: S\n- Referencia: DS2-01\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/125",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:01Z",
+      "updatedAt": "2026-02-22T01:28:33Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58VM",
+      "number": 126,
+      "title": "[NX-S2.33] Burndown Chart",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS2-02: Burndown Chart.\n- Estimación backlog: S\n- Referencia: DS2-02\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/126",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:06Z",
+      "updatedAt": "2026-02-22T01:28:41Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58VY",
+      "number": 127,
+      "title": "[NX-S2.34] Velocity Chart",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS2-03: Velocity Chart.\n- Estimación backlog: S\n- Referencia: DS2-03\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/127",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:10Z",
+      "updatedAt": "2026-02-22T01:28:55Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Vg",
+      "number": 128,
+      "title": "[NX-S2.35] Registro de actas S2",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS2-04: Registro de actas S2.\n- Estimación backlog: S\n- Referencia: DS2-04\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/128",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:14Z",
+      "updatedAt": "2026-02-22T01:28:47Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58V0",
+      "number": 129,
+      "title": "[NX-S2.36] Registro de cambios",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS2-05: Registro de cambios.\n- Estimación backlog: S\n- Referencia: DS2-05\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/129",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:17Z",
+      "updatedAt": "2026-02-22T01:29:02Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58WE",
+      "number": 130,
+      "title": "[NX-S2.37] Documento de retrospectiva (Mad/Sad/Glad + Niko-Niko)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS2-06: Documento de retrospectiva (Mad/Sad/Glad + Niko-Niko).\n- Estimación backlog: S\n- Referencia: DS2-06\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/130",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:21Z",
+      "updatedAt": "2026-02-22T01:29:08Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58WY",
+      "number": 131,
+      "title": "[NX-S2.24] Presentación 12/3",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D2-01: Presentación 12/3.\n- Estimación backlog: M\n- Referencia: D2-01\n\n### 📍 Módulo / Área de la aplicación\nPresentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/131",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo Presentación",
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:25Z",
+      "updatedAt": "2026-02-22T01:27:34Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Ws",
+      "number": 132,
+      "title": "[NX-S2.25] Presentación 19/3",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D2-02: Presentación 19/3.\n- Estimación backlog: M\n- Referencia: D2-02\n\n### 📍 Módulo / Área de la aplicación\nPresentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/132",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo Presentación",
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:29Z",
+      "updatedAt": "2026-02-22T01:27:42Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58XA",
+      "number": 133,
+      "title": "[NX-S2.26] Presentación 26/3",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D2-03: Presentación 26/3.\n- Estimación backlog: M\n- Referencia: D2-03\n\n### 📍 Módulo / Área de la aplicación\nPresentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/133",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo Presentación",
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:32Z",
+      "updatedAt": "2026-02-22T01:27:49Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58XY",
+      "number": 134,
+      "title": "[NX-S2.27] Ciclo de mejora continua",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D2-04: Ciclo de mejora continua.\n- Estimación backlog: M\n- Referencia: D2-04\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/134",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:36Z",
+      "updatedAt": "2026-02-22T01:27:57Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Xk",
+      "number": 135,
+      "title": "[NX-S2.28] Análisis de feedback del pilotaje",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D2-05: Análisis de feedback del pilotaje.\n- Estimación backlog: M\n- Referencia: D2-05\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/135",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:39Z",
+      "updatedAt": "2026-02-22T01:28:03Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58X4",
+      "number": 136,
+      "title": "[NX-S2.29] Actualizar feedback (12/3)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D2-06: Actualizar feedback (12/3).\n- Estimación backlog: Sin estimar (backlog)\n- Referencia: D2-06\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/136",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "alereyper",
+          "name": "Alejandro de los Reyes Perez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/145146598?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:43Z",
+      "updatedAt": "2026-02-22T01:01:15Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58YE",
+      "number": 137,
+      "title": "[NX-S2.30] Actualizar feedback (19/3)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D2-07: Actualizar feedback (19/3).\n- Estimación backlog: Sin estimar (backlog)\n- Referencia: D2-07\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/137",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "alereyper",
+          "name": "Alejandro de los Reyes Perez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/145146598?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:46Z",
+      "updatedAt": "2026-02-22T01:01:23Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58YY",
+      "number": 138,
+      "title": "[NX-S2.31] Actualizar feedback (26/3)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D2-08: Actualizar feedback (26/3).\n- Estimación backlog: Sin estimar (backlog)\n- Referencia: D2-08\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 2",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/138",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S2",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "alereyper",
+          "name": "Alejandro de los Reyes Perez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/145146598?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:49Z",
+      "updatedAt": "2026-02-22T01:01:30Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Yo",
+      "number": 139,
+      "title": "[NX-S3.01] Vista de miembros unidos a un chat",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-01: Vista de miembros unidos a un chat.\n- Estimación backlog: S\n- Referencia: S3-01\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nComunicación\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/139",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Comunicacion",
+          "color": "a68af8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:53Z",
+      "updatedAt": "2026-02-22T01:30:15Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58ZA",
+      "number": 140,
+      "title": "[NX-S3.02] Conexión automática de chats con Matching continuo",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-02: Conexión automática de chats con Matching continuo.\n- Estimación backlog: M\n- Referencia: S3-02\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nComunicación\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/140",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Comunicacion",
+          "color": "a68af8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:13:57Z",
+      "updatedAt": "2026-02-22T01:30:22Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Zc",
+      "number": 141,
+      "title": "[NX-S3.03] Generación de perfiles específicos (Cocinero, Mantenimiento)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-03: Generación de perfiles específicos (Cocinero, Mantenimiento).\n- Estimación backlog: M\n- Referencia: S3-03\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nGestión de Perfiles\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/141",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Gestion de perfiles",
+          "color": "f7ca15"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:00Z",
+      "updatedAt": "2026-02-22T01:30:30Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58Z4",
+      "number": 142,
+      "title": "[NX-S3.04] Sistema de permisos de acceso a menús por rol",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-04: Sistema de permisos de acceso a menús por rol.\n- Estimación backlog: M\n- Referencia: S3-04\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nGestión de Perfiles\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/142",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Gestion de perfiles",
+          "color": "f7ca15"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:04Z",
+      "updatedAt": "2026-02-22T01:30:38Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58aI",
+      "number": 143,
+      "title": "[NX-S3.05] Envío de recordatorios automáticos de devolución",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-05: Envío de recordatorios automáticos de devolución.\n- Estimación backlog: M\n- Referencia: S3-05\n\n### 📍 Módulo / Área de la aplicación\nObjetos\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/143",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Objetos",
+          "color": "60a5fa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:08Z",
+      "updatedAt": "2026-02-22T01:30:45Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58ao",
+      "number": 144,
+      "title": "[NX-S3.06] Vinculación lógica de reserva de espacio con préstamo de objetos",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-06: Vinculación lógica de reserva de espacio con préstamo de objetos.\n- Estimación backlog: M\n- Referencia: S3-06\n\n### 📍 Módulo / Área de la aplicación\nObjetos\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/144",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Objetos",
+          "color": "60a5fa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:11Z",
+      "updatedAt": "2026-02-22T01:30:52Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58bA",
+      "number": 145,
+      "title": "[NX-S3.07] Registro de nuevo visitante",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-07: Registro de nuevo visitante.\n- Estimación backlog: S\n- Referencia: S3-07\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nGestión de Acceso\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/145",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Gestion de acceso",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:15Z",
+      "updatedAt": "2026-02-22T01:30:59Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58bQ",
+      "number": 146,
+      "title": "[NX-S3.08] Dashboard de visitantes activos y total del día",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-08: Dashboard de visitantes activos y total del día.\n- Estimación backlog: M\n- Referencia: S3-08\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nGestión de Acceso\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/146",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Gestion de acceso",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:19Z",
+      "updatedAt": "2026-02-22T01:31:05Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58bc",
+      "number": 147,
+      "title": "[NX-S3.09] Marcación de salida de visitantes",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-09: Marcación de salida de visitantes.\n- Estimación backlog: S\n- Referencia: S3-09\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nGestión de Acceso\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/147",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Gestion de acceso",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:22Z",
+      "updatedAt": "2026-02-22T01:31:12Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58bw",
+      "number": 148,
+      "title": "[NX-S3.10] Sistema de alertas de salida fuera de horario",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-10: Sistema de alertas de salida fuera de horario.\n- Estimación backlog: M\n- Referencia: S3-10\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nGestión de Acceso\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/148",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Gestion de acceso",
+          "color": "a2e435"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:26Z",
+      "updatedAt": "2026-02-22T01:31:19Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58b4",
+      "number": 149,
+      "title": "[NX-S3.11] Recomendaciones de eventos basadas en afinidad",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-11: Recomendaciones de eventos basadas en afinidad.\n- Estimación backlog: M\n- Referencia: S3-11\n\n### 📍 Módulo / Área de la aplicación\nMatching\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/149",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Matching",
+          "color": "33de80"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:30Z",
+      "updatedAt": "2026-02-22T01:31:27Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58cU",
+      "number": 150,
+      "title": "[NX-S3.12] Análisis de afinidad de eventos (Dashboard de métricas de interés)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-12: Análisis de afinidad de eventos (Dashboard de métricas de interés).\n- Estimación backlog: M\n- Referencia: S3-12\n\n### 📍 Módulo / Área de la aplicación\nMatching\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/150",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Matching",
+          "color": "33de80"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:34Z",
+      "updatedAt": "2026-02-22T01:31:38Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58co",
+      "number": 151,
+      "title": "[NX-S3.13] Configuración de marca: logo, colores corporativos y nombre de app",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-13: Configuración de marca: logo, colores corporativos y nombre de app.\n- Estimación backlog: M\n- Referencia: S3-13\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nPremium\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/151",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Premium",
+          "color": "7f8af5"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:37Z",
+      "updatedAt": "2026-02-22T01:31:44Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58c4",
+      "number": 152,
+      "title": "[NX-S3.14] Exportación de informes en PDF y Excel",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-14: Exportación de informes en PDF y Excel.\n- Estimación backlog: L\n- Referencia: S3-14\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nPremium\n\n### ⚠️ Prioridad\n🔴 Alta - Debería hacerse lo antes posible\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/152",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "L",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Premium",
+          "color": "7f8af5"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:41Z",
+      "updatedAt": "2026-02-22T01:31:51Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58dM",
+      "number": 153,
+      "title": "[NX-S3.15] Selección de platos del día",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-15: Selección de platos del día.\n- Estimación backlog: M\n- Referencia: S3-15\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nComedor\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/153",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Comedor",
+          "color": "f171b4"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:45Z",
+      "updatedAt": "2026-02-22T01:31:58Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58dY",
+      "number": 154,
+      "title": "[NX-S3.16] Sistema de autorización de recogida por otro residente",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-16: Sistema de autorización de recogida por otro residente.\n- Estimación backlog: M\n- Referencia: S3-16\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nComedor\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/154",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Comedor",
+          "color": "f171b4"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:48Z",
+      "updatedAt": "2026-02-22T01:32:15Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58do",
+      "number": 155,
+      "title": "[NX-S3.17] Vista de pedidos delegados para control de entrega",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-17: Vista de pedidos delegados para control de entrega.\n- Estimación backlog: S\n- Referencia: S3-17\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nComedor\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/155",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Comedor",
+          "color": "f171b4"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:52Z",
+      "updatedAt": "2026-02-22T01:32:10Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58d8",
+      "number": 156,
+      "title": "[NX-S3.18] Panel central de control de todas las residencias y comparativa de métricas",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-18: Panel central de control de todas las residencias y comparativa de métricas.\n- Estimación backlog: XL\n- Referencia: S3-18\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nMulti-sede\n\n### ⚠️ Prioridad\n🔥 Urgente - Bloquea otras tareas / Urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/156",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XL",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Multi sede",
+          "color": "49db7e"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:56Z",
+      "updatedAt": "2026-02-22T01:32:23Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58eU",
+      "number": 157,
+      "title": "[NX-S3.19] Generación de analíticas de habitaciones, incidencias, objetos y espacios",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-19: Generación de analíticas de habitaciones, incidencias, objetos y espacios.\n- Estimación backlog: L\n- Referencia: S3-19\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAnalíticas\n\n### ⚠️ Prioridad\n🔴 Alta - Debería hacerse lo antes posible\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/157",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "L",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Analiticas",
+          "color": "808bf6"
+        }
+      ],
+      "createdAt": "2026-02-21T21:14:59Z",
+      "updatedAt": "2026-02-22T01:32:33Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58ek",
+      "number": 158,
+      "title": "[NX-S3.20] Testing de seguridad pre-lanzamiento",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-20: Testing de seguridad pre-lanzamiento.\n- Estimación backlog: M\n- Referencia: S3-20\n\n### 📍 Módulo / Área de la aplicación\nCalidad\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/158",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Calidad",
+          "color": "fb923c"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:03Z",
+      "updatedAt": "2026-02-22T01:32:40Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58ew",
+      "number": 159,
+      "title": "[NX-S3.21] Verificación PWA y corrección de bugs críticos de UX",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea S3-21: Verificación PWA y corrección de bugs críticos de UX.\n- Estimación backlog: M\n- Referencia: S3-21\n\n### 📍 Módulo / Área de la aplicación\nCalidad\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/159",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Calidad",
+          "color": "fb923c"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:07Z",
+      "updatedAt": "2026-02-22T01:32:47Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58fU",
+      "number": 160,
+      "title": "[NX-S3.34] Sprint Planning (27/3)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A3-01: Sprint Planning (27/3).\n- Estimación backlog: XS\n- Referencia: A3-01\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/160",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:10Z",
+      "updatedAt": "2026-02-22T01:34:30Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58fg",
+      "number": 161,
+      "title": "[NX-S3.35] Clase 9/4",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A3-02: Clase 9/4.\n- Estimación backlog: S\n- Referencia: A3-02\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/161",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:14Z",
+      "updatedAt": "2026-02-22T01:34:37Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58fw",
+      "number": 162,
+      "title": "[NX-S3.36] Sprint Weekly (10/4)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A3-03: Sprint Weekly (10/4).\n- Estimación backlog: XS\n- Referencia: A3-03\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/162",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:18Z",
+      "updatedAt": "2026-02-22T01:34:50Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58f8",
+      "number": 163,
+      "title": "[NX-S3.37] Sprint Review (15/4)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A3-04: Sprint Review (15/4).\n- Estimación backlog: XS\n- Referencia: A3-04\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/163",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:22Z",
+      "updatedAt": "2026-02-22T01:34:45Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58gc",
+      "number": 164,
+      "title": "[NX-S3.38] Clase 16/4",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A3-05: Clase 16/4.\n- Estimación backlog: S\n- Referencia: A3-05\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/164",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:26Z",
+      "updatedAt": "2026-02-22T01:34:58Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58g8",
+      "number": 165,
+      "title": "[NX-S3.39] Sprint Retrospective (17/4)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea A3-06: Sprint Retrospective (17/4).\n- Estimación backlog: XS\n- Referencia: A3-06\n\n### 📍 Módulo / Área de la aplicación\n➕ Otro (especificar)\n\n### ➕ 'Otro':\nAsistencia\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/165",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "All",
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Asistencia",
+          "color": "818cf8"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:30Z",
+      "updatedAt": "2026-02-22T01:35:05Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58hI",
+      "number": 166,
+      "title": "[NX-S3.28] Dedication Template",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS3-01: Dedication Template.\n- Estimación backlog: S\n- Referencia: DS3-01\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/166",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:33Z",
+      "updatedAt": "2026-02-22T01:33:50Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58iM",
+      "number": 167,
+      "title": "[NX-S3.29] Burndown Chart",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS3-02: Burndown Chart.\n- Estimación backlog: S\n- Referencia: DS3-02\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/167",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:37Z",
+      "updatedAt": "2026-02-22T01:33:46Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58i8",
+      "number": 168,
+      "title": "[NX-S3.30] Velocity Chart",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS3-03: Velocity Chart.\n- Estimación backlog: S\n- Referencia: DS3-03\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/168",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:40Z",
+      "updatedAt": "2026-02-22T01:33:59Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58jU",
+      "number": 169,
+      "title": "[NX-S3.31] Registro de actas S3",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS3-04: Registro de actas S3.\n- Estimación backlog: S\n- Referencia: DS3-04\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/169",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:44Z",
+      "updatedAt": "2026-02-22T01:34:12Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58j0",
+      "number": 170,
+      "title": "[NX-S3.32] Registro de cambios",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS3-05: Registro de cambios.\n- Estimación backlog: S\n- Referencia: DS3-05\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/170",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:47Z",
+      "updatedAt": "2026-02-22T01:34:05Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58kA",
+      "number": 171,
+      "title": "[NX-S3.33] Documento de retrospectiva (Mad/Sad/Glad + Niko-Niko)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea DS3-06: Documento de retrospectiva (Mad/Sad/Glad + Niko-Niko).\n- Estimación backlog: S\n- Referencia: DS3-06\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/171",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "S",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "mjnizac",
+          "name": "Manuel.J Niza Cobo",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/56439789?u=1721db9bce4608eda49be539f0f66f9b6b26037a&v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos Scrum",
+          "color": "f8623f"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:51Z",
+      "updatedAt": "2026-02-22T01:34:22Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58kk",
+      "number": 172,
+      "title": "[NX-S3.22] Presentación 9/4",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D3-01: Presentación 9/4.\n- Estimación backlog: M\n- Referencia: D3-01\n\n### 📍 Módulo / Área de la aplicación\nPresentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/172",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo Presentación",
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:55Z",
+      "updatedAt": "2026-02-22T01:32:57Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58lA",
+      "number": 173,
+      "title": "[NX-S3.23] Presentación 16/4",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D3-02: Presentación 16/4.\n- Estimación backlog: M\n- Referencia: D3-02\n\n### 📍 Módulo / Área de la aplicación\nPresentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟡 Media - Importante pero no urgente\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/173",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "M",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": "Equipo Presentación",
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:15:59Z",
+      "updatedAt": "2026-02-22T01:33:06Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58lg",
+      "number": 174,
+      "title": "[NX-S3.24] Pivot basado en feedback de usuarios piloto",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D3-03: Pivot basado en feedback de usuarios piloto.\n- Estimación backlog: L\n- Referencia: D3-03\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🔴 Alta - Debería hacerse lo antes posible\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/174",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "L",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:16:03Z",
+      "updatedAt": "2026-02-22T01:33:13Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58mI",
+      "number": 175,
+      "title": "[NX-S3.25] Plan de marketing",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D3-04: Plan de marketing.\n- Estimación backlog: L\n- Referencia: D3-04\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🔴 Alta - Debería hacerse lo antes posible\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/175",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "L",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:16:07Z",
+      "updatedAt": "2026-02-22T01:33:20Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58mk",
+      "number": 176,
+      "title": "[NX-S3.26] Actualizar feedback (9/4)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D3-05: Actualizar feedback (9/4).\n- Estimación backlog: Sin estimar (backlog)\n- Referencia: D3-05\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/176",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "alereyper",
+          "name": "Alejandro de los Reyes Perez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/145146598?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:16:11Z",
+      "updatedAt": "2026-02-22T01:03:08Z",
+      "closedAt": null
+    },
+    {
+      "id": "PVTI_lADOD2UAA84BN_59zgl58n0",
+      "number": 177,
+      "title": "[NX-S3.27] Actualizar feedback (16/4)",
+      "body": "# 📋 Tarea\n---\n\n### 🔍 Descripción\nImplementar la tarea D3-06: Actualizar feedback (16/4).\n- Estimación backlog: Sin estimar (backlog)\n- Referencia: D3-06\n\n### 📍 Módulo / Área de la aplicación\nDocumentación\n\n### ➕ 'Otro':\nN/A\n\n### ⚠️ Prioridad\n🟢 Baja - Detalle menor\n\n### 🔔 Entrega correspondiente\nSprint 3",
+      "url": "https://github.com/ispp-g7-nexus/7-NexUS/issues/177",
+      "state": "OPEN",
+      "status": "Backlog",
+      "priority": null,
+      "size": "XS",
+      "estimate": null,
+      "startDate": null,
+      "targetDate": null,
+      "equipo": null,
+      "milestone": "S3",
+      "repository": "7-NexUS",
+      "assignees": [
+        {
+          "login": "alereyper",
+          "name": "Alejandro de los Reyes Perez",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/145146598?v=4"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Documentos",
+          "color": "848bfa"
+        }
+      ],
+      "createdAt": "2026-02-21T21:16:14Z",
+      "updatedAt": "2026-02-22T01:03:16Z",
+      "closedAt": null
+    }
+  ]
+}

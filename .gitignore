@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+.npm/
+
+# Build artifacts (se regeneran con el workflow)
+/tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Informes generados (no versionar datos personales)
+nexus_clockify_report.xlsx
+*.xlsx
+clockify_export*.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Build temp files
+src/_entry.jsx
+dist/_bundle.js
+dist/_dev_bundle.js
