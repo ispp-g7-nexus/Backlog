@@ -91,10 +91,13 @@ for (let i = 1; i < lines.length; i++) {
   if (!hours) hours = parseDuration(durH);
   if (!hours) { skipped++; continue; }
 
-  // Try to match NX task ID from tags or description
+  // Try to match NX task ID from tags or description (NX-S1.1, NX-S1.01, NX-S2.3…)
   const combined = tags + ' ' + desc;
-  const match = combined.match(/NX-S[1-3]\.\d{1,2}/i);
-  const taskId = match ? match[0].toUpperCase() : null;
+  const match = combined.match(/NX-S([1-3])\.(\d{1,3})/i);
+  // Normalise to 2-digit task number to match BACKLOG_MAP keys (NX-S1.01, NX-S1.10…)
+  const taskId = match
+    ? `NX-S${match[1]}.${match[2].padStart(2, '0')}`
+    : null;
 
   // Compact entry: u=user, e=email, p=project, h=hours, d=date, t=taskId
   const entry = { u: user, e: email, p: project, h: +hours.toFixed(4), d: date };

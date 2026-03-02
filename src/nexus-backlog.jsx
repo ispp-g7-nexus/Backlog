@@ -1141,11 +1141,13 @@ function parseClockifyCSV(text) {
     }
     if (!hours) continue;
 
-    // find task ID in tags or description (NX-S1.1, NX-S2.3, etc.)
+    // find task ID in tags or description (NX-S1.1, NX-S1.01, NX-S2.3, etc.)
     const combined = tags + " " + desc;
-    // // Formato: NX-S1.1 — mismo ID que en el backlog
-    const match = combined.match(/NX-S[1-3]\.\d{1,2}/i);
-    const taskId = match ? match[0].toUpperCase() : null;
+    const match = combined.match(/NX-S([1-3])\.(\d{1,3})/i);
+    // Normalise to 2-digit task number to match BACKLOG_MAP keys (NX-S1.01, NX-S1.10…)
+    const taskId = match
+      ? `NX-S${match[1]}.${match[2].padStart(2, '0')}`
+      : null;
 
     entries.push({ user, email, project, taskId, hours, date });
   }
@@ -1189,12 +1191,13 @@ function buildReport(entries) {
       if (taskId) byUser[user].byTask[taskId] = (byUser[user].byTask[taskId] || 0) + hours;
     }
     if (email) {
-      byEmail[email] = byEmail[email] || { name: user, total_h: 0, dp_h: 0, s1_h: 0, s2_h: 0, s3_h: 0 };
+      byEmail[email] = byEmail[email] || { name: user, total_h: 0, tagged_h: 0, dp_h: 0, s1_h: 0, s1_tagged_h: 0, s2_h: 0, s2_tagged_h: 0, s3_h: 0, s3_tagged_h: 0 };
       byEmail[email].total_h += hours;
+      if (taskId) byEmail[email].tagged_h += hours;
       if (project === "dp") byEmail[email].dp_h += hours;
-      if (project === "s1") byEmail[email].s1_h += hours;
-      if (project === "s2") byEmail[email].s2_h += hours;
-      if (project === "s3") byEmail[email].s3_h += hours;
+      if (project === "s1") { byEmail[email].s1_h += hours; if (taskId) byEmail[email].s1_tagged_h += hours; }
+      if (project === "s2") { byEmail[email].s2_h += hours; if (taskId) byEmail[email].s2_tagged_h += hours; }
+      if (project === "s3") { byEmail[email].s3_h += hours; if (taskId) byEmail[email].s3_tagged_h += hours; }
     }
     if (nd) dailyHours[nd] = (dailyHours[nd] || 0) + hours;
   });
@@ -1227,6 +1230,233 @@ function InfStatCard({ label, value, sub, color }) {
   );
 }
 
+// ── EXPORT MD MODAL ──────────────────────────────────────────
+function ExportMdModal({ report, sprint, onClose }) {
+  const [docType, setDocType] = useState("burndown");
+  const [copied,  setCopied]  = useState(false);
+
+  const fDD   = d => d ? d.slice(8,10)+'/'+d.slice(5,7) : '—';
+  const fFull = d => d ? d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4) : '—';
+
+  function genBurndown() {
+    if (!report || sprint <= 0)
+      return '> Selecciona Sprint 1, 2 o 3 para exportar el Burndown.';
+    const spTasks    = Object.values(BACKLOG_MAP).filter(t => t.sprint === sprint);
+    const doneTasks  = spTasks.filter(t => t.status === 'Done');
+    const totalEstH  = spTasks.reduce((s,t) => s+(t.estimated_h||0), 0);
+    const doneEstH   = doneTasks.reduce((s,t) => s+(t.estimated_h||0), 0);
+    const pendingH   = totalEstH - doneEstH;
+    const proj       = 's' + sprint;
+    const dailyProj  = report.dailyHoursByProject?.[proj] || {};
+    const clockifyH  = Object.values(dailyProj).reduce((s,h) => s+h, 0);
+    const days       = Object.keys(dailyProj).sort();
+    const taggedH    = Object.values(report.byEmail||{}).reduce((s,u) => s+(u[`s${sprint}_tagged_h`]||0), 0);
+    const consumoPct     = totalEstH > 0 ? clockifyH/totalEstH*100 : 0;
+    const completitudPct = totalEstH > 0 ? doneEstH/totalEstH*100 : 0;
+    const rendimiento    = clockifyH > 0 ? doneEstH/clockifyH*100 : 0;
+    const coveragePct    = clockifyH > 0 ? taggedH/clockifyH*100 : 0;
+    const spInfo   = SC[sprint];
+    const burnRate = days.length > 0 ? clockifyH / days.length : 0;
+    const nDays    = days.length || 1;
+    let tableRows = `| 0 | ${fDD(spInfo?.start)} | ${totalEstH.toFixed(0)} | 0.0 | ${totalEstH.toFixed(0)} |\n`;
+    let cum = 0;
+    days.forEach((day, i) => {
+      cum += dailyProj[day] || 0;
+      const idealRem = Math.max(0, totalEstH * (1 - (i+1)/nDays));
+      const realRem  = Math.max(0, totalEstH - cum);
+      tableRows += `| ${i+1} | ${fDD(day)} | ${idealRem.toFixed(0)} | ${cum.toFixed(1)} | ${realRem.toFixed(0)} |\n`;
+    });
+    let closeDateStr = '—', closeDeltaStr = '—';
+    if (burnRate > 0 && pendingH > 0) {
+      const lastMs   = new Date(days[days.length-1]).getTime();
+      const daysNeed = Math.ceil(pendingH / burnRate);
+      const closeMs  = lastMs + daysNeed * 86400000;
+      closeDateStr   = fFull(new Date(closeMs).toISOString().slice(0,10));
+      const endMs    = spInfo?.end ? new Date(spInfo.end).getTime() : 0;
+      if (endMs) {
+        const diff = Math.round((closeMs - endMs) / 86400000);
+        closeDeltaStr = diff <= 0
+          ? `✓ En plazo (${Math.abs(diff)} días de margen)`
+          : `✗ ${diff} días de retraso`;
+      }
+    } else if (pendingH <= 0) {
+      closeDateStr = '✅ Completado'; closeDeltaStr = '✓ En plazo';
+    }
+    return [
+      `## 4. Seguimiento de Horas Clockify`, ``,
+      `> Datos exportados de NexUS Backlog — ${new Date().toLocaleDateString('es-ES')}.`, ``,
+      `### Resumen de horas`, ``,
+      `| Métrica | Valor |`, `|---------|-------|`,
+      `| H. estimadas totales del sprint | ${totalEstH.toFixed(0)} h |`,
+      `| H. registradas en Clockify (proyecto s${sprint}) | ${clockifyH.toFixed(0)} h |`,
+      `| H. estimadas de tareas Done | ${doneEstH.toFixed(0)} h |`,
+      `| H. pendientes (estimadas – Done) | ${pendingH.toFixed(0)} h |`,
+      `| % Consumo (Clockify / Estimadas) | ${consumoPct.toFixed(1)} % |`,
+      `| % Completitud (h Done / h Estimadas) | ${completitudPct.toFixed(1)} % |`,
+      `| Rendimiento (h Done estimadas / h Clockify) | ${rendimiento.toFixed(1)} % |`,
+      `| % Cobertura de etiquetado Clockify | ${coveragePct.toFixed(1)} % |`, ``,
+      `### Tabla de burndown en horas (acumulado diario)`, ``,
+      `| Día | Fecha | H. Est. Restantes (ideal) | H. Clockify Acumuladas | H. Pendientes (real) |`,
+      `|-----|-------|--------------------------|------------------------|----------------------|`,
+      tableRows.trimEnd(), ``,
+      `---`, ``,
+      `## 5. Estimación de Cierre`, ``,
+      `| Métrica | Valor |`, `|---------|-------|`,
+      `| Días con actividad registrada | ${days.length} días |`,
+      `| H. registradas hasta hoy | ${clockifyH.toFixed(0)} h |`,
+      `| Ritmo medio diario (burn rate) | ${burnRate.toFixed(1)} h/día |`,
+      `| H. pendientes estimadas | ${pendingH.toFixed(0)} h |`,
+      `| Días adicionales necesarios | ${burnRate > 0 && pendingH > 0 ? Math.ceil(pendingH/burnRate) : '—'} días |`,
+      `| **Fecha estimada de cierre** | **${closeDateStr}** |`,
+      `| Fecha límite del sprint | ${fFull(spInfo?.end)} |`,
+      `| **¿Dentro del milestone?** | ${closeDeltaStr} |`,
+    ].join('\n');
+  }
+
+  function genVelocity() {
+    if (!report) return '> Carga un CSV de Clockify para generar la tabla de velocidad.';
+    let rows = '';
+    [[1,'Sprint 1','s1'],[2,'Sprint 2','s2'],[3,'Sprint 3','s3']].forEach(([sn,label,proj]) => {
+      const spT    = Object.values(BACKLOG_MAP).filter(t => t.sprint === sn);
+      const done   = spT.filter(t => t.status === 'Done');
+      const totalH = spT.reduce((s,t) => s+(t.estimated_h||0), 0);
+      const doneH  = done.reduce((s,t) => s+(t.estimated_h||0), 0);
+      const clkH   = Object.values(report.dailyHoursByProject?.[proj]||{}).reduce((s,h)=>s+h, 0);
+      const rend   = clkH > 0 ? doneH/clkH*100 : null;
+      const tagH   = Object.values(report.byEmail||{}).reduce((s,u)=>s+(u[`s${sn}_tagged_h`]||0), 0);
+      const cov    = clkH > 0 ? tagH/clkH*100 : null;
+      const hasD   = clkH > 0 || doneH > 0;
+      rows += `| ${label} | ${hasD?totalH.toFixed(0)+' h':'—'} | ${hasD?doneH.toFixed(0)+' h':'—'} | ${clkH>0?clkH.toFixed(0)+' h':'—'} | ${rend!=null?rend.toFixed(1)+' %':'—'} | ${cov!=null?cov.toFixed(1)+' %':'—'} |\n`;
+    });
+    return [
+      `## 3. Tabla de Velocidad por Sprint — Horas`, ``,
+      `> Datos exportados de NexUS Backlog — ${new Date().toLocaleDateString('es-ES')}.`, ``,
+      `| Sprint | H. Estimadas Totales | H. Estimadas Done | H. Clockify | Rendimiento | % Cobertura Etiquetado |`,
+      `|--------|---------------------|-------------------|-------------|-------------|------------------------|`,
+      rows.trimEnd(), ``,
+      `> **Rendimiento:** \`(H. Estimadas Done / H. Clockify) × 100\``,
+    ].join('\n');
+  }
+
+  function genRetro() {
+    if (!report || sprint <= 0) return '> Selecciona Sprint 1, 2 o 3 para exportar las métricas de retrospectiva.';
+    const spTasks   = Object.values(BACKLOG_MAP).filter(t => t.sprint === sprint);
+    const doneTasks = spTasks.filter(t => t.status === 'Done');
+    const totalEstH = spTasks.reduce((s,t) => s+(t.estimated_h||0), 0);
+    const doneEstH  = doneTasks.reduce((s,t) => s+(t.estimated_h||0), 0);
+    const proj      = 's' + sprint;
+    const clkH      = Object.values(report.dailyHoursByProject?.[proj]||{}).reduce((s,h)=>s+h, 0);
+    const taggedH   = Object.values(report.byEmail||{}).reduce((s,u)=>s+(u[`s${sprint}_tagged_h`]||0), 0);
+    const rend      = clkH > 0 ? doneEstH/clkH*100 : 0;
+    const cov       = clkH > 0 ? taggedH/clkH*100 : 0;
+    let teamRows = '';
+    ['A','B','C','D'].forEach(team => {
+      const members = TEAM_MEMBERS.filter(m => m.team === team);
+      const tClk = members.reduce((s,m) => {
+        const em = report.byEmail[m.email?.toLowerCase()] || {};
+        return s + (em[`s${sprint}_h`]||0);
+      }, 0);
+      const tDoneH = Object.values(BACKLOG_MAP)
+        .filter(t => t.sprint===sprint && t.equipo===`Equipo ${team}` && t.status==='Done')
+        .reduce((s,t) => s+(t.estimated_h||0), 0);
+      const tTotal = Object.values(BACKLOG_MAP).filter(t => t.sprint===sprint && t.equipo===`Equipo ${team}`).length;
+      const tDone  = Object.values(BACKLOG_MAP).filter(t => t.sprint===sprint && t.equipo===`Equipo ${team}` && t.status==='Done').length;
+      const tRend  = tClk > 0 ? tDoneH/tClk*100 : null;
+      const tPct   = tTotal > 0 ? tDone/tTotal*100 : null;
+      teamRows += `| Equipo ${team} | ${tClk.toFixed(0)} h | ${tDoneH.toFixed(0)} h | ${tRend!=null?tRend.toFixed(1)+' %':'—'} | ${tPct!=null?tPct.toFixed(0)+'%':'—'} (${tDone}/${tTotal}) |\n`;
+    });
+    return [
+      `## 1. Métricas del Sprint ${sprint}`, ``,
+      `> Datos exportados de NexUS Backlog — ${new Date().toLocaleDateString('es-ES')}.`, ``,
+      `### Tareas`, ``,
+      `| Métrica | Valor |`, `|---------|-------|`,
+      `| Tareas planificadas | ${spTasks.length} |`,
+      `| Tareas completadas (Done) | ${doneTasks.length} |`,
+      `| Tareas pendientes | ${spTasks.length - doneTasks.length} |`,
+      `| % Completitud tareas | ${spTasks.length > 0 ? (doneTasks.length/spTasks.length*100).toFixed(1) : '—'} % |`, ``,
+      `### Horas (Clockify)`, ``,
+      `| Métrica | Valor |`, `|---------|-------|`,
+      `| H. estimadas totales del sprint | ${totalEstH.toFixed(0)} h |`,
+      `| H. estimadas de tareas Done | ${doneEstH.toFixed(0)} h |`,
+      `| H. registradas en Clockify | ${clkH.toFixed(0)} h |`,
+      `| H. pendientes estimadas | ${(totalEstH-doneEstH).toFixed(0)} h |`,
+      `| % Consumo (Clockify / Estimadas) | ${totalEstH > 0 ? (clkH/totalEstH*100).toFixed(1) : '—'} % |`,
+      `| Rendimiento (h Done / h Clockify) | ${rend.toFixed(1)} % |`,
+      `| % Cobertura etiquetado Clockify | ${cov.toFixed(1)} % |`, ``,
+      `### Por Equipo`, ``,
+      `| Equipo | H. Clockify | H. Done est. | Rendimiento | % Tareas Done |`,
+      `|--------|-------------|--------------|-------------|---------------|`,
+      teamRows.trimEnd(),
+    ].join('\n');
+  }
+
+  const spLabel = sprint > 0 ? sprint : 'X';
+  const docs = [
+    { id:'burndown', label:'📈 Burndown §4–5', file:`7-DP-S${spLabel}-Burndown-Chart.md`, gen:genBurndown },
+    { id:'velocity', label:'⚡ Velocity §3',    file:`7-DP-S1-Velocity-Chart.md`,          gen:genVelocity },
+    { id:'retro',    label:'🔄 Retro §1',        file:`7-DP-S${spLabel}-Retrospectiva.md`,  gen:genRetro    },
+  ];
+  const active  = docs.find(d => d.id === docType);
+  const content = active.gen();
+
+  function handleCopy() {
+    navigator.clipboard.writeText(content).then(() => {
+      setCopied(true); setTimeout(() => setCopied(false), 2000);
+    });
+  }
+  function handleDownload() {
+    const blob = new Blob([content], { type:'text/markdown;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = active.file; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div style={{ position:"fixed", inset:0, background:"#000000bb", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center" }}
+         onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background:"#18181b", border:"1px solid #3f3f46", borderRadius:12, padding:24, width:700, maxWidth:"95vw", maxHeight:"90vh", display:"flex", flexDirection:"column", gap:14 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <div style={{ fontWeight:700, fontSize:14, color:"#f1f5f9" }}>📄 Exportar Markdown con datos reales</div>
+          <button onClick={onClose} style={{ background:"none", border:"none", color:"#71717a", cursor:"pointer", fontSize:20, lineHeight:1 }}>×</button>
+        </div>
+        <div style={{ display:"flex", gap:6 }}>
+          {docs.map(d => (
+            <button key={d.id} onClick={() => setDocType(d.id)}
+              style={{ padding:"5px 12px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer",
+                background: docType===d.id ? "#6ee7b720" : "transparent",
+                border:     docType===d.id ? "1px solid #6ee7b745" : "1px solid #27272a",
+                color:      docType===d.id ? "#6ee7b7" : "#71717a" }}>
+              {d.label}
+            </button>
+          ))}
+        </div>
+        <div style={{ fontSize:10, color:"#52525b" }}>
+          Archivo: <code style={{ background:"#09090b", padding:"1px 5px", borderRadius:3, color:"#818cf8" }}>{active.file}</code>
+          {' — '}Descarga la sección generada y reemplázala en tu repositorio, o cópiala directamente.
+        </div>
+        <pre style={{ flex:1, overflowY:"auto", background:"#09090b", border:"1px solid #27272a", borderRadius:8, padding:14, fontSize:11, color:"#e2e8f0", margin:0, whiteSpace:"pre-wrap", fontFamily:"'Fira Code','Consolas','Courier New',monospace", lineHeight:1.5, maxHeight:"45vh" }}>
+          {content}
+        </pre>
+        <div style={{ display:"flex", gap:8 }}>
+          <button onClick={handleCopy}
+            style={{ flex:1, padding:"8px", borderRadius:6, fontWeight:700, fontSize:12, cursor:"pointer",
+              background: copied ? "#22c55e20" : "#6366f115",
+              border:     copied ? "1px solid #22c55e55" : "1px solid #6366f140",
+              color:      copied ? "#22c55e" : "#818cf8" }}>
+            {copied ? "✓ Copiado!" : "📋 Copiar sección"}
+          </button>
+          <button onClick={handleDownload}
+            style={{ flex:1, padding:"8px", borderRadius:6, fontWeight:700, fontSize:12, cursor:"pointer",
+              background:"#34d39915", border:"1px solid #34d39940", color:"#34d399" }}>
+            💾 Descargar {active.file}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function InformePane() {
   const [drag,     setDrag]     = useState(false);
   const [status,   setStatus]   = useState(DEFAULT_CLOCKIFY ? "ok" : "idle");
@@ -1239,6 +1469,7 @@ function InformePane() {
   );
   const [view,     setView]     = useState("equipo"); // open on team tab by default
   const [sprint,   setSprint]   = useState(0);
+  const [showExport, setShowExport] = useState(false);
 
   const sprintC = { 1:"#818cf8", 2:"#34d399", 3:"#fbbf24" };
 
@@ -1273,11 +1504,25 @@ function InformePane() {
   }
 
   const filtered = (rpt) => Object.entries(rpt.byTask)
-    .filter(([,t]) => sprint <= 0 || t.sprint === sprint)
+    .filter(([,t]) => sprint === 0 || t.sprint === sprint)
     .sort((a,b) => a[1].sprint - b[1].sprint || a[0].localeCompare(b[0]));
 
   // ── Sub-views ──────────────────────────────────────────────
   function KpiRow() {
+    if (sprint === -1) {
+      // Sprint 0 (DP): no hay tareas en backlog, mostrar horas del proyecto "dp"
+      const dpUsers   = Object.values(report.byEmail || {});
+      const totalDp   = dpUsers.reduce((s, e) => s + (e.dp_h || 0), 0);
+      const activeDp  = dpUsers.filter(e => (e.dp_h || 0) > 0).length;
+      return (
+        <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:14 }}>
+          <InfStatCard label="Entradas CSV"    value={report.totalEntries}  sub={`${report.matchedEntries} con tarea identificada`} color="#6ee7b7" />
+          <InfStatCard label="S0 — DP horas"  value={`${totalDp.toFixed(1)}h`} sub="Devising a Project"        color="#6366f1" />
+          <InfStatCard label="Personas activas" value={`${activeDp}`}       sub="con horas S0 registradas"     color="#e879f9" />
+          <InfStatCard label="Estado S0"       value="✓ Completado"         sub="Sprint 0 finalizado"           color="#22c55e" />
+        </div>
+      );
+    }
     const tasks   = filtered(report).map(([,t])=>t);
     const totalEst  = tasks.reduce((s,t)=>s+t.estimated_h, 0);
     const totalReal = tasks.reduce((s,t)=>s+t.real_h, 0);
@@ -1297,77 +1542,427 @@ function InformePane() {
   }
 
   function TasksView() {
-    const tasks = filtered(report);
+    if (sprint === -1) return (
+      <div style={{ padding:"32px 20px", textAlign:"center" }}>
+        <div style={{ fontSize:28, marginBottom:10 }}>✓</div>
+        <div style={{ color:"#22c55e", fontWeight:700, fontSize:14, marginBottom:6 }}>Sprint 0 — Devising a Project completado</div>
+        <div style={{ color:"#71717a", fontSize:12, marginBottom:10 }}>
+          El Sprint 0 (DP) registra horas por proyecto "dp" en Clockify,<br/>no por tareas individuales del backlog.
+        </div>
+        <div style={{ color:"#52525b", fontSize:11 }}>
+          Consulta la pestaña <span style={{ color:"#6ee7b7", fontWeight:700 }}>Equipo</span> para ver el desglose de horas por persona.
+        </div>
+      </div>
+    );
+    // Map Clockify display name (lowercase) → TEAM_MEMBERS entry for team-mismatch check
+    const nameToMember = Object.fromEntries(
+      TEAM_MEMBERS.map(m => [m.name.toLowerCase().trim(), m])
+    );
+    // GitHub status → colored emoji matching STATUS_META colors
+    const STATUS_EMOJI = {
+      "Backlog":     "⚫",
+      "Ready":       "🔵",
+      "In progress": "🟢",
+      "In review":   "🟣",
+      "Done":        "✅",
+    };
+
+    // Pre-compute warnings per task (reused in both metrics and table rows)
+    const tasksWithWarns = filtered(report).map(([tid, t]) => {
+      const taskTeamLetter = t.equipo?.match(/Equipo\s+([ABCD])$/i)?.[1]?.toUpperCase() || null;
+      const warns = [];
+      if (!t.estimated_h) warns.push({ icon:"📐", tip:"Sin estimación asignada" });
+      if (t.real_h === 0)  warns.push({ icon:"⏱️", tip:"Sin horas registradas en Clockify" });
+      if (taskTeamLetter) {
+        Object.keys(t.byUser).forEach(userName => {
+          const member = nameToMember[userName.toLowerCase().trim()];
+          if (member && member.team !== taskTeamLetter) {
+            warns.push({ icon:"👥", tip:`${userName} (Equipo ${member.team}) registra horas en tarea del ${t.equipo}` });
+          }
+        });
+      }
+      return { tid, t, warns };
+    });
+
+    // Tasks with zero warnings → estimation quality input
+    const validTasks = tasksWithWarns.filter(({ warns }) => warns.length === 0).map(({ t }) => t);
+
+    // ── Estimation quality metrics block ──────────────────────
+    const metricsBlock = (() => {
+      if (!validTasks.length) return null;
+      const n       = validTasks.length;
+      const sumEst  = validTasks.reduce((s, t) => s + t.estimated_h, 0);
+      const sumReal = validTasks.reduce((s, t) => s + t.real_h, 0);
+      // Ratio: real / estimated — ideal = 1.0
+      const ratio   = sumReal / sumEst;
+      // MAPE: mean absolute percentage error — lower is better
+      const mape    = validTasks.reduce((s, t) => s + Math.abs(t.real_h - t.estimated_h) / t.estimated_h, 0) / n * 100;
+      // MAE: mean absolute error in hours
+      const mae     = validTasks.reduce((s, t) => s + Math.abs(t.real_h - t.estimated_h), 0) / n;
+      // Precision: % of tasks where real ∈ [50%, 150%] of estimated
+      const within50 = validTasks.filter(t => { const r = t.real_h / t.estimated_h; return r >= 0.5 && r <= 1.5; }).length / n * 100;
+
+      const ratioColor  = ratio >= 0.7 && ratio <= 1.3 ? "#22c55e" : ratio >= 0.5 && ratio <= 1.5 ? "#f59e0b" : "#ef4444";
+      const mapeColor   = mape  <= 25 ? "#22c55e" : mape  <= 50 ? "#f59e0b" : "#ef4444";
+      const precColor   = within50 >= 70 ? "#22c55e" : within50 >= 50 ? "#f59e0b" : "#ef4444";
+      const tendencia   = ratio <= 1 ? "sobreestima" : "infraestima";
+
+      return (
+        <div style={{ background:"#0c0c10", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px" }}>
+          <div style={{ color:"#52525b", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:10 }}>
+            📏 Calidad de estimaciones — {n} tarea{n !== 1 ? "s" : ""} evaluadas (sin advertencias)
+          </div>
+          <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+            <InfStatCard
+              label="Consumo real/est"
+              value={`${(ratio * 100).toFixed(0)}%`}
+              sub={`Tiende a ${tendencia} · ideal 100%`}
+              color={ratioColor}
+            />
+            <InfStatCard
+              label="Error relativo (MAPE)"
+              value={`${mape.toFixed(1)}%`}
+              sub={mape <= 25 ? "Buena precisión" : mape <= 50 ? "Precisión aceptable" : "Revisar estimaciones"}
+              color={mapeColor}
+            />
+            <InfStatCard
+              label="Error absoluto (MAE)"
+              value={`${mae.toFixed(1)}h`}
+              sub="Desviación media por tarea"
+              color="#818cf8"
+            />
+            <InfStatCard
+              label="Precisión ±50%"
+              value={`${within50.toFixed(0)}%`}
+              sub={`${validTasks.filter(t=>{ const r=t.real_h/t.estimated_h; return r>=0.5&&r<=1.5; }).length} de ${n} tareas en margen`}
+              color={precColor}
+            />
+          </div>
+        </div>
+      );
+    })();
+
+    const thS = { padding:"8px 10px", textAlign:"left", color:"#71717a", fontWeight:700, whiteSpace:"nowrap", borderBottom:"1px solid #27272a" };
     return (
-      <div style={{ overflowX:"auto" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
-          <thead>
-            <tr style={{ background:"#18181b" }}>
-              {["ID","Sp","Módulo","Tarea","Talla","Est.","Real","Dif.","% Uso","Estado"].map(h=>(
-                <th key={h} style={{ padding:"8px 10px", textAlign:"left", color:"#71717a", fontWeight:700, whiteSpace:"nowrap", borderBottom:"1px solid #27272a" }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {tasks.map(([tid,t],i)=>{
-              const pct  = t.estimated_h ? t.real_h/t.estimated_h*100 : 0;
-              const diff = t.real_h - t.estimated_h;
-              const sc   = sprintC[t.sprint] || "#52525b";
-              const stato = t.real_h===0 ? {icon:"⬜",c:"#52525b"} : pct>=100 ? {icon:"🔴",c:"#ef4444"} : pct>=80 ? {icon:"🟡",c:"#f59e0b"} : {icon:"🟢",c:"#22c55e"};
-              return (
-                <tr key={tid} style={{ background:i%2===0?"#09090b":"#111113" }}>
-                  <td style={{ padding:"7px 10px", color:sc, fontWeight:700, whiteSpace:"nowrap" }}>{tid}</td>
-                  <td style={{ padding:"7px 10px", textAlign:"center" }}><span style={{ background:`${sc}20`, color:sc, padding:"2px 6px", borderRadius:4, fontSize:10, fontWeight:700 }}>S{t.sprint}</span></td>
-                  <td style={{ padding:"7px 10px", color:"#94a3b8", whiteSpace:"nowrap" }}>{t.area}</td>
-                  <td style={{ padding:"7px 10px", color:"#e2e8f0", maxWidth:260, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }} title={t.title}>{t.title}</td>
-                  <td style={{ padding:"7px 10px", textAlign:"center", color:"#71717a" }}>{t.size}</td>
-                  <td style={{ padding:"7px 10px", textAlign:"right", color:"#71717a" }}>{t.estimated_h}h</td>
-                  <td style={{ padding:"7px 10px", textAlign:"right", color:t.real_h>0?"#e2e8f0":"#3f3f46" }}>{t.real_h.toFixed(1)}h</td>
-                  <td style={{ padding:"7px 10px", textAlign:"right", color:diff>0?"#ef4444":diff<0?"#22c55e":"#52525b", fontWeight:Math.abs(diff)>0?700:400 }}>{diff>0?"+":""}{diff.toFixed(1)}h</td>
-                  <td style={{ padding:"7px 10px", minWidth:90 }}>
-                    <div style={{ background:"#27272a", borderRadius:4, height:6, overflow:"hidden" }}>
-                      <div style={{ height:"100%", width:`${Math.min(pct,100)}%`, background:pct>=100?"#ef4444":pct>=80?"#f59e0b":"#22c55e" }} />
-                    </div>
-                    <div style={{ color:"#71717a", fontSize:10, textAlign:"right", marginTop:2 }}>{pct.toFixed(0)}%</div>
-                  </td>
-                  <td style={{ padding:"7px 10px", color:stato.c, fontWeight:700, textAlign:"center" }}>{stato.icon}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+        {metricsBlock}
+        <div style={{ overflowX:"auto" }}>
+          <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
+            <thead>
+              <tr style={{ background:"#18181b" }}>
+                <th style={thS}>ID</th>
+                <th style={thS}>Sp</th>
+                <th style={thS}>Módulo</th>
+                <th style={thS}>Tarea</th>
+                <th style={thS}>Asignados</th>
+                <th style={thS}>Equipo</th>
+                <th style={thS}>Talla</th>
+                <th style={{ ...thS, textAlign:"right" }}>Est.</th>
+                <th style={{ ...thS, textAlign:"right" }}>Real</th>
+                <th style={{ ...thS, textAlign:"right" }}>Dif.</th>
+                <th style={thS}>% Uso</th>
+                <th style={{ ...thS, textAlign:"center" }}>Estado</th>
+                <th style={thS}>⚠️</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tasksWithWarns.map(({ tid, t, warns }, i) => {
+                const pct  = t.estimated_h ? t.real_h / t.estimated_h * 100 : 0;
+                const diff = t.real_h - t.estimated_h;
+                const sc   = sprintC[t.sprint] || "#52525b";
+                return (
+                  <tr key={tid} style={{ background:i%2===0?"#09090b":"#111113" }}>
+                    <td style={{ padding:"7px 10px", color:sc, fontWeight:700, whiteSpace:"nowrap" }}>{tid}</td>
+                    <td style={{ padding:"7px 10px", textAlign:"center" }}>
+                      <span style={{ background:`${sc}20`, color:sc, padding:"2px 6px", borderRadius:4, fontSize:10, fontWeight:700 }}>S{t.sprint}</span>
+                    </td>
+                    <td style={{ padding:"7px 10px", color:"#94a3b8", whiteSpace:"nowrap", maxWidth:120, overflow:"hidden", textOverflow:"ellipsis" }}>{t.area}</td>
+                    <td style={{ padding:"7px 10px", color:"#e2e8f0", maxWidth:220, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }} title={t.title}>{t.title}</td>
+                    <td style={{ padding:"7px 10px" }}>
+                      <div style={{ display:"flex", gap:2, alignItems:"center" }}>
+                        {(t.assignees||[]).map(a => (
+                          <img key={a.login} src={a.avatarUrl} title={a.login}
+                            style={{ width:18, height:18, borderRadius:"50%", border:"1px solid #3f3f46", flexShrink:0 }} />
+                        ))}
+                      </div>
+                    </td>
+                    <td style={{ padding:"7px 10px", whiteSpace:"nowrap" }}>
+                      {t.equipo
+                        ? <span style={{ background:"#ffffff08", border:"1px solid #3f3f46", borderRadius:4, padding:"1px 7px", color:"#94a3b8", fontSize:10 }}>{t.equipo}</span>
+                        : null}
+                    </td>
+                    <td style={{ padding:"7px 10px", textAlign:"center", color:"#71717a" }}>{t.size}</td>
+                    <td style={{ padding:"7px 10px", textAlign:"right", color:"#71717a" }}>{t.estimated_h}h</td>
+                    <td style={{ padding:"7px 10px", textAlign:"right", color:t.real_h>0?"#e2e8f0":"#3f3f46" }}>{t.real_h.toFixed(1)}h</td>
+                    <td style={{ padding:"7px 10px", textAlign:"right", color:diff>0?"#ef4444":diff<0?"#22c55e":"#52525b", fontWeight:Math.abs(diff)>0?700:400 }}>{diff>0?"+":""}{diff.toFixed(1)}h</td>
+                    <td style={{ padding:"7px 10px", minWidth:80 }}>
+                      <div style={{ background:"#27272a", borderRadius:4, height:6, overflow:"hidden" }}>
+                        <div style={{ height:"100%", width:`${Math.min(pct,100)}%`, background:pct>=100?"#ef4444":pct>=80?"#f59e0b":"#22c55e" }} />
+                      </div>
+                      <div style={{ color:"#71717a", fontSize:10, textAlign:"right", marginTop:2 }}>{pct.toFixed(0)}%</div>
+                    </td>
+                    <td style={{ padding:"7px 8px", textAlign:"center", fontSize:15 }} title={t.status||"Backlog"}>
+                      {STATUS_EMOJI[t.status] || "⬛"}
+                    </td>
+                    <td style={{ padding:"7px 8px" }}>
+                      <div style={{ display:"flex", gap:3, flexWrap:"wrap", alignItems:"center" }}>
+                        {warns.map((w, wi) => (
+                          <span key={wi} title={w.tip} style={{ cursor:"help", fontSize:13, lineHeight:1 }}>{w.icon}</span>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }
 
   function UsersView() {
-    const users = Object.entries(report.byUser).sort((a,b)=>b[1].total_h-a[1].total_h);
+    const STATUSES   = ["Backlog","Ready","In progress","In review","Done"];
+    const TEAM_COLOR = { A:"#3b82f6", B:"#22c55e", C:"#f59e0b", D:"#a855f7" };
+
+    // Tasks in scope for this sprint filter
+    const relevantTasks = sprint === -1
+      ? []
+      : Object.values(BACKLOG_MAP).filter(t => sprint === 0 || t.sprint === sprint);
+
+    // Per-member stats
+    const memberStats = TEAM_MEMBERS.map(member => {
+      const loginLower = member.login.toLowerCase();
+      const ue = report.byEmail[member.email?.toLowerCase()] || {};
+      let totalH = 0, taggedH = 0;
+      if (sprint === -1) {
+        totalH  = ue.dp_h || 0;
+        taggedH = 0;
+      } else if (sprint === 0) {
+        totalH  = (ue.dp_h||0) + (ue.s1_h||0) + (ue.s2_h||0) + (ue.s3_h||0);
+        taggedH = (ue.s1_tagged_h||0) + (ue.s2_tagged_h||0) + (ue.s3_tagged_h||0);
+      } else {
+        totalH  = ue[`s${sprint}_h`]        || 0;
+        taggedH = ue[`s${sprint}_tagged_h`] || 0;
+      }
+      const statusCounts = Object.fromEntries(STATUSES.map(s => [s, 0]));
+      let estimatedH = 0, doneEstimatedH = 0;
+      relevantTasks.forEach(t => {
+        const assignees = t.assignees || [];
+        // Direct assignee, OR (no assignees + person belongs to task's equipo group)
+        const directlyAssigned = assignees.some(a => a.login.toLowerCase() === loginLower);
+        const equipoLogins     = EQUIPO_LOGINS[t.equipo] || [];
+        const impliedByEquipo  = assignees.length === 0 && equipoLogins.includes(loginLower);
+        if (directlyAssigned || impliedByEquipo) {
+          statusCounts[t.status] = (statusCounts[t.status] || 0) + 1;
+          estimatedH += t.estimated_h || 0;
+          if (t.status === "Done") doneEstimatedH += t.estimated_h || 0;
+        }
+      });
+      const totalTasks  = STATUSES.reduce((s, st) => s + statusCounts[st], 0);
+      const doneCount   = statusCounts["Done"];
+      const pctTasks    = totalTasks > 0 ? doneCount / totalTasks * 100   : null;
+      const pctHours    = estimatedH > 0 ? totalH / estimatedH * 100      : null;
+      const pctTagged   = totalH > 0     ? taggedH / totalH * 100         : null;
+      // Rendimiento = valor estimado entregado (h estimadas de tareas Done) / horas reales invertidas
+      const rendimiento = totalH > 0     ? doneEstimatedH / totalH * 100  : null;
+      return { member, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento };
+    });
+
+    // ── Global metrics ────────────────────────────────────────────
+    const withTasks = memberStats.filter(ms => ms.totalTasks > 0);
+    const withHours = memberStats.filter(ms => ms.estimatedH > 0);
+    const avgPctTasks = withTasks.length
+      ? withTasks.reduce((s, ms) => s + ms.pctTasks, 0) / withTasks.length : null;
+    const avgPctHours = withHours.length
+      ? withHours.reduce((s, ms) => s + Math.min(ms.pctHours, 200), 0) / withHours.length : null;
+    const fullyDone   = withTasks.filter(ms => ms.pctTasks === 100).length;
+    const noProgress  = withTasks.filter(ms => ms.doneCount === 0).length;
+    // Equilibrio del equipo: desviación típica de pctTasks (σ bajo = equipo uniforme)
+    const sigmaTasks = withTasks.length >= 2 && avgPctTasks !== null
+      ? Math.sqrt(withTasks.reduce((s, ms) => s + (ms.pctTasks - avgPctTasks) ** 2, 0) / withTasks.length)
+      : null;
+    // Rendimiento medio: valor estimado entregado / horas reales (solo miembros con horas)
+    const withRendimiento = memberStats.filter(ms => ms.rendimiento !== null);
+    const avgRendimiento  = withRendimiento.length
+      ? withRendimiento.reduce((s, ms) => s + ms.rendimiento, 0) / withRendimiento.length : null;
+    // Workload balance: CV of estimatedH across all members with tasks
+    const avgMemberEstH = withHours.length ? withHours.reduce((s, ms) => s + ms.estimatedH, 0) / withHours.length : null;
+    const sigmaMemberEstH = avgMemberEstH && withHours.length >= 2
+      ? Math.sqrt(withHours.reduce((s, ms) => s + (ms.estimatedH - avgMemberEstH) ** 2, 0) / withHours.length) : null;
+    const cvMemberEstH = sigmaMemberEstH && avgMemberEstH ? sigmaMemberEstH / avgMemberEstH * 100 : null;
+
+    // Pearson correlation between task completion % and hours consumption %
+    const bothValid = memberStats.filter(ms => ms.pctTasks !== null && ms.pctHours !== null);
+    let correlation = null;
+    if (bothValid.length >= 3) {
+      const xs = bothValid.map(ms => ms.pctTasks);
+      const ys = bothValid.map(ms => Math.min(ms.pctHours, 200));
+      const mx = xs.reduce((s,x)=>s+x,0)/xs.length;
+      const my = ys.reduce((s,y)=>s+y,0)/ys.length;
+      const num = xs.reduce((s,x,i)=>s+(x-mx)*(ys[i]-my),0);
+      const den = Math.sqrt(xs.reduce((s,x)=>s+(x-mx)**2,0)*ys.reduce((s,y)=>s+(y-my)**2,0));
+      correlation = den > 0 ? num/den : null;
+    }
+
+    const globalMetrics = sprint !== -1 && withTasks.length > 0 ? (
+      <div style={{ background:"#0c0c10", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px", marginBottom:4 }}>
+        <div style={{ color:"#94a3b8", fontWeight:700, fontSize:10, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>
+          📊 Métricas globales — {withTasks.length} personas con tareas asignadas
+        </div>
+        <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+          {avgPctTasks !== null && (
+            <InfStatCard label="Media completitud tareas"
+              value={`${avgPctTasks.toFixed(1)}%`}
+              sub={`${fullyDone} al 100% · ${noProgress} sin avance`}
+              color={avgPctTasks>=75?"#22c55e":avgPctTasks>=40?"#f59e0b":"#ef4444"} />
+          )}
+          {avgPctHours !== null && (
+            <InfStatCard label="Media consumo estimado"
+              value={`${avgPctHours.toFixed(1)}%`}
+              sub="horas Clockify / horas estimadas (media)"
+              color={avgPctHours>=100?"#ef4444":avgPctHours>=75?"#f59e0b":"#22c55e"} />
+          )}
+          {sigmaTasks !== null && (
+            <InfStatCard label="Equilibrio del equipo"
+              value={`σ ${sigmaTasks.toFixed(1)}%`}
+              sub={`desv. típica de completitud · ideal σ→0`}
+              color={sigmaTasks<=15?"#22c55e":sigmaTasks<=30?"#f59e0b":"#ef4444"} />
+          )}
+          {avgRendimiento !== null && (
+            <InfStatCard label="Rendimiento medio"
+              value={`${avgRendimiento.toFixed(1)}%`}
+              sub="h estimadas Done / h Clockify · ideal ≥100%"
+              color={avgRendimiento>=100?"#22c55e":avgRendimiento>=50?"#f59e0b":"#ef4444"} />
+          )}
+          {correlation !== null && (
+            <InfStatCard label="Correlación tareas↔horas"
+              value={correlation.toFixed(2)}
+              sub="Pearson: 1=perfecta, 0=sin relación"
+              color={Math.abs(correlation)>=0.7?"#22c55e":Math.abs(correlation)>=0.4?"#f59e0b":"#94a3b8"} />
+          )}
+          {cvMemberEstH !== null && (
+            <InfStatCard label="Desbalance de carga"
+              value={`CV ${cvMemberEstH.toFixed(0)}%`}
+              sub={`σ ${sigmaMemberEstH.toFixed(0)}h · μ ${avgMemberEstH.toFixed(0)}h est. · ideal CV→0`}
+              color={cvMemberEstH<=30?"#22c55e":cvMemberEstH<=60?"#f59e0b":"#ef4444"} />
+          )}
+        </div>
+      </div>
+    ) : null;
+
     return (
-      <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-        {users.map(([name,u])=>{
-          const tasks = Object.entries(u.byTask)
-            .filter(([tid])=>!sprint||BACKLOG_MAP[tid]?.sprint===sprint)
-            .sort((a,b)=>b[1]-a[1]);
-          const userTotal = tasks.reduce((s,[,h])=>s+h,0);
+      <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+        {globalMetrics}
+        {["A","B","C","D"].map(team => {
+          const tc = TEAM_COLOR[team];
+          const rows = memberStats
+            .filter(ms => ms.member.team === team)
+            .sort((a, b) => a.member.name.localeCompare(b.member.name));
           return (
-            <div key={name} style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px 18px" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                  <div style={{ width:32, height:32, borderRadius:"50%", background:"#6ee7b720", border:"1px solid #6ee7b740", display:"flex", alignItems:"center", justifyContent:"center", color:"#6ee7b7", fontWeight:800, fontSize:14 }}>{name.charAt(0).toUpperCase()}</div>
-                  <div>
-                    <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:13 }}>{name}</div>
-                    <div style={{ color:"#52525b", fontSize:10 }}>{tasks.length} tareas · {u.total_h.toFixed(1)}h totales (sprint filtrado: {userTotal.toFixed(1)}h)</div>
-                  </div>
-                </div>
-                <span style={{ background:"#6ee7b720", color:"#6ee7b7", padding:"4px 12px", borderRadius:6, fontWeight:800, fontSize:14 }}>{userTotal.toFixed(1)}h</span>
+            <div key={team}>
+              {/* Team header */}
+              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
+                <span style={{ background:`${tc}20`, color:tc, fontWeight:800, fontSize:10, textTransform:"uppercase", letterSpacing:2, padding:"3px 10px", borderRadius:5, flexShrink:0 }}>Equipo {team}</span>
+                <div style={{ flex:1, height:1, background:"#27272a" }}/>
               </div>
-              <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-                {tasks.map(([tid,h])=>{
-                  const sc = sprintC[BACKLOG_MAP[tid]?.sprint]||"#52525b";
+              <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                {rows.map(({ member, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento }) => {
+                  const hoursColor      = pctHours===null?"#3f3f46":pctHours>=100?"#ef4444":pctHours>=75?"#f59e0b":"#22c55e";
+                  const tasksColor      = pctTasks===null?"#3f3f46":pctTasks===100?"#22c55e":pctTasks>=50?"#f59e0b":"#94a3b8";
+                  const taggedColor     = pctTagged===null?"#3f3f46":pctTagged>=60?"#22c55e":pctTagged>=25?"#f59e0b":"#ef4444";
+                  const rendColor       = rendimiento===null?"#3f3f46":rendimiento>=100?"#22c55e":rendimiento>=50?"#f59e0b":"#ef4444";
                   return (
-                    <div key={tid} style={{ background:`${sc}10`, border:`1px solid ${sc}25`, borderRadius:6, padding:"4px 10px", display:"flex", gap:6, alignItems:"center" }}>
-                      <span style={{ color:sc, fontWeight:700, fontSize:10 }}>{tid}</span>
-                      <span style={{ color:"#71717a", fontSize:10 }}>{h.toFixed(1)}h</span>
+                    <div key={member.login} style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"12px 16px" }}>
+                      {/* Header: avatar + name + hours */}
+                      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
+                        <div style={{ display:"flex", alignItems:"center", gap:10, minWidth:0 }}>
+                          <img
+                            src={`https://github.com/${member.login}.png?size=40`}
+                            alt={member.name}
+                            style={{ width:36, height:36, borderRadius:"50%", border:`2px solid ${tc}50`, flexShrink:0 }}
+                          />
+                          <div style={{ minWidth:0 }}>
+                            <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                              <span style={{ color:"#e2e8f0", fontWeight:700, fontSize:13, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{member.name}</span>
+                              {avgMemberEstH !== null && estimatedH > 0 && (() => {
+                                const delta    = estimatedH - avgMemberEstH;
+                                const deltaPct = delta / avgMemberEstH * 100;
+                                const col = Math.abs(deltaPct) <= 20 ? "#52525b" : delta > 0 ? "#f59e0b" : "#818cf8";
+                                return (
+                                  <span title={`${estimatedH.toFixed(0)}h estimadas vs media ${avgMemberEstH.toFixed(0)}h`}
+                                    style={{ fontSize:9, fontWeight:700, background:`${col}18`, color:col, padding:"1px 5px", borderRadius:3, flexShrink:0 }}>
+                                    {delta>=0?"+":""}{delta.toFixed(0)}h
+                                  </span>
+                                );
+                              })()}
+                            </div>
+                            <div style={{ color:"#52525b", fontSize:10 }}>@{member.login} · {member.role}{member.coord?" · Coord":""} · {totalTasks} tarea{totalTasks!==1?"s":""} asignada{totalTasks!==1?"s":""}</div>
+                          </div>
+                        </div>
+                        <div style={{ textAlign:"right", flexShrink:0, lineHeight:1.6 }}>
+                          <div style={{ color:"#e2e8f0", fontWeight:800, fontSize:15 }}>{totalH.toFixed(1)}h</div>
+                          <div style={{ display:"flex", alignItems:"center", gap:5, justifyContent:"flex-end" }}>
+                            <span style={{ fontSize:10, color: taggedH>0?"#22c55e":"#3f3f46" }}>{taggedH.toFixed(1)}h etiq.</span>
+                            {pctTagged !== null && (
+                              <span style={{ fontSize:9, fontWeight:700, background:`${taggedColor}20`, color:taggedColor, padding:"1px 5px", borderRadius:3 }}>
+                                {pctTagged.toFixed(0)}%
+                              </span>
+                            )}
+                          </div>
+                          {rendimiento !== null && (
+                            <div style={{ fontSize:9, color:rendColor, fontWeight:700 }} title="Valor estimado entregado (h estimadas Done) / horas Clockify · ideal ≥100%">
+                              ⚡ {rendimiento.toFixed(0)}% rendimiento
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {/* Progress bars */}
+                      {sprint !== -1 && (
+                        <div style={{ display:"flex", gap:14, marginTop:10 }}>
+                          <div style={{ flex:1 }}>
+                            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
+                              <span style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Tareas done</span>
+                              <span style={{ color:tasksColor, fontSize:9, fontWeight:700 }}>
+                                {pctTasks!==null ? `${doneCount}/${totalTasks} · ${pctTasks.toFixed(0)}%` : "—"}
+                              </span>
+                            </div>
+                            <div style={{ height:4, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                              <div style={{ height:"100%", width:`${Math.min(pctTasks||0,100)}%`, background:tasksColor, borderRadius:2 }}/>
+                            </div>
+                          </div>
+                          <div style={{ flex:1 }}>
+                            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
+                              <span style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Horas consumidas</span>
+                              <span style={{ color:hoursColor, fontSize:9, fontWeight:700 }}>
+                                {pctHours!==null ? `${totalH.toFixed(1)}/${estimatedH.toFixed(0)}h · ${pctHours.toFixed(0)}%` : "—"}
+                              </span>
+                            </div>
+                            <div style={{ height:4, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                              <div style={{ height:"100%", width:`${Math.min(pctHours||0,100)}%`, background:hoursColor, borderRadius:2 }}/>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {/* Status distribution pills */}
+                      {sprint !== -1 && (
+                        <div style={{ display:"flex", gap:5, marginTop:8, flexWrap:"wrap" }}>
+                          {STATUSES.map(st => {
+                            const count = statusCounts[st] || 0;
+                            const meta  = STATUS_META[st] || { bg:"#27272a", text:"#71717a" };
+                            return (
+                              <span key={st} style={{
+                                background: count>0 ? meta.bg : "#18181b",
+                                color:      count>0 ? meta.text : "#3f3f46",
+                                border:    `1px solid ${count>0 ? meta.bg+"aa" : "#27272a"}`,
+                                padding:"3px 9px", borderRadius:5, fontSize:10, fontWeight:count>0?700:400,
+                              }}>
+                                {count} {st}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -1389,8 +1984,9 @@ function InformePane() {
 
     const tasks    = filtered(report).map(([,t])=>t);
     const totalEst = tasks.reduce((s,t)=>s+t.estimated_h,0);
+    const sprintInfo = sprint > 0 ? SC[sprint] : null;
 
-    // Use project daily hours (s1/s2/s3 only — excludes DP to avoid inflating burndown)
+    // Daily Clockify hours for this sprint scope (excluding DP)
     const dailyH = (() => {
       const projs = sprint > 0 ? ['s'+sprint] : ['s1','s2','s3'];
       const merged = {};
@@ -1401,11 +1997,17 @@ function InformePane() {
       });
       return merged;
     })();
-    const days   = Object.keys(dailyH).sort();
+    const days = Object.keys(dailyH).sort();
     if (!days.length) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>Sin entradas de tiempo registradas para este sprint.</div>;
 
-    let remaining = totalEst;
-    const points = days.map(d => { remaining -= (dailyH[d]||0); return { day:d, remaining:Math.max(remaining,0) }; });
+    // Build points: prepend sprint-start anchor at totalEst so both lines share origin
+    let rem = totalEst;
+    const rawPoints = days.map(d => { rem = Math.max(0, rem - (dailyH[d]||0)); return { day:d, remaining:rem }; });
+    const remaining = rem; // final remaining for legend
+
+    const points = sprintInfo
+      ? [{ day: sprintInfo.start, remaining: totalEst }, ...rawPoints]
+      : rawPoints;
 
     const svgW=620, svgH=220, pad={t:20,r:20,b:36,l:58};
     const cW=svgW-pad.l-pad.r, cH=svgH-pad.t-pad.b;
@@ -1414,54 +2016,101 @@ function InformePane() {
     const pathA = points.map((p,i)=>`${i===0?"M":"L"} ${pad.l+i*xS},${pad.t+cH-(p.remaining*yS)}`).join(" ");
     const step  = Math.max(1, Math.ceil(points.length/8));
 
-    // Ideal line: anchored to sprint start→end dates when sprint is selected
-    const sprintInfo = sprint > 0 ? SC[sprint] : null;
+    // Date → X mapper (linear calendar interpolation across index-spaced axis)
+    const t0ms = new Date(points[0].day).getTime();
+    const t1ms = new Date(points[points.length-1].day).getTime();
+    const dateToX = (dateStr) => {
+      if (t1ms <= t0ms) return pad.l;
+      const t = new Date(dateStr).getTime();
+      return pad.l + ((t - t0ms) / (t1ms - t0ms)) * (points.length - 1) * xS;
+    };
+
+    // Ideal line: from origin to sprint end
     const idealX2 = (() => {
       if (!sprintInfo) return pad.l + cW;
-      const endDate = sprintInfo.end;
-      const endIdx = days.indexOf(endDate);
-      if (endIdx >= 0) return pad.l + endIdx * xS;
-      // Sprint end is in the future: extrapolate by calendar days
-      if (endDate > days[days.length-1] && days.length > 1) {
-        const t0 = new Date(days[0]).getTime(), t1 = new Date(days[days.length-1]).getTime(), tE = new Date(endDate).getTime();
-        if (t1 > t0) return pad.l + Math.min(cW, (tE - t0) / (t1 - t0) * cW);
-      }
-      return pad.l + cW;
+      const x = dateToX(sprintInfo.end);
+      return Math.min(pad.l + cW, x);
     })();
 
-    // Y-axis ticks: 0, 25%, 50%, 75%, 100%
-    const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => ({
-      y: pad.t + cH * (1 - f),
-      label: Math.round(totalEst * f) + "h",
-      major: f === 0 || f === 1,
-    }));
+    // ── Completion estimate ────────────────────────────────────
+    const firstDay = new Date(points[0].day), lastDay = new Date(points[points.length-1].day);
+    const elapsedDays = Math.max(1, (lastDay - firstDay) / 86400000);
+    const burnedH     = totalEst - remaining;
+    const avgDailyBurn = burnedH / elapsedDays;
 
+    let estimatedDateStr = null, isOnTrack = null, daysDiff = null;
+    if (avgDailyBurn > 0 && remaining > 0) {
+      const daysNeeded = remaining / avgDailyBurn;
+      const estMs = lastDay.getTime() + daysNeeded * 86400000;
+      estimatedDateStr = new Date(estMs).toISOString().slice(0, 10);
+      if (sprintInfo) {
+        const sprintEndMs = new Date(sprintInfo.end).getTime();
+        daysDiff  = Math.round((estMs - sprintEndMs) / 86400000);
+        isOnTrack = estMs <= sprintEndMs;
+      }
+    }
+
+    // Projection line (dashed, from last real point to estimated completion, capped at chart edge)
+    const projLine = (() => {
+      if (!estimatedDateStr || remaining <= 0) return null;
+      const lastX  = pad.l + (points.length - 1) * xS;
+      const lastY  = pad.t + cH - remaining * yS;
+      const projX  = dateToX(estimatedDateStr); // uncapped
+      const projY  = pad.t + cH; // remaining = 0
+      const maxX   = pad.l + cW;
+      if (projX <= lastX) return null;
+      if (projX <= maxX) return { x1:lastX, y1:lastY, x2:projX, y2:projY };
+      // Clip to right edge
+      const tParam = (maxX - lastX) / (projX - lastX);
+      return { x1:lastX, y1:lastY, x2:maxX, y2:lastY + tParam * (projY - lastY) };
+    })();
+
+    // Sprint-end vertical marker
+    const sprintEndX = sprintInfo ? Math.min(pad.l + cW, Math.max(pad.l, dateToX(sprintInfo.end))) : null;
+
+    const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => ({
+      y: pad.t + cH * (1 - f), label: Math.round(totalEst * f) + "h", major: f === 0 || f === 1,
+    }));
     const sprintColor = sprint > 0 ? SC[sprint].color : "#6ee7b7";
+    const fmtDate = (d) => new Date(d + 'T12:00:00').toLocaleDateString('es-ES', { day:'numeric', month:'short' });
 
     return (
       <div>
         <div style={{ display:"flex", alignItems:"baseline", gap:10, marginBottom:10, flexWrap:"wrap" }}>
           <span style={{ color:"#71717a", fontSize:11 }}>Burndown — horas restantes de {totalEst}h estimadas</span>
           {sprintInfo && <span style={{ background:`${sprintColor}20`, color:sprintColor, fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:4 }}>{sprintInfo.label} · {sprintInfo.date}</span>}
+          <span style={{ color:"#52525b", fontSize:10 }}>La línea baja al registrar horas en Clockify</span>
         </div>
         <div style={{ background:"#0c0c10", borderRadius:10, padding:16, overflowX:"auto" }}>
           <svg viewBox={`0 0 ${svgW} ${svgH}`} style={{ width:"100%", maxWidth:svgW }}>
-            {/* Grid lines + Y-axis labels */}
             {yTicks.map(({y, label, major}) => (
               <g key={label}>
                 <line x1={pad.l} y1={y} x2={pad.l+cW} y2={y} stroke={major?"#27272a":"#1c1c1e"} strokeWidth={major?1:0.5} />
                 <text x={pad.l-6} y={y+3.5} fill={major?"#71717a":"#3f3f46"} fontSize="9" textAnchor="end">{label}</text>
               </g>
             ))}
+            {/* Sprint-end vertical marker */}
+            {sprintEndX !== null && (
+              <line x1={sprintEndX} y1={pad.t} x2={sprintEndX} y2={pad.t+cH}
+                stroke="#52525b" strokeWidth={1} strokeDasharray="3,3" opacity={0.7} />
+            )}
             {/* Ideal line */}
-            <line x1={pad.l} y1={pad.t} x2={idealX2} y2={pad.t+cH}
-              stroke="#3f3f46" strokeWidth={1.5} strokeDasharray="6,4" />
+            <line x1={pad.l} y1={pad.t} x2={idealX2} y2={pad.t+cH} stroke="#3f3f46" strokeWidth={1.5} strokeDasharray="6,4" />
             {/* Real burndown */}
             <path d={pathA} fill="none" stroke={sprintColor} strokeWidth={2.5} />
             {points.map((p,i)=>(
               <circle key={i} cx={pad.l+i*xS} cy={pad.t+cH-(p.remaining*yS)} r={3} fill={sprintColor} />
             ))}
-            {/* X-axis labels: MM-DD (ISO format → slice(5) = "MM-DD") */}
+            {/* Projection dashed line */}
+            {projLine && (
+              <line x1={projLine.x1} y1={projLine.y1} x2={projLine.x2} y2={projLine.y2}
+                stroke={sprintColor} strokeWidth={1.5} strokeDasharray="4,4" opacity={0.45} />
+            )}
+            {/* Sprint-end label */}
+            {sprintEndX !== null && (
+              <text x={sprintEndX+3} y={pad.t+9} fill="#52525b" fontSize="8">{sprintInfo.end.slice(5)}</text>
+            )}
+            {/* X-axis date labels */}
             {points.map((p,i)=> i%step===0 && (
               <text key={i} x={pad.l+i*xS} y={svgH-pad.b+14} fill="#52525b" fontSize="9" textAnchor="middle">
                 {p.day.slice(5)}
@@ -1469,12 +2118,34 @@ function InformePane() {
             ))}
           </svg>
         </div>
+        {/* Legend + estimates */}
         <div style={{ display:"flex", gap:16, marginTop:8, alignItems:"center", flexWrap:"wrap" }}>
           <div style={{ display:"flex", alignItems:"center", gap:5 }}><div style={{ width:18, height:2, borderTop:"2px dashed #3f3f46" }}/><span style={{ color:"#52525b", fontSize:11 }}>Ideal</span></div>
           <div style={{ display:"flex", alignItems:"center", gap:5 }}><div style={{ width:18, height:2, background:sprintColor }}/><span style={{ color:"#52525b", fontSize:11 }}>Real</span></div>
+          {projLine && <div style={{ display:"flex", alignItems:"center", gap:5 }}><div style={{ width:18, height:2, borderTop:`2px dashed ${sprintColor}70` }}/><span style={{ color:"#52525b", fontSize:11 }}>Proyección</span></div>}
           {totalEst > 0 && remaining > 0 && <span style={{ color:"#f59e0b", fontSize:10 }}>⚠ Pendiente: {remaining.toFixed(0)}h ({(remaining/totalEst*100).toFixed(0)}%)</span>}
           {totalEst > 0 && remaining <= 0 && <span style={{ color:"#22c55e", fontSize:10 }}>✓ Sprint completado</span>}
         </div>
+        {/* Completion estimate banner */}
+        {estimatedDateStr && remaining > 0 && (
+          <div style={{ marginTop:10, display:"flex", alignItems:"center", gap:10, background: isOnTrack===null?"#18181b":isOnTrack?"#22c55e12":"#ef444412", border:`1px solid ${isOnTrack===null?"#27272a":isOnTrack?"#22c55e30":"#ef444430"}`, borderRadius:8, padding:"8px 14px", flexWrap:"wrap" }}>
+            <span style={{ fontSize:11, color:"#94a3b8" }}>📅 Estimación de cierre (ritmo actual):</span>
+            <span style={{ fontSize:13, fontWeight:800, color: isOnTrack===null?"#e2e8f0":isOnTrack?"#22c55e":"#ef4444" }}>
+              {fmtDate(estimatedDateStr)}
+            </span>
+            {sprintInfo && daysDiff !== null && (
+              <span style={{ fontSize:10, fontWeight:700, color: isOnTrack?"#22c55e":"#ef4444" }}>
+                {isOnTrack
+                  ? `✓ Dentro del plazo · ${Math.abs(daysDiff)} día${Math.abs(daysDiff)!==1?"s":""} antes del cierre (${fmtDate(sprintInfo.end)})`
+                  : `✗ Fuera de plazo · ${daysDiff} día${daysDiff!==1?"s":""} después del cierre (${fmtDate(sprintInfo.end)})`
+                }
+              </span>
+            )}
+            <span style={{ fontSize:10, color:"#52525b", marginLeft:"auto" }}>
+              ritmo: {avgDailyBurn.toFixed(1)}h/día
+            </span>
+          </div>
+        )}
       </div>
     );
   }
@@ -1525,307 +2196,607 @@ function InformePane() {
 
   // ── Equipo view ──────────────────────────────────────────────
   function EquipoView() {
-    const teamColor  = { A:"#38bdf8", B:"#34d399", C:"#f472b6", D:"#fbbf24" };
-    const roleColor  = { SM:"#a78bfa", PO:"#fb923c", Dev:"#52525b" };
-    const roleOrder  = { SM:0, PO:1, Dev:2 };
-    const sprintColor = { 1:"#818cf8", 2:"#34d399", 3:"#fbbf24" };
+    const STATUSES   = ["Backlog","Ready","In progress","In review","Done"];
+    const TEAM_COLOR = { A:"#3b82f6", B:"#22c55e", C:"#f59e0b", D:"#a855f7" };
 
-    const thStyle = { padding:"7px 10px", color:"#71717a", fontWeight:700, whiteSpace:"nowrap",
-      borderBottom:"1px solid #27272a", fontSize:9, textTransform:"uppercase", letterSpacing:".07em" };
+    const relevantTasks = sprint === -1
+      ? []
+      : Object.values(BACKLOG_MAP).filter(t => sprint === 0 || t.sprint === sprint);
 
-    // Members sorted by team → role → name, enriched with Clockify hours
-    const members = [...TEAM_MEMBERS].sort((a, b) => {
-      const ta = a.team||"Z", tb = b.team||"Z";
-      if (ta !== tb) return ta.localeCompare(tb);
-      if (roleOrder[a.role] !== roleOrder[b.role]) return roleOrder[a.role] - roleOrder[b.role];
-      return a.name.localeCompare(b.name);
-    }).map(m => {
-      const ue = report.byEmail[m.email] || { dp_h:0, s1_h:0, s2_h:0, s3_h:0 };
-      return { ...m, dp_h: ue.dp_h, sh: { 1:ue.s1_h, 2:ue.s2_h, 3:ue.s3_h } };
+    // Per-team aggregated stats
+    const teamStats = ["A","B","C","D"].map(team => {
+      const members = TEAM_MEMBERS.filter(m => m.team === team);
+      const teamLogins = new Set(members.map(m => m.login.toLowerCase()));
+
+      // Aggregate Clockify hours for all team members
+      let totalH = 0, taggedH = 0;
+      members.forEach(m => {
+        const ue = report.byEmail[m.email?.toLowerCase()] || {};
+        if (sprint === -1) {
+          totalH  += ue.dp_h || 0;
+        } else if (sprint === 0) {
+          totalH  += (ue.dp_h||0) + (ue.s1_h||0) + (ue.s2_h||0) + (ue.s3_h||0);
+          taggedH += (ue.s1_tagged_h||0) + (ue.s2_tagged_h||0) + (ue.s3_tagged_h||0);
+        } else {
+          totalH  += ue[`s${sprint}_h`]        || 0;
+          taggedH += ue[`s${sprint}_tagged_h`] || 0;
+        }
+      });
+
+      // Count tasks and estimated hours using same per-member logic as UsersView
+      // so that sum of member estimates equals team total
+      const statusCounts = Object.fromEntries(STATUSES.map(s => [s, 0]));
+      let estimatedH = 0, doneEstimatedH = 0;
+      const seenTaskIds = new Set();
+      members.forEach(m => {
+        const loginLower = m.login.toLowerCase();
+        relevantTasks.forEach(t => {
+          const assignees   = t.assignees || [];
+          const equipoLogins = EQUIPO_LOGINS[t.equipo] || [];
+          const direct   = assignees.some(a => a.login.toLowerCase() === loginLower);
+          const implied  = assignees.length === 0 && equipoLogins.includes(loginLower);
+          if (direct || implied) {
+            if (!seenTaskIds.has(t.id)) {
+              seenTaskIds.add(t.id);
+              statusCounts[t.status] = (statusCounts[t.status] || 0) + 1;
+            }
+            estimatedH     += t.estimated_h || 0;
+            if (t.status === "Done") doneEstimatedH += t.estimated_h || 0;
+          }
+        });
+      });
+
+      const totalTasks  = STATUSES.reduce((s, st) => s + statusCounts[st], 0);
+      const doneCount   = statusCounts["Done"];
+      const pctTasks    = totalTasks > 0 ? doneCount / totalTasks * 100   : null;
+      const pctHours    = estimatedH > 0 ? totalH / estimatedH * 100      : null;
+      const pctTagged   = totalH > 0     ? taggedH / totalH * 100         : null;
+      const rendimiento = totalH > 0     ? doneEstimatedH / totalH * 100  : null;
+
+      // Intra-team workload balance: CV of per-member estimated hours
+      const memberEstHArr = members.map(m => {
+        const ll = m.login.toLowerCase();
+        let mH = 0;
+        relevantTasks.forEach(t => {
+          const ass = t.assignees || [];
+          const eqL = EQUIPO_LOGINS[t.equipo] || [];
+          if (ass.some(a => a.login.toLowerCase() === ll) || (ass.length === 0 && eqL.includes(ll)))
+            mH += t.estimated_h || 0;
+        });
+        return mH;
+      });
+      const avgMemberEstH = memberEstHArr.reduce((s, h) => s + h, 0) / memberEstHArr.length;
+      const intraCV = avgMemberEstH > 0 && members.length >= 2
+        ? Math.sqrt(memberEstHArr.reduce((s, h) => s + (h - avgMemberEstH) ** 2, 0) / memberEstHArr.length) / avgMemberEstH * 100
+        : null;
+
+      return { team, members, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento, memberEstHArr, avgMemberEstH, intraCV };
     });
 
-    const fh = (h, color) => h > 0
-      ? <span style={{ color, fontWeight:700 }}>{h.toFixed(1)}h</span>
-      : <span style={{ color:"#3f3f46" }}>—</span>;
+    // Global comparison metrics across teams
+    const withTasks = teamStats.filter(ts => ts.totalTasks > 0);
+    const withHours = teamStats.filter(ts => ts.estimatedH > 0);
+    const avgPctTasks = withTasks.length ? withTasks.reduce((s, ts) => s + ts.pctTasks, 0) / withTasks.length : null;
+    const avgPctHours = withHours.length ? withHours.reduce((s, ts) => s + Math.min(ts.pctHours, 200), 0) / withHours.length : null;
+    const best  = withTasks.length ? withTasks.reduce((a, b) => b.pctTasks > a.pctTasks ? b : a) : null;
+    const withRend = teamStats.filter(ts => ts.rendimiento !== null);
+    const avgRendimiento = withRend.length ? withRend.reduce((s, ts) => s + ts.rendimiento, 0) / withRend.length : null;
 
-    function AvanceCell({ dedicatedH, assignedH }) {
-      if (!assignedH) return <span style={{ color:"#3f3f46", fontSize:10 }}>sin asignar</span>;
-      const pct = dedicatedH / assignedH * 100;
-      return (
-        <div>
-          <div style={{ background:"#27272a", borderRadius:3, height:6, overflow:"hidden", minWidth:60 }}>
-            <div style={{ height:"100%", width:`${Math.min(pct,100)}%`,
-              background: pct>=100?"#ef4444":pct>=80?"#f59e0b":"#22c55e" }} />
-          </div>
-          <div style={{ color:"#71717a", fontSize:9, textAlign:"right", marginTop:2 }}>{pct.toFixed(0)}%</div>
+    // Inter-team workload balance: CV of estimatedH across teams
+    const avgTeamEstH = withHours.length ? withHours.reduce((s, ts) => s + ts.estimatedH, 0) / withHours.length : null;
+    const sigmaTeamEstH = avgTeamEstH && withHours.length >= 2
+      ? Math.sqrt(withHours.reduce((s, ts) => s + (ts.estimatedH - avgTeamEstH) ** 2, 0) / withHours.length) : null;
+    const cvTeamEstH = sigmaTeamEstH && avgTeamEstH ? sigmaTeamEstH / avgTeamEstH * 100 : null;
+
+    const sigmaTasks = withTasks.length >= 2 && avgPctTasks !== null
+      ? Math.sqrt(withTasks.reduce((s, ts) => s + (ts.pctTasks - avgPctTasks) ** 2, 0) / withTasks.length)
+      : null;
+
+    const globalMetrics = sprint !== -1 && withTasks.length > 0 ? (
+      <div style={{ background:"#0c0c10", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px", marginBottom:4 }}>
+        <div style={{ color:"#94a3b8", fontWeight:700, fontSize:10, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>
+          📊 Comparativa de equipos — {withTasks.length} equipos con tareas
         </div>
-      );
-    }
-
-    // Shared name + role + team cells
-    function MemberCells({ m }) {
-      const tc = teamColor[m.team] || "#818cf8";
-      const rc = roleColor[m.role] || "#52525b";
-      return (
-        <>
-          <td style={{ padding:"8px 10px" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-              <div style={{ width:3, height:18, borderRadius:2, background:tc, flexShrink:0 }} />
-              <span style={{ color:"#e2e8f0", fontWeight:600, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{m.name}</span>
-              {m.coord && <span style={{ fontSize:8, background:"#818cf820", color:"#818cf8", padding:"1px 5px", borderRadius:3, fontWeight:700, flexShrink:0 }}>COORD</span>}
-            </div>
-          </td>
-          <td style={{ padding:"8px 10px", textAlign:"center" }}>
-            <span style={{ background:`${rc}20`, color:rc, padding:"2px 6px", borderRadius:4, fontSize:10, fontWeight:700 }}>{m.role}</span>
-          </td>
-          <td style={{ padding:"8px 10px", textAlign:"center" }}>
-            {m.team
-              ? <span style={{ background:`${teamColor[m.team]}20`, color:teamColor[m.team], padding:"2px 7px", borderRadius:4, fontSize:10, fontWeight:700 }}>{m.team}</span>
-              : <span style={{ color:"#3f3f46" }}>—</span>}
-          </td>
-        </>
-      );
-    }
-
-    // ── S0 — siempre visible ─────────────────────────────────
-    const totalDp  = members.reduce((s, m) => s + m.dp_h, 0);
-    const activeS0 = members.filter(m => m.dp_h > 0).length;
-
-    function S0Section() {
-      return (
-        <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-            <div style={{ width:4, height:20, borderRadius:2, background:"#6366f1" }} />
-            <span style={{ color:"#6366f1", fontWeight:700, fontSize:13 }}>S0 — Devising a Project</span>
-            <span style={{ background:"#22c55e18", color:"#22c55e", fontSize:10, fontWeight:700,
-              padding:"2px 8px", borderRadius:4, border:"1px solid #22c55e30" }}>✓ COMPLETADO</span>
-          </div>
-          <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-            <InfStatCard label="S0 — DP" value={`${totalDp.toFixed(1)}h`} sub="Devising a Project" color="#6366f1" />
-            <InfStatCard label="Personas" value={`${activeS0} / ${members.length}`} sub="con horas registradas" color="#e879f9" />
-          </div>
-          <div style={{ overflowX:"auto" }}>
-            <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
-              <thead>
-                <tr style={{ background:"#18181b" }}>
-                  <th style={{ ...thStyle, textAlign:"left", width:190 }}>Nombre</th>
-                  <th style={{ ...thStyle, textAlign:"center", width:52 }}>Rol</th>
-                  <th style={{ ...thStyle, textAlign:"center", width:46 }}>Eq.</th>
-                  <th style={{ ...thStyle, textAlign:"right", width:100, color:"#6366f1" }}>S0 (DP)</th>
-                  <th style={{ ...thStyle, textAlign:"left", width:110 }}>Avance</th>
-                </tr>
-              </thead>
-              <tbody>
-                {members.map((m, i) => (
-                  <tr key={m.email} style={{ background:i%2===0?"#09090b":"#111113", borderBottom:"1px solid #1c1c1e" }}>
-                    <MemberCells m={m} />
-                    <td style={{ padding:"8px 10px", textAlign:"right" }}>{fh(m.dp_h, "#6366f1")}</td>
-                    <td style={{ padding:"8px 10px" }}>
-                      {m.dp_h > 0
-                        ? <AvanceCell dedicatedH={m.dp_h} assignedH={m.dp_h} />
-                        : <span style={{ color:"#3f3f46", fontSize:10 }}>Sin datos</span>}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr style={{ background:"#18181b", borderTop:"2px solid #27272a" }}>
-                  <td style={{ padding:"8px 10px", color:"#e2e8f0", fontWeight:700 }}>TOTAL</td>
-                  <td colSpan={2} />
-                  <td style={{ padding:"8px 10px", textAlign:"right", color:"#6366f1", fontWeight:700 }}>{totalDp.toFixed(1)}h</td>
-                  <td />
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+        <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+          {avgPctTasks !== null && (
+            <InfStatCard label="Media completitud tareas"
+              value={`${avgPctTasks.toFixed(1)}%`}
+              sub={best ? `Líder: Equipo ${best.team} · ${best.pctTasks.toFixed(0)}%` : ""}
+              color={avgPctTasks>=75?"#22c55e":avgPctTasks>=40?"#f59e0b":"#ef4444"} />
+          )}
+          {avgPctHours !== null && (
+            <InfStatCard label="Media consumo estimado"
+              value={`${avgPctHours.toFixed(1)}%`}
+              sub="horas Clockify / horas estimadas (media)"
+              color={avgPctHours>=100?"#ef4444":avgPctHours>=75?"#f59e0b":"#22c55e"} />
+          )}
+          {sigmaTasks !== null && (
+            <InfStatCard label="Equilibrio entre equipos"
+              value={`σ ${sigmaTasks.toFixed(1)}%`}
+              sub="desv. típica de completitud · ideal σ→0"
+              color={sigmaTasks<=15?"#22c55e":sigmaTasks<=30?"#f59e0b":"#ef4444"} />
+          )}
+          {avgRendimiento !== null && (
+            <InfStatCard label="Rendimiento medio"
+              value={`${avgRendimiento.toFixed(1)}%`}
+              sub="h estimadas Done / h Clockify · ideal ≥100%"
+              color={avgRendimiento>=100?"#22c55e":avgRendimiento>=50?"#f59e0b":"#ef4444"} />
+          )}
+          {cvTeamEstH !== null && (
+            <InfStatCard label="Desbalance entre equipos"
+              value={`CV ${cvTeamEstH.toFixed(0)}%`}
+              sub={`σ ${sigmaTeamEstH.toFixed(0)}h · μ ${avgTeamEstH.toFixed(0)}h est. · ideal CV→0`}
+              color={cvTeamEstH<=20?"#22c55e":cvTeamEstH<=40?"#f59e0b":"#ef4444"} />
+          )}
         </div>
-      );
-    }
-
-    // ── Sprint section — datos de UN solo sprint ─────────────
-    function SprintSection({ n }) {
-      const color     = sprintColor[n];
-      const assigned  = ASSIGNED_PER_SPRINT[n] || {};
-      const totalSn   = members.reduce((s, m) => s + (m.sh[n] || 0), 0);
-      const totalAsig = members.reduce((s, m) => s + (assigned[m.login.toLowerCase()] || 0), 0);
-      const avgPct    = totalAsig > 0 ? totalSn / totalAsig * 100 : null;
-
-      return (
-        <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-            <div style={{ width:4, height:20, borderRadius:2, background:color }} />
-            <span style={{ color, fontWeight:700, fontSize:13 }}>Sprint {n}</span>
-            {totalSn === 0 && (
-              <span style={{ background:"#27272a", color:"#52525b", fontSize:10,
-                fontWeight:600, padding:"2px 8px", borderRadius:4 }}>Sin datos Clockify</span>
-            )}
-          </div>
-          <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-            <InfStatCard label={`S${n} dedicado`}
-              value={totalSn > 0 ? `${totalSn.toFixed(1)}h` : "—"}
-              sub={`Sprint ${n} registrado`} color={color} />
-            <InfStatCard label={`Asignado S${n}`}
-              value={`${(+totalAsig.toFixed(1))}h`}
-              sub="estimado backlog" color="#f97316" />
-            {avgPct !== null && (
-              <InfStatCard label={`Avance S${n}`}
-                value={`${avgPct.toFixed(0)}%`} sub="ded. / asignado"
-                color={avgPct>=100?"#ef4444":avgPct>=80?"#f59e0b":"#22c55e"} />
-            )}
-          </div>
-          <div style={{ overflowX:"auto" }}>
-            <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
-              <thead>
-                <tr style={{ background:"#18181b" }}>
-                  <th style={{ ...thStyle, textAlign:"left", width:190 }}>Nombre</th>
-                  <th style={{ ...thStyle, textAlign:"center", width:52 }}>Rol</th>
-                  <th style={{ ...thStyle, textAlign:"center", width:46 }}>Eq.</th>
-                  <th style={{ ...thStyle, textAlign:"right", width:90, color }}>S{n}</th>
-                  <th style={{ ...thStyle, textAlign:"right", width:90, color:"#f97316" }}>Asig. S{n}</th>
-                  <th style={{ ...thStyle, textAlign:"left", minWidth:100 }}>Avance S{n}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {members.map((m, i) => {
-                  const assignedH  = assigned[m.login.toLowerCase()] || 0;
-                  const dedicatedH = m.sh[n] || 0;
-                  return (
-                    <tr key={m.email} style={{ background:i%2===0?"#09090b":"#111113", borderBottom:"1px solid #1c1c1e" }}>
-                      <MemberCells m={m} />
-                      <td style={{ padding:"8px 10px", textAlign:"right" }}>{fh(dedicatedH, color)}</td>
-                      <td style={{ padding:"8px 10px", textAlign:"right", color:assignedH>0?"#f97316":"#3f3f46" }}>
-                        {assignedH > 0 ? (+assignedH.toFixed(1))+"h" : "—"}
-                      </td>
-                      <td style={{ padding:"8px 10px" }}>
-                        <AvanceCell dedicatedH={dedicatedH} assignedH={assignedH} />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-              <tfoot>
-                <tr style={{ background:"#18181b", borderTop:"2px solid #27272a" }}>
-                  <td style={{ padding:"8px 10px", color:"#e2e8f0", fontWeight:700 }}>TOTAL</td>
-                  <td colSpan={2} />
-                  <td style={{ padding:"8px 10px", textAlign:"right", color, fontWeight:700 }}>
-                    {totalSn > 0 ? totalSn.toFixed(1)+"h" : "—"}
-                  </td>
-                  <td style={{ padding:"8px 10px", textAlign:"right", color:"#f97316", fontWeight:700 }}>
-                    {(+totalAsig.toFixed(1))}h
-                  </td>
-                  <td />
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
-      );
-    }
-
-    // ── Todos los sprints — tabla combinada ─────────────────────
-    function TodosSection() {
-      const snColors = { 0:"#6366f1", 1:"#818cf8", 2:"#34d399", 3:"#fbbf24" };
-      const snLabel  = { 0:"S0", 1:"S1", 2:"S2", 3:"S3" };
-      const sprintKeys = [0, 1, 2, 3];
-      const totalsByS = Object.fromEntries(
-        sprintKeys.map(n => [n, members.reduce((s, m) => s + (n === 0 ? m.dp_h : (m.sh[n] || 0)), 0)])
-      );
-      return (
-        <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-            <div style={{ width:4, height:20, borderRadius:2, background:"#6ee7b7" }} />
-            <span style={{ color:"#6ee7b7", fontWeight:700, fontSize:13 }}>Todos los sprints</span>
-          </div>
-          <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-            {sprintKeys.map(n => (
-              <InfStatCard key={n}
-                label={n === 0 ? "S0 — DP" : `S${n} dedicado`}
-                value={`${totalsByS[n].toFixed(1)}h`}
-                sub={n === 0 ? "Devising a Project" : `Sprint ${n}`}
-                color={snColors[n]} />
-            ))}
-          </div>
-          <div style={{ overflowX:"auto" }}>
-            <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
-              <thead>
-                <tr style={{ background:"#18181b" }}>
-                  <th style={{ ...thStyle, textAlign:"left", width:190 }}>Nombre</th>
-                  <th style={{ ...thStyle, textAlign:"center", width:52 }}>Rol</th>
-                  <th style={{ ...thStyle, textAlign:"center", width:46 }}>Eq.</th>
-                  {sprintKeys.map(n => (
-                    <th key={n} style={{ ...thStyle, textAlign:"left", minWidth:110, color:snColors[n] }}>{snLabel[n]}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {members.map((m, i) => (
-                  <tr key={m.email} style={{ background:i%2===0?"#09090b":"#111113", borderBottom:"1px solid #1c1c1e" }}>
-                    <MemberCells m={m} />
-                    <td style={{ padding:"8px 10px" }}>
-                      {m.dp_h > 0
-                        ? <><div style={{ color:snColors[0], fontWeight:700, marginBottom:2 }}>{m.dp_h.toFixed(1)}h</div><AvanceCell dedicatedH={m.dp_h} assignedH={m.dp_h} /></>
-                        : <span style={{ color:"#3f3f46" }}>—</span>}
-                    </td>
-                    {[1, 2, 3].map(n => {
-                      const dedicatedH = m.sh[n] || 0;
-                      const assignedH  = (ASSIGNED_PER_SPRINT[n] || {})[m.login.toLowerCase()] || 0;
-                      return (
-                        <td key={n} style={{ padding:"8px 10px" }}>
-                          {dedicatedH > 0 || assignedH > 0 ? (
-                            <>
-                              <div style={{ color:snColors[n], fontWeight:700, marginBottom:2 }}>{dedicatedH > 0 ? dedicatedH.toFixed(1)+"h" : "—"}</div>
-                              {assignedH > 0 && <AvanceCell dedicatedH={dedicatedH} assignedH={assignedH} />}
-                            </>
-                          ) : <span style={{ color:"#3f3f46" }}>—</span>}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr style={{ background:"#18181b", borderTop:"2px solid #27272a" }}>
-                  <td style={{ padding:"8px 10px", color:"#e2e8f0", fontWeight:700 }}>TOTAL</td>
-                  <td colSpan={2} />
-                  {sprintKeys.map(n => (
-                    <td key={n} style={{ padding:"8px 10px", color:snColors[n], fontWeight:700 }}>{totalsByS[n].toFixed(1)}h</td>
-                  ))}
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
-      );
-    }
+      </div>
+    ) : null;
 
     return (
-      <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
-        {sprint === -1 && <S0Section />}
-        {sprint === 0  && <TodosSection />}
-        {sprint > 0   && <SprintSection n={sprint} />}
-        {/* Legend */}
-        <div style={{ display:"flex", gap:14, flexWrap:"wrap", padding:"4px 0" }}>
-          {[["A","#38bdf8"],["B","#34d399"],["C","#f472b6"],["D","#fbbf24"]].map(([t,c])=>(
-            <div key={t} style={{ display:"flex", alignItems:"center", gap:5 }}>
-              <div style={{ width:10, height:10, borderRadius:2, background:c }} />
-              <span style={{ color:"#71717a", fontSize:10 }}>Equipo {t}</span>
+      <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+        {globalMetrics}
+        {teamStats.map(({ team, members, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento, memberEstHArr, avgMemberEstH, intraCV }) => {
+          const tc         = TEAM_COLOR[team];
+          const hoursColor = pctHours===null?"#3f3f46":pctHours>=100?"#ef4444":pctHours>=75?"#f59e0b":"#22c55e";
+          const tasksColor = pctTasks===null?"#3f3f46":pctTasks===100?"#22c55e":pctTasks>=50?"#f59e0b":"#94a3b8";
+          const taggedColor= pctTagged===null?"#3f3f46":pctTagged>=60?"#22c55e":pctTagged>=25?"#f59e0b":"#ef4444";
+          const rendColor  = rendimiento===null?"#3f3f46":rendimiento>=100?"#22c55e":rendimiento>=50?"#f59e0b":"#ef4444";
+          // Inter-team deviation badge
+          const interDelta    = avgTeamEstH ? estimatedH - avgTeamEstH : null;
+          const interDeltaPct = avgTeamEstH ? interDelta / avgTeamEstH * 100 : null;
+          const interColor    = interDeltaPct===null?"#52525b":Math.abs(interDeltaPct)<=15?"#52525b":interDeltaPct>0?"#f59e0b":"#818cf8";
+          // Intra-team color
+          const intraColor = intraCV===null?"#3f3f46":intraCV<=25?"#22c55e":intraCV<=50?"#f59e0b":"#ef4444";
+          return (
+            <div key={team} style={{ background:"#111113", border:`1px solid ${tc}30`, borderRadius:12, padding:"14px 16px" }}>
+              {/* Team header + aggregated hours */}
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, marginBottom:10 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
+                  <span style={{ background:`${tc}20`, color:tc, fontWeight:800, fontSize:13, textTransform:"uppercase", letterSpacing:2, padding:"4px 12px", borderRadius:6 }}>Equipo {team}</span>
+                  <span style={{ color:"#52525b", fontSize:11 }}>{members.length} miembros · {totalTasks} tarea{totalTasks!==1?"s":""}</span>
+                  {interDeltaPct !== null && (
+                    <span title={`${estimatedH.toFixed(0)}h est. vs media inter-equipos ${avgTeamEstH.toFixed(0)}h`}
+                      style={{ fontSize:9, fontWeight:700, background:`${interColor}18`, color:interColor, padding:"2px 6px", borderRadius:4 }}>
+                      {interDelta>=0?"+":""}{interDelta.toFixed(0)}h vs media
+                    </span>
+                  )}
+                  {intraCV !== null && (
+                    <span title="Coeficiente de variación de horas estimadas entre miembros · ideal CV→0"
+                      style={{ fontSize:9, fontWeight:700, background:`${intraColor}18`, color:intraColor, padding:"2px 6px", borderRadius:4 }}>
+                      ⚖ CV intra {intraCV.toFixed(0)}%
+                    </span>
+                  )}
+                </div>
+                <div style={{ textAlign:"right", flexShrink:0, lineHeight:1.6 }}>
+                  <div style={{ color:"#e2e8f0", fontWeight:800, fontSize:16 }}>{totalH.toFixed(1)}h</div>
+                  <div style={{ display:"flex", alignItems:"center", gap:5, justifyContent:"flex-end" }}>
+                    <span style={{ fontSize:10, color: taggedH>0?"#22c55e":"#3f3f46" }}>{taggedH.toFixed(1)}h etiq.</span>
+                    {pctTagged !== null && (
+                      <span style={{ fontSize:9, fontWeight:700, background:`${taggedColor}20`, color:taggedColor, padding:"1px 5px", borderRadius:3 }}>
+                        {pctTagged.toFixed(0)}%
+                      </span>
+                    )}
+                  </div>
+                  {rendimiento !== null && (
+                    <div style={{ fontSize:9, color:rendColor, fontWeight:700 }} title="Valor estimado entregado (h estimadas Done) / horas Clockify · ideal ≥100%">
+                      ⚡ {rendimiento.toFixed(0)}% rendimiento
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Member avatars row */}
+              <div style={{ display:"flex", gap:5, marginBottom:10, flexWrap:"wrap" }}>
+                {members.sort((a,b) => a.name.localeCompare(b.name)).map(m => (
+                  <div key={m.login} style={{ display:"flex", alignItems:"center", gap:5, background:"#18181b", borderRadius:6, padding:"3px 8px 3px 3px" }}>
+                    <img
+                      src={`https://github.com/${m.login}.png?size=24`}
+                      alt={m.name}
+                      style={{ width:22, height:22, borderRadius:"50%", border:`1.5px solid ${tc}50`, flexShrink:0 }}
+                    />
+                    <span style={{ color:"#94a3b8", fontSize:10, whiteSpace:"nowrap" }}>{m.name.split(" ")[0]}</span>
+                    {m.coord && <span style={{ fontSize:7, background:"#818cf820", color:"#818cf8", padding:"0 3px", borderRadius:2, fontWeight:700 }}>C</span>}
+                  </div>
+                ))}
+              </div>
+
+              {/* Progress bars */}
+              {sprint !== -1 && (
+                <div style={{ display:"flex", gap:14, marginBottom:10 }}>
+                  <div style={{ flex:1 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
+                      <span style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Tareas done</span>
+                      <span style={{ color:tasksColor, fontSize:9, fontWeight:700 }}>
+                        {pctTasks!==null ? `${doneCount}/${totalTasks} · ${pctTasks.toFixed(0)}%` : "—"}
+                      </span>
+                    </div>
+                    <div style={{ height:5, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                      <div style={{ height:"100%", width:`${Math.min(pctTasks||0,100)}%`, background:tasksColor, borderRadius:2 }}/>
+                    </div>
+                  </div>
+                  <div style={{ flex:1 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
+                      <span style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Horas consumidas</span>
+                      <span style={{ color:hoursColor, fontSize:9, fontWeight:700 }}>
+                        {pctHours!==null ? `${totalH.toFixed(1)}/${estimatedH.toFixed(0)}h · ${pctHours.toFixed(0)}%` : "—"}
+                      </span>
+                    </div>
+                    <div style={{ height:5, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                      <div style={{ height:"100%", width:`${Math.min(pctHours||0,100)}%`, background:hoursColor, borderRadius:2 }}/>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Status distribution pills */}
+              {sprint !== -1 && (
+                <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
+                  {STATUSES.map(st => {
+                    const count = statusCounts[st] || 0;
+                    const meta  = STATUS_META[st] || { bg:"#27272a", text:"#71717a" };
+                    return (
+                      <span key={st} style={{
+                        background: count>0 ? meta.bg : "#18181b",
+                        color:      count>0 ? meta.text : "#3f3f46",
+                        border:    `1px solid ${count>0 ? meta.bg+"aa" : "#27272a"}`,
+                        padding:"3px 9px", borderRadius:5, fontSize:10, fontWeight:count>0?700:400,
+                      }}>
+                        {count} {st}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
             </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // ── Velocity view ─────────────────────────────────────────────
+  function VelocityView() {
+    const sprintDefs = [
+      { key:-1, label:"S0 · DP", project:"dp", color:"#6366f1" },
+      { key:1,  label:"Sprint 1", project:"s1", color:"#818cf8" },
+      { key:2,  label:"Sprint 2", project:"s2", color:"#34d399" },
+      { key:3,  label:"Sprint 3", project:"s3", color:"#fbbf24" },
+    ];
+    const data = sprintDefs.map(({ key, label, project, color }) => {
+      const spTasks = key === -1 ? [] : Object.values(BACKLOG_MAP).filter(t => t.sprint === key);
+      const done = spTasks.filter(t => t.status === "Done");
+      const doneEstH  = done.reduce((s, t) => s + (t.estimated_h || 0), 0);
+      const totalEstH = spTasks.reduce((s, t) => s + (t.estimated_h || 0), 0);
+      const clockifyH = Object.values(report.dailyHoursByProject?.[project] || {}).reduce((s, h) => s + h, 0);
+      return { key, label, color, doneEstH, totalEstH, clockifyH, doneCount:done.length, totalCount:spTasks.length };
+    });
+
+    const maxH = Math.max(...data.map(d => Math.max(d.clockifyH, d.totalEstH)), 1);
+    const svgW=560, svgH=220, pad={t:20,r:20,b:46,l:58};
+    const cW=svgW-pad.l-pad.r, cH=svgH-pad.t-pad.b;
+    const groupW = cW / data.length;
+    const barW   = groupW * 0.28;
+    const yS     = cH / maxH;
+
+    return (
+      <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+        {/* Summary cards — sprints 1–3 only */}
+        <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+          {data.filter(d => d.key > 0).map(d => (
+            <InfStatCard key={d.key} label={d.label}
+              value={`${d.doneEstH.toFixed(0)}h entregadas`}
+              sub={`${d.doneCount}/${d.totalCount} tareas Done · ${d.clockifyH.toFixed(0)}h Clockify`}
+              color={d.color} />
           ))}
         </div>
+        {/* Bar chart */}
+        <div style={{ background:"#0c0c10", borderRadius:10, padding:16, overflowX:"auto" }}>
+          <div style={{ color:"#71717a", fontSize:10, marginBottom:8, textTransform:"uppercase", letterSpacing:1 }}>
+            Velocidad por sprint — h estimadas entregadas (Done) vs h Clockify invertidas
+          </div>
+          <svg viewBox={`0 0 ${svgW} ${svgH}`} style={{ width:"100%", maxWidth:svgW }}>
+            {[0, 0.25, 0.5, 0.75, 1].map(f => {
+              const y = pad.t + cH * (1 - f);
+              const maj = f===0||f===1;
+              return (
+                <g key={f}>
+                  <line x1={pad.l} y1={y} x2={pad.l+cW} y2={y} stroke={maj?"#27272a":"#1c1c1e"} strokeWidth={maj?1:0.5} />
+                  <text x={pad.l-6} y={y+3.5} fill={maj?"#71717a":"#3f3f46"} fontSize="9" textAnchor="end">{Math.round(maxH*f)}h</text>
+                </g>
+              );
+            })}
+            {data.map((d, i) => {
+              const cx = pad.l + groupW * i + groupW / 2;
+              const h1 = d.totalEstH * yS, h2 = d.doneEstH * yS, h3 = d.clockifyH * yS;
+              return (
+                <g key={i}>
+                  {/* Ghost: total estimated */}
+                  <rect x={cx-barW*1.15} y={pad.t+cH-h1} width={barW} height={h1} fill={d.color+"1a"} stroke={d.color+"44"} strokeWidth={1} rx={2} />
+                  {/* Solid: done estimated (velocity) */}
+                  <rect x={cx-barW*1.15} y={pad.t+cH-h2} width={barW} height={h2} fill={d.color} rx={2} />
+                  {/* Muted: clockify invested */}
+                  <rect x={cx+barW*0.15} y={pad.t+cH-h3} width={barW} height={h3} fill={d.color+"70"} rx={2} />
+                  {h2>12 && <text x={cx-barW*0.65} y={pad.t+cH-h2-4} fill={d.color} fontSize="8" textAnchor="middle" fontWeight="700">{d.doneEstH.toFixed(0)}</text>}
+                  {h3>12 && <text x={cx+barW*0.65} y={pad.t+cH-h3-4} fill={d.color+"aa"} fontSize="8" textAnchor="middle">{d.clockifyH.toFixed(0)}</text>}
+                  <text x={cx} y={svgH-pad.b+14} fill={d.color} fontSize="9" textAnchor="middle" fontWeight="700">{d.label}</text>
+                  <text x={cx} y={svgH-pad.b+24} fill="#52525b" fontSize="8" textAnchor="middle">{d.doneCount}/{d.totalCount} Done</text>
+                </g>
+              );
+            })}
+            {/* Trend line connecting doneEstH for sprints 1–3 */}
+            {(() => {
+              const pts = data.filter(d => d.key > 0).map((d, i) => {
+                const cx = pad.l + groupW * (i+1) + groupW/2 - barW*0.65;
+                return `${i===0?"M":"L"} ${cx},${pad.t+cH-d.doneEstH*yS}`;
+              });
+              return pts.length >= 2
+                ? <path d={pts.join(" ")} fill="none" stroke="#ffffff25" strokeWidth={1.5} strokeDasharray="4,3" />
+                : null;
+            })()}
+          </svg>
+          <div style={{ display:"flex", gap:16, marginTop:6, flexWrap:"wrap" }}>
+            {[["#818cf8","H estimadas entregadas (Done)"],["#818cf870","H Clockify invertidas"],["#818cf81a","H estimadas totales"]].map(([bg,lbl])=>(
+              <div key={lbl} style={{ display:"flex", alignItems:"center", gap:5 }}>
+                <div style={{ width:12, height:8, background:bg, borderRadius:2, border:bg.endsWith("1a")?`1px solid #818cf844`:"none" }} />
+                <span style={{ color:"#71717a", fontSize:10 }}>{lbl}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Activity view ──────────────────────────────────────────────
+  function ActivityView() {
+    const projectDefs = [
+      { key:"dp", color:"#6366f1", label:"S0·DP" },
+      { key:"s1", color:"#818cf8", label:"S1" },
+      { key:"s2", color:"#34d399", label:"S2" },
+      { key:"s3", color:"#fbbf24", label:"S3" },
+    ];
+
+    const allDatesSet = new Set();
+    projectDefs.forEach(({ key }) =>
+      Object.keys(report.dailyHoursByProject?.[key] || {}).forEach(d => allDatesSet.add(d))
+    );
+    const dates = [...allDatesSet].sort();
+    if (!dates.length) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>Sin datos Clockify.</div>;
+
+    const bars = dates.map(d => {
+      const segments = projectDefs
+        .map(({ key, color, label }) => ({ key, color, label, h: report.dailyHoursByProject?.[key]?.[d] || 0 }))
+        .filter(s => s.h > 0);
+      return { date:d, segments, total: segments.reduce((s, sg) => s + sg.h, 0) };
+    });
+
+    const maxH = Math.max(...bars.map(b => b.total), 1);
+    const svgW = Math.max(600, dates.length * 20);
+    const svgH = 200, pad = { t:20, r:20, b:40, l:50 };
+    const cW = svgW-pad.l-pad.r, cH = svgH-pad.t-pad.b;
+    const barW = Math.max(6, cW / dates.length * 0.72);
+    const step = Math.max(1, Math.ceil(dates.length / 14));
+
+    return (
+      <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+        <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+          {projectDefs.map(({ key, color, label }) => {
+            const total = Object.values(report.dailyHoursByProject?.[key] || {}).reduce((s, h) => s + h, 0);
+            const nDays = Object.keys(report.dailyHoursByProject?.[key] || {}).length;
+            if (!total) return null;
+            return <InfStatCard key={key} label={label} value={`${total.toFixed(1)}h`} sub={`en ${nDays} días · media ${(total/nDays).toFixed(1)}h/día`} color={color} />;
+          })}
+        </div>
+        <div style={{ background:"#0c0c10", borderRadius:10, padding:16, overflowX:"auto" }}>
+          <div style={{ color:"#71717a", fontSize:10, marginBottom:8, textTransform:"uppercase", letterSpacing:1 }}>
+            Actividad diaria — horas Clockify registradas por día
+          </div>
+          <svg viewBox={`0 0 ${svgW} ${svgH}`} style={{ width:"100%", minWidth:Math.min(svgW,380) }}>
+            {[0, 0.25, 0.5, 0.75, 1].map(f => {
+              const y = pad.t + cH * (1-f), maj = f===0||f===1;
+              return (
+                <g key={f}>
+                  <line x1={pad.l} y1={y} x2={pad.l+cW} y2={y} stroke={maj?"#27272a":"#1c1c1e"} strokeWidth={maj?1:0.5} />
+                  <text x={pad.l-5} y={y+3.5} fill="#52525b" fontSize="8" textAnchor="end">{(maxH*f).toFixed(0)}h</text>
+                </g>
+              );
+            })}
+            {bars.map((bar, i) => {
+              const cx = pad.l + (i+0.5) * (cW/dates.length);
+              let yOff = 0;
+              return (
+                <g key={bar.date}>
+                  {bar.segments.map(seg => {
+                    const h = seg.h * (cH/maxH);
+                    const y = pad.t + cH - yOff - h;
+                    yOff += h;
+                    return <rect key={seg.key} x={cx-barW/2} y={y} width={barW} height={h} fill={seg.color} rx={1} />;
+                  })}
+                  {i%step===0 && (
+                    <text x={cx} y={svgH-pad.b+12} fill="#52525b" fontSize="8" textAnchor="middle">{bar.date.slice(5)}</text>
+                  )}
+                </g>
+              );
+            })}
+          </svg>
+          <div style={{ display:"flex", gap:14, marginTop:4, flexWrap:"wrap" }}>
+            {projectDefs.map(({ key, color, label }) => (
+              <div key={key} style={{ display:"flex", alignItems:"center", gap:5 }}>
+                <div style={{ width:10, height:10, borderRadius:2, background:color }} />
+                <span style={{ color:"#71717a", fontSize:10 }}>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Areas view ────────────────────────────────────────────────
+  function AreasView() {
+    const relevantTasks = sprint === -1
+      ? []
+      : Object.values(BACKLOG_MAP).filter(t => sprint === 0 || t.sprint === sprint);
+
+    if (sprint === -1) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>S0/DP no tiene tareas en el backlog.</div>;
+    if (!relevantTasks.length) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>Sin tareas para este filtro.</div>;
+
+    const areaMap = {};
+    relevantTasks.forEach(t => {
+      if (!areaMap[t.area]) areaMap[t.area] = { estimatedH:0, doneH:0, clockifyH:0, total:0, done:0 };
+      areaMap[t.area].estimatedH += t.estimated_h || 0;
+      areaMap[t.area].total += 1;
+      if (t.status === "Done") { areaMap[t.area].doneH += t.estimated_h || 0; areaMap[t.area].done += 1; }
+      const tr = report.byTask[t.id];
+      if (tr) areaMap[t.area].clockifyH += tr.real_h || 0;
+    });
+
+    const areas = Object.entries(areaMap)
+      .map(([area, d]) => ({ area, ...d, pctDone: d.total > 0 ? d.done/d.total*100 : 0 }))
+      .sort((a, b) => b.estimatedH - a.estimatedH);
+
+    const totalClockify = areas.reduce((s, a) => s + a.clockifyH, 0);
+    const totalEst      = areas.reduce((s, a) => s + a.estimatedH, 0);
+    const totalDone     = areas.reduce((s, a) => s + a.done, 0);
+    const totalTasks    = areas.reduce((s, a) => s + a.total, 0);
+
+    return (
+      <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+        <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+          <InfStatCard label="Áreas" value={`${areas.length}`} sub={`${totalTasks} tareas · ${totalEst.toFixed(0)}h estimadas`} color="#94a3b8" />
+          <InfStatCard label="Tareas Done" value={`${totalDone}/${totalTasks}`} sub={`${(totalDone/totalTasks*100).toFixed(0)}% completitud global`} color={totalDone/totalTasks>=0.75?"#22c55e":totalDone/totalTasks>=0.4?"#f59e0b":"#ef4444"} />
+          {totalClockify > 0 && <InfStatCard label="H Clockify" value={`${totalClockify.toFixed(1)}h`} sub={`de ${totalEst.toFixed(0)}h estimadas · ${(totalClockify/totalEst*100).toFixed(0)}%`} color={totalClockify/totalEst>=1?"#ef4444":totalClockify/totalEst>=0.75?"#f59e0b":"#22c55e"} />}
+        </div>
+        {areas.map(({ area, estimatedH, doneH, clockifyH, total, done, pctDone }) => {
+          const pctClockify = estimatedH > 0 ? clockifyH / estimatedH * 100 : null;
+          const doneColor   = pctDone>=80?"#22c55e":pctDone>=40?"#f59e0b":"#94a3b8";
+          const clockColor  = pctClockify===null?"#3f3f46":pctClockify>=100?"#ef4444":pctClockify>=75?"#f59e0b":"#22c55e";
+          return (
+            <div key={area} style={{ background:"#111113", border:"1px solid #27272a", borderRadius:8, padding:"10px 14px" }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
+                <span style={{ flex:1, color:"#e2e8f0", fontWeight:700, fontSize:12 }}>{area}</span>
+                <span style={{ color:"#52525b", fontSize:10 }}>{done}/{total}</span>
+                <span style={{ color:doneColor, fontSize:10, fontWeight:700, minWidth:34, textAlign:"right" }}>{pctDone.toFixed(0)}%</span>
+                <span style={{ color:"#71717a", fontSize:10, minWidth:58, textAlign:"right" }}>{estimatedH.toFixed(0)}h est.</span>
+                {clockifyH > 0 && <span style={{ color:clockColor, fontSize:10, minWidth:58, textAlign:"right" }}>{clockifyH.toFixed(1)}h reg.</span>}
+              </div>
+              <div style={{ display:"flex", gap:8 }}>
+                <div style={{ flex:1 }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", marginBottom:2 }}>
+                    <span style={{ color:"#3f3f46", fontSize:8, textTransform:"uppercase", letterSpacing:1 }}>Done</span>
+                    <span style={{ color:doneColor, fontSize:8, fontWeight:700 }}>{pctDone.toFixed(0)}%</span>
+                  </div>
+                  <div style={{ height:3, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                    <div style={{ height:"100%", width:`${Math.min(pctDone,100)}%`, background:doneColor, borderRadius:2 }} />
+                  </div>
+                </div>
+                {pctClockify !== null && (
+                  <div style={{ flex:1 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:2 }}>
+                      <span style={{ color:"#3f3f46", fontSize:8, textTransform:"uppercase", letterSpacing:1 }}>Consumo</span>
+                      <span style={{ color:clockColor, fontSize:8, fontWeight:700 }}>{pctClockify.toFixed(0)}%</span>
+                    </div>
+                    <div style={{ height:3, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                      <div style={{ height:"100%", width:`${Math.min(pctClockify,100)}%`, background:clockColor, borderRadius:2 }} />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // ── Coverage view ─────────────────────────────────────────────
+  function CoverageView() {
+    const relevantTasks = sprint === -1
+      ? []
+      : Object.values(BACKLOG_MAP).filter(t => sprint === 0 || t.sprint === sprint);
+
+    if (sprint === -1) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>S0/DP no tiene tareas en el backlog.</div>;
+    if (!relevantTasks.length) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>Sin tareas para este filtro.</div>;
+
+    const tagged   = relevantTasks.filter(t => (report.byTask[t.id]?.real_h || 0) > 0);
+    const untagged = relevantTasks.filter(t => (report.byTask[t.id]?.real_h || 0) === 0);
+    const pctTagged = relevantTasks.length > 0 ? tagged.length / relevantTasks.length * 100 : 0;
+
+    const byArea = {};
+    relevantTasks.forEach(t => {
+      if (!byArea[t.area]) byArea[t.area] = { tagged:[], untagged:[] };
+      if ((report.byTask[t.id]?.real_h || 0) > 0) byArea[t.area].tagged.push(t);
+      else byArea[t.area].untagged.push(t);
+    });
+
+    const areas = Object.entries(byArea)
+      .map(([area, { tagged:tg, untagged:ut }]) => ({
+        area, taggedCount:tg.length, untaggedCount:ut.length,
+        total:tg.length+ut.length,
+        pct: (tg.length+ut.length)>0 ? tg.length/(tg.length+ut.length)*100 : 0,
+        untaggedTasks: ut,
+      }))
+      .sort((a, b) => a.pct - b.pct); // worst coverage first
+
+    return (
+      <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+        <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+          <InfStatCard label="Cobertura total"
+            value={`${pctTagged.toFixed(1)}%`}
+            sub={`${tagged.length} de ${relevantTasks.length} tareas con horas Clockify`}
+            color={pctTagged>=75?"#22c55e":pctTagged>=40?"#f59e0b":"#ef4444"} />
+          <InfStatCard label="Sin cobertura"
+            value={`${untagged.length}`}
+            sub="tareas sin ninguna entrada Clockify"
+            color={untagged.length===0?"#22c55e":"#ef4444"} />
+        </div>
+        <div style={{ color:"#52525b", fontSize:10, textTransform:"uppercase", letterSpacing:1 }}>
+          Por área — peor cobertura primero
+        </div>
+        {areas.map(({ area, taggedCount, total, pct, untaggedTasks }) => {
+          const c = pct>=80?"#22c55e":pct>=40?"#f59e0b":"#ef4444";
+          return (
+            <div key={area} style={{ background:"#111113", border:"1px solid #27272a", borderRadius:8, padding:"10px 14px" }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom: untaggedTasks.length>0?6:0 }}>
+                <span style={{ flex:1, color:"#e2e8f0", fontWeight:600, fontSize:12 }}>{area}</span>
+                <span style={{ color:"#52525b", fontSize:10 }}>{taggedCount}/{total}</span>
+                <span style={{ color:c, fontWeight:700, fontSize:10, minWidth:38, textAlign:"right" }}>{pct.toFixed(0)}%</span>
+                <div style={{ width:80, height:4, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                  <div style={{ height:"100%", width:`${pct}%`, background:c, borderRadius:2 }} />
+                </div>
+              </div>
+              {untaggedTasks.length > 0 && (
+                <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
+                  {untaggedTasks.map(t => (
+                    <span key={t.id} style={{ background:"#18181b", color:"#71717a", fontSize:9, padding:"2px 6px", borderRadius:3, border:"1px solid #27272a" }}>
+                      {t.id}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     );
   }
 
   const viewTabs = [
     { id:"tasks",    label:"📋 Tarea vs Estimado" },
-    { id:"users",    label:"👥 Por persona"       },
-    { id:"burndown", label:"📈 Burndown"          },
-    { id:"alerts",   label:"⚠️ Alertas"           },
+    { id:"users",    label:"👥 Persona"           },
     { id:"equipo",   label:"👤 Equipo"            },
+    { id:"burndown", label:"📈 Burndown"          },
+    { id:"velocity", label:"⚡ Velocidad"          },
+    { id:"activity", label:"📅 Actividad"         },
+    { id:"areas",    label:"📐 Áreas"             },
+    { id:"coverage", label:"🏷️ Cobertura"         },
+    { id:"alerts",   label:"⚠️ Alertas"           },
   ];
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+
+      {showExport && <ExportMdModal report={report} sprint={sprint} onClose={() => setShowExport(false)} />}
 
       {/* Header */}
       <div style={{ background:"#111113", border:"1px solid #6ee7b730", borderRadius:12, padding:"14px 20px" }}>
@@ -1893,6 +2864,11 @@ function InformePane() {
               const c = v===0?"#6ee7b7":v===-1?"#6366f1":sprintC[v];
               return <button key={v} onClick={()=>setSprint(v)} style={{ padding:"4px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer", border:`1px solid ${active?c+"60":"transparent"}`, background:active?`${c}20`:"transparent", color:active?c:"#52525b", transition:"all .12s" }}>{l}</button>;
             })}
+            <button onClick={() => setShowExport(true)} title="Exportar secciones Clockify a Markdown"
+              style={{ marginLeft:"auto", padding:"4px 12px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer",
+                background:"#34d39915", border:"1px solid #34d39940", color:"#34d399", transition:"all .15s" }}>
+              📄 Exportar MD
+            </button>
           </div>
 
           <KpiRow />
@@ -1908,9 +2884,13 @@ function InformePane() {
           <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:18 }}>
             {view==="tasks"    && <TasksView />}
             {view==="users"    && <UsersView />}
-            {view==="burndown" && <BurndownView />}
-            {view==="alerts"   && <AlertsView />}
             {view==="equipo"   && <EquipoView />}
+            {view==="burndown" && <BurndownView />}
+            {view==="velocity" && <VelocityView />}
+            {view==="activity" && <ActivityView />}
+            {view==="areas"    && <AreasView />}
+            {view==="coverage" && <CoverageView />}
+            {view==="alerts"   && <AlertsView />}
           </div>
         </>
       )}
