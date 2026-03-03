@@ -1017,11 +1017,6 @@ function GraphPane() {
 
 // ── INFORME PANE (CSV Clockify) ───────────────────────────────
 const SIZE_H_INF = { XS:2, S:4, M:8, L:16, XL:24 };
-const BACKLOG_MAP = (() => {
-  const map = {};
-  BACKLOG.forEach(it => { map[it.id] = { ...it, estimated_h: SIZE_H_INF[it.size] || 0 }; });
-  return map;
-})();
 
 // ── TEAM MEMBERS ──────────────────────────────────────────────
 // email (Clockify) ↔ GitHub login, display name, role, team
@@ -1059,6 +1054,25 @@ const EQUIPO_LOGINS = {
   "Coordinadores":      ["carlosgallero","alereyper","mregidorgarcia","martarecio","igna0305","mjnizac"],
   "All":                TEAM_MEMBERS.map(m => m.login.toLowerCase()),
 };
+
+const BACKLOG_MAP = (() => {
+  const map = {};
+  BACKLOG.forEach(it => {
+    const baseH = SIZE_H_INF[it.size] || 0;
+    let estimated_h = baseH;
+    if (it.area === "Asistencia" && baseH > 0) {
+      let memberCount = 1;
+      if (it.assignees && it.assignees.length > 0) {
+        memberCount = it.assignees.length;
+      } else if (it.equipo && EQUIPO_LOGINS[it.equipo]) {
+        memberCount = EQUIPO_LOGINS[it.equipo].length;
+      }
+      estimated_h = baseH * memberCount;
+    }
+    map[it.id] = { ...it, estimated_h };
+  });
+  return map;
+})();
 
 // Compute assigned hours per login for a given sprint
 function computeSprintAssigned(sprintNum) {
@@ -1692,7 +1706,13 @@ function InformePane() {
                         : null}
                     </td>
                     <td style={{ padding:"7px 10px", textAlign:"center", color:"#71717a" }}>{t.size}</td>
-                    <td style={{ padding:"7px 10px", textAlign:"right", color:"#71717a" }}>{t.estimated_h}h</td>
+                    <td style={{ padding:"7px 10px", textAlign:"right", color:"#71717a" }}>
+                      {t.area === "Asistencia" && t.size && EQUIPO_LOGINS[t.equipo] ? (
+                        <span title={`${SIZE_H_INF[t.size]}h × ${EQUIPO_LOGINS[t.equipo].length} miembros`} style={{ cursor:"help" }}>
+                          {t.estimated_h}h
+                        </span>
+                      ) : `${t.estimated_h}h`}
+                    </td>
                     <td style={{ padding:"7px 10px", textAlign:"right", color:t.real_h>0?"#e2e8f0":"#3f3f46" }}>{t.real_h.toFixed(1)}h</td>
                     <td style={{ padding:"7px 10px", textAlign:"right", color:diff>0?"#ef4444":diff<0?"#22c55e":"#52525b", fontWeight:Math.abs(diff)>0?700:400 }}>{diff>0?"+":""}{diff.toFixed(1)}h</td>
                     <td style={{ padding:"7px 10px", minWidth:80 }}>
@@ -1755,8 +1775,11 @@ function InformePane() {
         const impliedByEquipo  = assignees.length === 0 && equipoLogins.includes(loginLower);
         if (directlyAssigned || impliedByEquipo) {
           statusCounts[t.status] = (statusCounts[t.status] || 0) + 1;
-          estimatedH += t.estimated_h || 0;
-          if (t.status === "Done") doneEstimatedH += t.estimated_h || 0;
+          const perPersonH = (t.area === "Asistencia" && impliedByEquipo && equipoLogins.length > 0)
+            ? t.estimated_h / equipoLogins.length
+            : t.estimated_h;
+          estimatedH += perPersonH || 0;
+          if (t.status === "Done") doneEstimatedH += perPersonH || 0;
         }
       });
       const totalTasks  = STATUSES.reduce((s, st) => s + statusCounts[st], 0);
@@ -2240,8 +2263,11 @@ function InformePane() {
               seenTaskIds.add(t.id);
               statusCounts[t.status] = (statusCounts[t.status] || 0) + 1;
             }
-            estimatedH     += t.estimated_h || 0;
-            if (t.status === "Done") doneEstimatedH += t.estimated_h || 0;
+            const perPersonH = (t.area === "Asistencia" && implied && equipoLogins.length > 0)
+              ? t.estimated_h / equipoLogins.length
+              : t.estimated_h;
+            estimatedH     += perPersonH || 0;
+            if (t.status === "Done") doneEstimatedH += perPersonH || 0;
           }
         });
       });
