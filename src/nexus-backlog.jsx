@@ -222,115 +222,6 @@ const BACKLOG = _sourceData.items
 
 // ── GRAPH DATA ────────────────────────────────────────────────
 const NW = 128, NH = 46;
-const GNODES = [
-  // ── S1 – FUNCIONAL ─────────────────────────────────────────
-  { id:"infra",      label:"Infraestructura",    sub:"NX-S1.1→NX-S1.5",   sprint:1, x:375, y:50,  track:"shared"  },
-  { id:"auth",       label:"Autenticación",       sub:"NX-S1.6→NX-S1.9",   sprint:1, x:175, y:150, track:"shared"  },
-  { id:"uxui",       label:"UX / UI",             sub:"NX-S1.10→NX-S1.12",   sprint:1, x:575, y:150, track:"shared"  },
-  { id:"panel",      label:"Panel Residencias",   sub:"NX-S1.13→NX-S1.17",   sprint:1, x:50,  y:255, track:"admin"   },
-  { id:"inc1",       label:"Incidencias",         sub:"NX-S1.18→NX-S1.22",   sprint:1, x:190, y:255, track:"both"    },
-  { id:"avisos",     label:"Avisos",              sub:"NX-S1.23→NX-S1.24",   sprint:1, x:330, y:255, track:"admin"   },
-  { id:"reservas1",  label:"Reservas",            sub:"NX-S1.25→NX-S1.28",   sprint:1, x:470, y:255, track:"both"    },
-  { id:"eventos1",   label:"Eventos",             sub:"NX-S1.29→NX-S1.31",   sprint:1, x:610, y:255, track:"both"    },
-  { id:"onboard1",   label:"Onboarding",          sub:"NX-S1.32→NX-S1.34",   sprint:1, x:50,  y:360, track:"admin"   },
-  { id:"objetos1",   label:"Objetos",             sub:"NX-S1.35",         sprint:1, x:190, y:360, track:"admin"   },
-  { id:"legal1",     label:"Legal / GDPR",        sub:"NX-S1.36",         sprint:1, x:330, y:360, track:"both"    },
-  { id:"matching1",  label:"Matching",            sub:"NX-S1.37→NX-S1.41",   sprint:1, x:470, y:360, track:"student" },
-  { id:"calidad1",   label:"Calidad",             sub:"NX-S1.42",         sprint:1, x:610, y:360, track:"both"    },
-  // ── S1 – PROCESO ───────────────────────────────────────────
-  { id:"docs1",      label:"Documentos",          sub:"D1-01→D1-08",   sprint:1, x:820, y:50,  track:"shared"  },
-  { id:"dsscrum1",   label:"Docs Scrum",          sub:"DS1-01→DS1-05", sprint:1, x:820, y:150, track:"shared"  },
-  { id:"asist1",     label:"Asistencia",          sub:"A1-01→A1-07",   sprint:1, x:820, y:255, track:"shared"  },
-
-  // ── S2 – FUNCIONAL ─────────────────────────────────────────
-  { id:"inc2",       label:"Incidencias+",        sub:"NX-S2.1→NX-S2.5",   sprint:2, x:50,  y:510, track:"both"    },
-  { id:"reservas2",  label:"Reservas+",           sub:"NX-S2.6→NX-S2.7",   sprint:2, x:175, y:510, track:"both"    },
-  { id:"com2",       label:"Comunicación",        sub:"NX-S2.8→NX-S2.10",   sprint:2, x:300, y:510, track:"admin"   },
-  { id:"onboard2",   label:"Onboarding+",         sub:"NX-S2.11",         sprint:2, x:425, y:510, track:"admin"   },
-  { id:"objetos2",   label:"Objetos+",            sub:"NX-S2.12→NX-S2.14",   sprint:2, x:550, y:510, track:"both"    },
-  { id:"paqueteria", label:"Paquetería",          sub:"NX-S2.15→NX-S2.17",   sprint:2, x:50,  y:605, track:"admin"   },
-  { id:"legal2",     label:"Legal / GDPR+",       sub:"NX-S2.18→NX-S2.19",   sprint:2, x:175, y:605, track:"both"    },
-  { id:"matching2",  label:"Matching+",           sub:"NX-S2.20→NX-S2.22",   sprint:2, x:300, y:605, track:"student" },
-  { id:"comedor2",   label:"Comedor",             sub:"NX-S2.23",         sprint:2, x:425, y:605, track:"admin"   },
-  // ── S2 – PROCESO ───────────────────────────────────────────
-  { id:"docs2",      label:"Documentos",          sub:"D2-01→D2-08",   sprint:2, x:820, y:510, track:"shared"  },
-  { id:"dsscrum2",   label:"Docs Scrum",          sub:"DS2-01→DS2-06", sprint:2, x:820, y:605, track:"shared"  },
-  { id:"asist2",     label:"Asistencia",          sub:"A2-01→A2-07",   sprint:2, x:820, y:700, track:"shared"  },
-
-  // ── S3 – FUNCIONAL ─────────────────────────────────────────
-  { id:"com3",       label:"Comunicación+",       sub:"NX-S3.1→NX-S3.2",   sprint:3, x:50,  y:770, track:"admin"   },
-  { id:"gperfiles",  label:"Gestión Perfiles",    sub:"NX-S3.3→NX-S3.4",   sprint:3, x:175, y:770, track:"admin"   },
-  { id:"objetos3",   label:"Objetos++",           sub:"NX-S3.5→NX-S3.6",   sprint:3, x:300, y:770, track:"admin"   },
-  { id:"gacceso",    label:"Gestión de Acceso",   sub:"NX-S3.7→NX-S3.10",   sprint:3, x:425, y:770, track:"admin"   },
-  { id:"matching3",  label:"Matching Social",     sub:"NX-S3.11→NX-S3.12",   sprint:3, x:550, y:770, track:"student" },
-  { id:"premium",    label:"Premium",             sub:"NX-S3.13→NX-S3.14",   sprint:3, x:50,  y:865, track:"admin"   },
-  { id:"comedor3",   label:"Comedor+",            sub:"NX-S3.15→NX-S3.17",   sprint:3, x:175, y:865, track:"student" },
-  { id:"multisede",  label:"Multi-sede",          sub:"NX-S3.18",         sprint:3, x:300, y:865, track:"admin"   },
-  { id:"analiticas", label:"Analíticas",          sub:"NX-S3.19",         sprint:3, x:425, y:865, track:"admin"   },
-  { id:"calidad3",   label:"Calidad",             sub:"NX-S3.20→NX-S3.21",   sprint:3, x:550, y:865, track:"both"    },
-  // ── S3 – PROCESO ───────────────────────────────────────────
-  { id:"docs3",      label:"Documentos",          sub:"D3-01→D3-06",   sprint:3, x:820, y:770, track:"shared"  },
-  { id:"dsscrum3",   label:"Docs Scrum",          sub:"DS3-01→DS3-06", sprint:3, x:820, y:865, track:"shared"  },
-  { id:"asist3",     label:"Asistencia",          sub:"A3-01→A3-06",   sprint:3, x:820, y:960, track:"shared"  },
-];
-const GEDGES = [
-  // ── S1 interno ─────────────────────────────────────────────
-  { from:"infra",     to:"auth",      type:"main"      },
-  { from:"infra",     to:"uxui",      type:"main"      },
-  { from:"infra",     to:"calidad1",  type:"secondary" },
-  { from:"auth",      to:"panel",     type:"main"      },
-  { from:"auth",      to:"inc1",      type:"main"      },
-  { from:"auth",      to:"avisos",    type:"main"      },
-  { from:"auth",      to:"reservas1", type:"main"      },
-  { from:"auth",      to:"eventos1",  type:"main"      },
-  { from:"auth",      to:"onboard1",  type:"main"      },
-  { from:"auth",      to:"matching1", type:"main"      },
-  { from:"auth",      to:"legal1",    type:"main"      },
-  { from:"uxui",      to:"inc1",      type:"secondary" },
-  { from:"panel",     to:"objetos1",  type:"secondary" },
-  { from:"onboard1",  to:"matching1", type:"secondary" },
-
-  // ── S1 → S2 ────────────────────────────────────────────────
-  { from:"inc1",      to:"inc2",      type:"main"      },
-  { from:"reservas1", to:"reservas2", type:"main"      },
-  { from:"avisos",    to:"com2",      type:"main"      },
-  { from:"onboard1",  to:"onboard2",  type:"main"      },
-  { from:"objetos1",  to:"objetos2",  type:"main"      },
-  { from:"legal1",    to:"legal2",    type:"main"      },
-  { from:"matching1", to:"matching2", type:"main"      },
-  { from:"auth",      to:"paqueteria",type:"secondary" },
-  { from:"panel",     to:"comedor2",  type:"secondary" },
-
-  // ── S2 interno ─────────────────────────────────────────────
-  { from:"onboard2",  to:"matching2", type:"secondary" },
-  { from:"com2",      to:"comedor2",  type:"secondary" },
-
-  // ── S2 → S3 ────────────────────────────────────────────────
-  { from:"com2",      to:"com3",      type:"main"      },
-  { from:"com2",      to:"gperfiles", type:"secondary" },
-  { from:"objetos2",  to:"objetos3",  type:"main"      },
-  { from:"matching2", to:"matching3", type:"main"      },
-  { from:"gperfiles", to:"gacceso",   type:"main"      },
-  { from:"comedor2",  to:"comedor3",  type:"main"      },
-  { from:"matching3", to:"comedor3",  type:"secondary" },
-  { from:"panel",     to:"premium",   type:"secondary" },
-  { from:"panel",     to:"multisede", type:"secondary" },
-  { from:"panel",     to:"analiticas",type:"secondary" },
-  { from:"inc2",      to:"calidad3",  type:"secondary" },
-  { from:"premium",   to:"multisede", type:"secondary" },
-  { from:"multisede", to:"analiticas",type:"secondary" },
-
-  // ── Proceso (continuidad vertical) ─────────────────────────
-  { from:"infra",     to:"docs1",     type:"secondary" },
-  { from:"infra",     to:"dsscrum1",  type:"secondary" },
-  { from:"infra",     to:"asist1",    type:"secondary" },
-  { from:"docs1",     to:"docs2",     type:"secondary" },
-  { from:"dsscrum1",  to:"dsscrum2",  type:"secondary" },
-  { from:"asist1",    to:"asist2",    type:"secondary" },
-  { from:"docs2",     to:"docs3",     type:"secondary" },
-  { from:"dsscrum2",  to:"dsscrum3",  type:"secondary" },
-  { from:"asist2",    to:"asist3",    type:"secondary" },
-];
 
 // ── CONSTANTS ─────────────────────────────────────────────────
 const MOSCOW_META = {
@@ -363,13 +254,13 @@ const AREA_COLORS = [
   "#f87171","#38bdf8","#a3e635","#facc15","#c084fc","#4ade80","#60a5fa",
 ];
 const TABS = [
-  { id:"s1",    label:"Sprint 1",        color:"#818cf8" },
-  { id:"s2",    label:"Sprint 2",        color:"#34d399" },
-  { id:"s3",    label:"Sprint 3",        color:"#fbbf24" },
-  { id:"cal",   label:"📅 Calendario",   color:"#38bdf8" },
-  { id:"graph", label:"⬡ Grafo",         color:"#e879f9" },
-  { id:"costes",    label:"💰 Costes",      color:"#f97316" },
-  { id:"informe",   label:"📊 Informe CSV",  color:"#6ee7b7" },
+  { id:"s1",      label:"Sprint 1",        color:"#818cf8" },
+  { id:"s2",      label:"Sprint 2",        color:"#34d399" },
+  { id:"s3",      label:"Sprint 3",        color:"#fbbf24" },
+  { id:"cal",     label:"📅 Calendario",   color:"#38bdf8" },
+  { id:"github",  label:"🐙 GitHub",       color:"#94a3b8" },
+  { id:"costes",  label:"💰 Costes",       color:"#f97316" },
+  { id:"informe", label:"📊 Informe CSV",  color:"#6ee7b7" },
 ];
 
 // ── BADGES ────────────────────────────────────────────────────
@@ -835,182 +726,674 @@ function CalendarPane() {
   );
 }
 
-// ── GRAPH PANE ────────────────────────────────────────────────
-function GraphPane() {
-  const [hovered, setHovered] = useState(null);
+// ── GITHUB PANE ─────────────────────────────────────────────
+const GH_OWNER = "ispp-g7-nexus", GH_REPO = "7-NexUS";
 
-  const nodeMap = useMemo(() => {
-    const m = {};
-    GNODES.forEach(n => { m[n.id] = n; });
-    return m;
-  }, []);
+async function fetchGitHubStats(token) {
+  const h = { "Authorization": `bearer ${token}`, "Content-Type": "application/json" };
+  const B = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`;
 
-  const connectedEdgeKeys = useMemo(() => {
-    if (!hovered) return new Set();
-    return new Set(GEDGES.filter(e => e.from === hovered || e.to === hovered).map(e => `${e.from}>${e.to}`));
-  }, [hovered]);
+  async function gs(ep) {
+    for (let i = 0; i < 4; i++) {
+      const r = await fetch(`${B}/${ep}`, { headers: h });
+      if (r.status === 202) { await new Promise(ok => setTimeout(ok, 3000)); continue; }
+      if (r.ok) return r.json();
+      return null;
+    }
+    return null;
+  }
 
-  const connectedNodeIds = useMemo(() => {
-    if (!hovered) return new Set();
-    const s = new Set([hovered]);
-    GEDGES.forEach(e => { if (e.from === hovered) s.add(e.to); if (e.to === hovered) s.add(e.from); });
-    return s;
-  }, [hovered]);
+  // 1. Contributors - commit counts per login
+  const crRaw = await fetch(`${B}/contributors?per_page=100`, { headers: h });
+  if (!crRaw.ok) throw new Error(`HTTP ${crRaw.status}: ${crRaw.statusText}`);
+  const crData = await crRaw.json();
+  const commits = {};
+  (Array.isArray(crData) ? crData : []).forEach(c => { commits[c.login.toLowerCase()] = c.contributions; });
 
-  const sprintColor = { 1:"#818cf8", 2:"#34d399", 3:"#fbbf24" };
-  const sprintLabel = { 1:"Sprint 1", 2:"Sprint 2", 3:"Sprint 3" };
-  const trackColors = { admin:"#818cf8", student:"#34d399", shared:"#e879f9", both:"#fbbf24" };
+  // 2–5. GitHub Insights stats endpoints (in parallel)
+  const [statsContribs, commitActivity, punchCard, codeFreq] = await Promise.all([
+    gs("stats/contributors"),
+    gs("stats/commit_activity"),
+    gs("stats/punch_card"),
+    gs("stats/code_frequency"),
+  ]);
 
-  const bezier = (e) => {
-    const s = nodeMap[e.from], d = nodeMap[e.to];
-    if (!s || !d) return "";
-    const sx = s.x + NW/2, sy = s.y + NH;
-    const dx = d.x + NW/2, dy = d.y;
-    const my = (sy + dy) / 2;
-    return `M ${sx},${sy} C ${sx},${my} ${dx},${my} ${dx},${dy}`;
+  const lines = {}, consistency = {}, weeklyCommits = {};
+  if (Array.isArray(statsContribs)) {
+    statsContribs.forEach(sc => {
+      const l = sc.author?.login?.toLowerCase(); if (!l) return;
+      lines[l] = {
+        added:   sc.weeks.reduce((s, w) => s + w.a, 0),
+        deleted: sc.weeks.reduce((s, w) => s + w.d, 0),
+      };
+      const aw = sc.weeks.filter(w => w.c > 0).length;
+      consistency[l] = sc.weeks.length ? Math.round(aw / sc.weeks.length * 100) : 0;
+      weeklyCommits[l] = sc.weeks.slice(-26).map(w => w.c);
+    });
+  }
+
+  // 6. PRs + reviews via GraphQL (paginated, with dates & line counts)
+  const prs = {}, reviews = {}, mergeTs = {};
+  let cursor = null, hasMore = true;
+  while (hasMore) {
+    const af = cursor ? `, after:"${cursor}"` : "";
+    const q = `{repository(owner:"${GH_OWNER}",name:"${GH_REPO}"){pullRequests(first:100${af}){nodes{author{login}state createdAt mergedAt additions deletions reviews(first:50){nodes{author{login}}}}pageInfo{hasNextPage endCursor}}}}`;
+    const gr = await fetch("https://api.github.com/graphql", { method: "POST", headers: h, body: JSON.stringify({ query: q }) });
+    if (!gr.ok) throw new Error(`GraphQL ${gr.status}`);
+    const { data, errors } = await gr.json();
+    if (errors?.length) throw new Error(errors[0].message);
+    const pg = data?.repository?.pullRequests; if (!pg) break;
+    pg.nodes.forEach(pr => {
+      const a = pr.author?.login?.toLowerCase();
+      if (a) {
+        prs[a] = prs[a] || { total: 0, merged: 0, open: 0, additions: 0, deletions: 0 };
+        prs[a].total++;
+        if (pr.state === "MERGED") {
+          prs[a].merged++;
+          if (pr.mergedAt && pr.createdAt)
+            (mergeTs[a] = mergeTs[a] || []).push((new Date(pr.mergedAt) - new Date(pr.createdAt)) / 86400000);
+        } else if (pr.state === "OPEN") prs[a].open++;
+        prs[a].additions += pr.additions || 0;
+        prs[a].deletions += pr.deletions || 0;
+      }
+      pr.reviews?.nodes?.forEach(rv => {
+        const r2 = rv.author?.login?.toLowerCase();
+        if (r2 && r2 !== a) reviews[r2] = (reviews[r2] || 0) + 1;
+      });
+    });
+    hasMore = pg.pageInfo.hasNextPage; cursor = pg.pageInfo.endCursor;
+  }
+
+  const avgMergeTime = {};
+  Object.entries(mergeTs).forEach(([l, ts]) => {
+    avgMergeTime[l] = Math.round(ts.reduce((s, d) => s + d, 0) / ts.length * 10) / 10;
+  });
+
+  return {
+    commits, lines, consistency, weeklyCommits,
+    prs, reviews, avgMergeTime,
+    commitActivity, punchCard, codeFreq,
+    fetchedAt: new Date().toISOString(),
   };
+}
 
-  const SVG_W = 980, SVG_H = 1060;
+const GH_STATS_KEY = "nexus_gh_stats_v2";
 
+function GitHubPane() {
+  const TC = { A: "#3b82f6", B: "#22c55e", C: "#f59e0b", D: "#a855f7" };
+  const [stats,   setStats]   = useState(() => {
+    try { const r = localStorage.getItem(GH_STATS_KEY); return r ? JSON.parse(r) : null; } catch (_) { return null; }
+  });
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState("");
+
+  async function refresh() {
+    const token = localStorage.getItem("nexus_gh_token");
+    if (!token) { setError("No hay token GitHub guardado. Usa «Sync GitHub» primero."); return; }
+    setLoading(true); setError("");
+    try {
+      const s = await fetchGitHubStats(token);
+      setStats(s);
+      localStorage.setItem(GH_STATS_KEY, JSON.stringify(s));
+    } catch (ex) { setError(ex.message); }
+    finally { setLoading(false); }
+  }
+
+  // ── Per-member computed stats ──────────────────────────────
+  const memberStats = TEAM_MEMBERS.map(m => {
+    const ll      = m.login.toLowerCase();
+    const commits = stats?.commits?.[ll]     || 0;
+    const pr      = stats?.prs?.[ll]         || { total: 0, merged: 0, open: 0, additions: 0, deletions: 0 };
+    const revs    = stats?.reviews?.[ll]     || 0;
+    const lns     = stats?.lines?.[ll]       || { added: 0, deleted: 0 };
+    const cons    = stats?.consistency?.[ll] ?? null;
+    const amt     = stats?.avgMergeTime?.[ll]?? null;
+    const wc      = stats?.weeklyCommits?.[ll]|| [];
+    // Custom metrics
+    const collabScore   = Math.min(Math.round(revs / (commits + 1) * 50), 100);
+    const prEfficiency  = pr.total > 0 ? Math.round(pr.merged / pr.total * 100) : null;
+    const codeImpact    = lns.added + lns.deleted;
+    return { m, commits, pr, revs, lns, cons, amt, wc, collabScore, prEfficiency, codeImpact };
+  });
+
+  const totalCommits  = memberStats.reduce((s, ms) => s + ms.commits, 0);
+  const totalPRs      = memberStats.reduce((s, ms) => s + ms.pr.merged, 0);
+  const totalRevs     = memberStats.reduce((s, ms) => s + ms.revs, 0);
+  const totalAdded    = memberStats.reduce((s, ms) => s + ms.lns.added, 0);
+  const activeMembers = memberStats.filter(ms => ms.commits > 0 || ms.pr.total > 0 || ms.revs > 0).length;
+  const hasData       = stats && (totalCommits > 0 || totalPRs > 0 || totalRevs > 0);
+
+  const allMergeTimes = Object.values(stats?.avgMergeTime || {});
+  const teamAvgMerge  = allMergeTimes.length
+    ? Math.round(allMergeTimes.reduce((s, d) => s + d, 0) / allMergeTimes.length * 10) / 10
+    : null;
+
+  // Sorted arrays for charts
+  const byCommits  = [...memberStats].sort((a, b) => b.commits      - a.commits);
+  const byPRs      = [...memberStats].sort((a, b) => b.pr.merged    - a.pr.merged);
+  const byRevs     = [...memberStats].sort((a, b) => b.revs         - a.revs);
+  const byLines    = [...memberStats].sort((a, b) => b.lns.added    - a.lns.added);
+  const byCons     = [...memberStats].sort((a, b) => (b.cons ?? -1) - (a.cons ?? -1));
+  const byCollab   = [...memberStats].sort((a, b) => b.collabScore  - a.collabScore);
+
+  const maxCommits = Math.max(...memberStats.map(ms => ms.commits), 1);
+  const maxPRs     = Math.max(...memberStats.map(ms => ms.pr.merged), 1);
+  const maxRevs    = Math.max(...memberStats.map(ms => ms.revs), 1);
+  const maxAdded   = Math.max(...memberStats.map(ms => ms.lns.added), 1);
+
+  // Team totals
+  const teamTotals = ["A", "B", "C", "D"].map(team => {
+    const rows = memberStats.filter(ms => ms.m.team === team);
+    return {
+      team, color: TC[team],
+      commits:  rows.reduce((s, ms) => s + ms.commits, 0),
+      prs:      rows.reduce((s, ms) => s + ms.pr.merged, 0),
+      reviews:  rows.reduce((s, ms) => s + ms.revs, 0),
+      added:    rows.reduce((s, ms) => s + ms.lns.added, 0),
+      members:  rows.length,
+      active:   rows.filter(ms => ms.commits > 0 || ms.pr.total > 0 || ms.revs > 0).length,
+    };
+  });
+  const maxTC  = Math.max(...teamTotals.map(t => t.commits), 1);
+  const maxTPR = Math.max(...teamTotals.map(t => t.prs), 1);
+  const maxTRV = Math.max(...teamTotals.map(t => t.reviews), 1);
+  const maxTA  = Math.max(...teamTotals.map(t => t.added), 1);
+
+  // Scatter
+  const meanC  = memberStats.reduce((s, ms) => s + ms.commits, 0) / memberStats.length;
+  const meanR  = memberStats.reduce((s, ms) => s + ms.revs, 0) / memberStats.length;
+  const maxSC  = Math.max(...memberStats.map(ms => ms.commits), 1);
+  const maxSR  = Math.max(...memberStats.map(ms => ms.revs), 1);
+
+  // ── Helpers ───────────────────────────────────────────────
+  function HBar({ sorted, getValue, getLabel, maxVal, color, showMax }) {
+    const mv = showMax ? maxVal : Math.max(...sorted.map(ms => getValue(ms)), 1);
+    return sorted.map(ms => {
+      const v = getValue(ms);
+      return (
+        <div key={ms.m.login} style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 3 }}>
+          <img src={`https://github.com/${ms.m.login}.png?size=20`} alt={ms.m.name}
+            style={{ width: 16, height: 16, borderRadius: "50%", flexShrink: 0, border: `1px solid ${TC[ms.m.team]}50` }} />
+          <span style={{ color: "#94a3b8", fontSize: 8.5, width: 46, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flexShrink: 0 }}>
+            {ms.m.name.split(" ")[0]}
+          </span>
+          <div style={{ flex: 1, height: 6, background: "#27272a", borderRadius: 3, overflow: "hidden" }}>
+            <div style={{ height: "100%", width: `${mv > 0 ? v / mv * 100 : 0}%`, background: TC[ms.m.team], borderRadius: 3 }} />
+          </div>
+          <span style={{ color, fontSize: 8.5, fontWeight: 700, width: 28, textAlign: "right", flexShrink: 0 }}>
+            {getLabel ? getLabel(ms) : v}
+          </span>
+        </div>
+      );
+    });
+  }
+
+  // ── Render ─────────────────────────────────────────────────
   return (
-    <div>
-      <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:"12px 18px", marginBottom:12, display:"flex", flexWrap:"wrap", gap:14, alignItems:"center", justifyContent:"space-between" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
         <div>
-          <div style={{ color:"#e879f9", fontWeight:700, fontSize:13, marginBottom:2 }}>⬡ Grafo de dependencias</div>
-          <div style={{ color:"#71717a", fontSize:11 }}>Hover sobre un módulo para ver sus dependencias · Continua = directa · Punteada = indirecta</div>
+          <span style={{ color: "#e2e8f0", fontWeight: 800, fontSize: 15 }}>🐙 GitHub — Insights & Métricas</span>
+          {stats?.fetchedAt && (
+            <span style={{ color: "#52525b", fontSize: 10, marginLeft: 10 }}>
+              Actualizado {new Date(stats.fetchedAt).toLocaleString("es-ES", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}
+            </span>
+          )}
         </div>
-        <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
-          {[{ l:"🏢 Residencias", c:"#818cf8" }, { l:"👤 Residentes", c:"#34d399" }, { l:"⚡ Compartido", c:"#e879f9" }].map(x => (
-            <div key={x.l} style={{ display:"flex", alignItems:"center", gap:5 }}>
-              <div style={{ width:9, height:9, borderRadius:2, background:x.c, opacity:.8 }} />
-              <span style={{ color:"#94a3b8", fontSize:10 }}>{x.l}</span>
-            </div>
-          ))}
-          {[1,2,3].map(s => (
-            <div key={s} style={{ display:"flex", alignItems:"center", gap:5 }}>
-              <div style={{ width:9, height:9, borderRadius:"50%", background:sprintColor[s] }} />
-              <span style={{ color:"#94a3b8", fontSize:10 }}>{sprintLabel[s]}</span>
-            </div>
-          ))}
-        </div>
+        <button onClick={refresh} disabled={loading}
+          style={{ padding: "5px 14px", borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: "pointer",
+            background: loading ? "#27272a" : "#6ee7b715", border: `1px solid ${loading ? "#27272a" : "#6ee7b740"}`,
+            color: loading ? "#52525b" : "#6ee7b7" }}>
+          {loading ? "⏳ Cargando..." : "🔄 Actualizar métricas"}
+        </button>
       </div>
 
-      <div style={{ background:"#0c0c10", border:"1px solid #27272a", borderRadius:12, overflowX:"auto" }}>
-        <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} style={{ width:"100%", minWidth:700, display:"block" }}>
-          <defs>
-            <marker id="arr" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto">
-              <polygon points="0 0, 9 3.5, 0 7" fill="context-stroke" />
-            </marker>
-            {[1,2,3].map(s => (
-              <filter key={s} id={`glow${s}`} x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur stdDeviation="4" result="blur" />
-                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-              </filter>
-            ))}
-          </defs>
+      {/* Error */}
+      {error && (
+        <div style={{ background: "#ef444415", border: "1px solid #ef444440", borderRadius: 8, padding: "10px 14px", color: "#ef4444", fontSize: 12 }}>
+          ⚠ {error}
+        </div>
+      )}
 
-          <rect x="0" y="28"  width={SVG_W} height={453} fill="#818cf806" />
-          <rect x="0" y="28"  width="3"    height={453} fill="#818cf8" opacity="0.5" />
-          <text x="14" y="46" fill="#818cf850" fontSize="10" fontWeight="800" letterSpacing="1">SPRINT 1</text>
+      {/* No data */}
+      {!hasData && !loading && (
+        <div style={{ background: "#111113", border: "1px solid #27272a", borderRadius: 10, padding: "32px 24px", textAlign: "center" }}>
+          <div style={{ fontSize: 32, marginBottom: 8 }}>🐙</div>
+          <div style={{ color: "#94a3b8", fontSize: 13, fontWeight: 600 }}>No hay datos de GitHub cargados</div>
+          <div style={{ color: "#52525b", fontSize: 11, marginTop: 4 }}>Sincroniza el backlog con tu token y pulsa «Actualizar métricas»</div>
+        </div>
+      )}
 
-          <rect x="0" y="483" width={SVG_W} height={248} fill="#34d39906" />
-          <rect x="0" y="483" width="3"    height={248} fill="#34d399" opacity="0.5" />
-          <text x="14" y="500" fill="#34d39950" fontSize="10" fontWeight="800" letterSpacing="1">SPRINT 2</text>
+      {hasData && (<>
 
-          <rect x="0" y="733" width={SVG_W} height={320} fill="#fbbf2406" />
-          <rect x="0" y="733" width="3"    height={320} fill="#fbbf24" opacity="0.5" />
-          <text x="14" y="750" fill="#fbbf2450" fontSize="10" fontWeight="800" letterSpacing="1">SPRINT 3</text>
+        {/* ── KPI Cards ─────────────────────────────────────── */}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <InfStatCard label="Commits totales"  value={totalCommits}
+            sub={`${memberStats.filter(ms => ms.commits > 0).length}/${TEAM_MEMBERS.length} contribuidores`} color="#818cf8" />
+          <InfStatCard label="PRs mergeadas"    value={totalPRs}
+            sub={`de ${memberStats.reduce((s, ms) => s + ms.pr.total, 0)} PRs totales`} color="#34d399" />
+          <InfStatCard label="Code reviews"     value={totalRevs}
+            sub={`${memberStats.filter(ms => ms.revs > 0).length}/${TEAM_MEMBERS.length} revisores`} color="#f59e0b" />
+          <InfStatCard label="Participación"    value={`${Math.round(activeMembers / TEAM_MEMBERS.length * 100)}%`}
+            sub={`${activeMembers}/${TEAM_MEMBERS.length} miembros activos`}
+            color={activeMembers / TEAM_MEMBERS.length >= 0.8 ? "#22c55e" : activeMembers / TEAM_MEMBERS.length >= 0.5 ? "#f59e0b" : "#ef4444"} />
+          <InfStatCard label="Líneas añadidas"  value={totalAdded.toLocaleString()}
+            sub={`total proyecto`} color="#38bdf8" />
+          {teamAvgMerge !== null && (
+            <InfStatCard label="Tiempo medio merge" value={`${teamAvgMerge}d`}
+              sub={`de ${allMergeTimes.length} PRs con fecha`}
+              color={teamAvgMerge <= 1 ? "#22c55e" : teamAvgMerge <= 3 ? "#f59e0b" : "#ef4444"} />
+          )}
+        </div>
 
-          <line x1="750" y1="28" x2="750" y2="1055" stroke="#27272a" strokeDasharray="5,5" strokeWidth="1" opacity="0.6" />
-          <text x="370" y="42" fill="#3f3f46" fontSize="10" textAnchor="middle" fontWeight="700" letterSpacing="2">🏢  RESIDENCIAS  ←</text>
-          <text x="570" y="42" fill="#3f3f46" fontSize="10" textAnchor="middle" fontWeight="700" letterSpacing="2">→  RESIDENTES  👤</text>
-          <line x1="775" y1="28" x2="775" y2="1055" stroke="#27272a" strokeDasharray="3,5" strokeWidth="1" opacity="0.4" />
-          <text x="885" y="42" fill="#3f3f46" fontSize="10" textAnchor="middle" fontWeight="700" letterSpacing="2">⚙ PROCESO</text>
-
-          {GEDGES.map(e => {
-            const key = `${e.from}>${e.to}`;
-            const active = hovered && connectedEdgeKeys.has(key);
-            return (
-              <path
-                key={key}
-                d={bezier(e)}
-                fill="none"
-                stroke={!hovered ? "#2a2a35" : active ? sprintColor[nodeMap[e.from]?.sprint || 1] : "#1a1a22"}
-                strokeWidth={active ? 2.5 : 1.5}
-                strokeOpacity={!hovered ? 0.6 : active ? 1 : 0.08}
-                strokeDasharray={e.type === "secondary" ? "6,4" : "none"}
-                markerEnd="url(#arr)"
-                style={{ transition:"stroke-opacity .15s" }}
-              />
-            );
-          })}
-
-          {GNODES.map(n => {
-            const color   = sprintColor[n.sprint];
-            const bc      = trackColors[n.track] || color;
-            const isHov   = hovered === n.id;
-            const opacity = !hovered ? 1 : connectedNodeIds.has(n.id) ? 1 : 0.2;
-            return (
-              <g
-                key={n.id}
-                transform={`translate(${n.x},${n.y})`}
-                style={{ cursor:"pointer", opacity, transition:"opacity .15s" }}
-                onMouseEnter={() => setHovered(n.id)}
-                onMouseLeave={() => setHovered(null)}
-              >
-                {isHov && <rect x="-4" y="-4" width={NW+8} height={NH+8} rx="11" fill={color} opacity="0.18" filter={`url(#glow${n.sprint})`} />}
-                <rect x="0" y="0" width={NW} height={NH} rx="8" fill="#14141c" stroke={isHov ? color : `${bc}55`} strokeWidth={isHov ? 2 : 1} />
-                <rect x="0" y="0" width="4" height={NH} rx="4" fill={bc} opacity="0.8" />
-                <circle cx={NW-9} cy="10" r="4.5" fill={color} opacity="0.9" />
-                <text x={NW/2+2} y="20" fill={isHov ? color : "#d1d5db"} fontSize="11" fontWeight="700" textAnchor="middle">{n.label}</text>
-                <text x={NW/2+2} y="34" fill="#52525b" fontSize="9" textAnchor="middle">{n.sub}</text>
-                {isHov && <text x={NW/2+2} y="46" fill={color} fontSize="8" textAnchor="middle" opacity="0.8">{sprintLabel[n.sprint]}</text>}
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-
-      {/* Info panel */}
-      <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:"11px 18px", marginTop:12, minHeight:52 }}>
-        {hovered ? (() => {
-          const n    = nodeMap[hovered];
-          const deps = GEDGES.filter(e => e.to   === hovered).map(e => nodeMap[e.from]?.label).filter(Boolean);
-          const enab = GEDGES.filter(e => e.from === hovered).map(e => nodeMap[e.to]?.label).filter(Boolean);
+        {/* ── Custom Metrics Highlights ─────────────────────── */}
+        {(() => {
+          const topCollab   = byCollab[0];
+          const topCons     = byCons[0];
+          const topLines    = byLines[0];
+          const fastMerger  = [...memberStats].filter(ms => ms.amt !== null).sort((a, b) => a.amt - b.amt)[0];
           return (
-            <div>
-              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-                <span style={{ color:sprintColor[n.sprint], fontWeight:800, fontSize:13 }}>{n.label}</span>
-                <span style={{ background:`${sprintColor[n.sprint]}20`, color:sprintColor[n.sprint], padding:"2px 7px", borderRadius:4, fontSize:10, fontWeight:700 }}>{sprintLabel[n.sprint]}</span>
-                <span style={{ color:"#52525b", fontSize:11 }}>{n.sub}</span>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 8 }}>
+              {[
+                { icon: "🤝", label: "Mejor colaborador",    name: topCollab?.m.name,  val: `Score ${topCollab?.collabScore}`, color: "#a855f7", tip: "reviews / (commits+1) × 50" },
+                { icon: "📅", label: "Más consistente",      name: topCons?.m.name,    val: `${topCons?.cons ?? "—"}% semanas`, color: "#38bdf8", tip: "% semanas con ≥1 commit" },
+                { icon: "📦", label: "Más código aportado",  name: topLines?.m.name,   val: `+${(topLines?.lns.added||0).toLocaleString()} líneas`, color: "#34d399", tip: "líneas añadidas total" },
+                ...(fastMerger ? [{ icon: "⚡", label: "PRs más rápidas", name: fastMerger.m.name, val: `${fastMerger.amt}d promedio`, color: "#fbbf24", tip: "promedio días hasta merge" }] : []),
+              ].map(({ icon, label, name, val, color, tip }) => (
+                <div key={label} title={tip} style={{ background: "#111113", border: `1px solid ${color}25`, borderRadius: 10, padding: "10px 12px" }}>
+                  <div style={{ color: "#52525b", fontSize: 9, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4 }}>{icon} {label}</div>
+                  <div style={{ color: "#e2e8f0", fontWeight: 700, fontSize: 12, marginBottom: 2 }}>{name?.split(" ").slice(0, 2).join(" ")}</div>
+                  <div style={{ color, fontSize: 11, fontWeight: 700 }}>{val}</div>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
+
+        {/* ── Bar Charts Row 1: Commits / PRs / Reviews ──────── */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
+          {[
+            { title: "💻 Commits",       sorted: byCommits, getValue: ms => ms.commits,   getLabel: ms => ms.commits,                            color: "#818cf8" },
+            { title: "🔀 PRs mergeadas", sorted: byPRs,     getValue: ms => ms.pr.merged, getLabel: ms => `${ms.pr.merged}/${ms.pr.total}`,       color: "#34d399" },
+            { title: "👀 Code reviews",  sorted: byRevs,    getValue: ms => ms.revs,      getLabel: ms => ms.revs,                               color: "#f59e0b" },
+          ].map(({ title, sorted, getValue, getLabel, color }) => {
+            const mv = Math.max(...sorted.map(ms => getValue(ms)), 1);
+            return (
+              <div key={title} style={{ background: "#111113", border: `1px solid ${color}20`, borderRadius: 10, padding: "12px 12px 8px" }}>
+                <div style={{ color, fontWeight: 700, fontSize: 9, textTransform: "uppercase", letterSpacing: 2, marginBottom: 8 }}>{title}</div>
+                <HBar sorted={sorted} getValue={getValue} getLabel={getLabel} maxVal={mv} color={color} showMax />
               </div>
-              <div style={{ display:"flex", flexWrap:"wrap", gap:18 }}>
-                {deps.length > 0 && (
-                  <div>
-                    <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", marginBottom:4 }}>Requiere</div>
-                    <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
-                      {deps.map(d => <span key={d} style={{ background:"#1a1a22", border:"1px solid #27272a", color:"#e2e8f0", padding:"2px 7px", borderRadius:4, fontSize:10 }}>← {d}</span>)}
+            );
+          })}
+        </div>
+
+        {/* ── Bar Charts Row 2: Lines / Consistency / Collab ─── */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
+          {[
+            {
+              title: "📦 Líneas añadidas", sorted: byLines,
+              getValue: ms => ms.lns.added,
+              getLabel: ms => ms.lns.added > 999 ? `${(ms.lns.added/1000).toFixed(1)}k` : ms.lns.added,
+              color: "#38bdf8",
+            },
+            {
+              title: "📅 Consistencia (%)", sorted: byCons,
+              getValue: ms => ms.cons ?? 0,
+              getLabel: ms => ms.cons !== null ? `${ms.cons}%` : "—",
+              color: "#a855f7",
+            },
+            {
+              title: "🤝 Score colaboración", sorted: byCollab,
+              getValue: ms => ms.collabScore,
+              getLabel: ms => ms.collabScore,
+              color: "#f43f5e",
+            },
+          ].map(({ title, sorted, getValue, getLabel, color }) => {
+            const mv = Math.max(...sorted.map(ms => getValue(ms)), 1);
+            return (
+              <div key={title} style={{ background: "#111113", border: `1px solid ${color}20`, borderRadius: 10, padding: "12px 12px 8px" }}>
+                <div style={{ color, fontWeight: 700, fontSize: 9, textTransform: "uppercase", letterSpacing: 2, marginBottom: 8 }}>{title}</div>
+                <HBar sorted={sorted} getValue={getValue} getLabel={getLabel} maxVal={mv} color={color} showMax />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── Scatter + Team comparison ─────────────────────── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+
+          {/* Scatter: commits vs reviews */}
+          <div style={{ background: "#111113", border: "1px solid #27272a", borderRadius: 10, padding: "14px" }}>
+            <div style={{ color: "#94a3b8", fontWeight: 700, fontSize: 9, textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 }}>
+              🎯 Dispersión: Commits vs Reviews
+            </div>
+            <div style={{ color: "#52525b", fontSize: 8, marginBottom: 8 }}>
+              Líneas = media. Tamaño = PRs. Q1:Colaborador · Q2:Revisor · Q3:Dev · Q4:Bajo perfil
+            </div>
+            {(() => {
+              const W = 310, H = 190, P = { l: 28, r: 8, t: 8, b: 22 };
+              const px = v => P.l + v / maxSC * (W - P.l - P.r);
+              const py = v => H - P.b - v / maxSR * (H - P.t - P.b);
+              const mx = px(meanC), my = py(meanR);
+              return (
+                <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto" }}>
+                  {[0.25, 0.5, 0.75, 1].map(f => (
+                    <line key={f} x1={P.l} y1={py(maxSR * f)} x2={W - P.r} y2={py(maxSR * f)} stroke="#1e2030" strokeWidth={0.5} />
+                  ))}
+                  <line x1={mx} y1={P.t} x2={mx} y2={H - P.b} stroke="#3f3f46" strokeWidth={0.8} strokeDasharray="3,2" />
+                  <line x1={P.l} y1={my} x2={W - P.r} y2={my} stroke="#3f3f46" strokeWidth={0.8} strokeDasharray="3,2" />
+                  <text x={P.l + 2} y={P.t + 7}   fontSize={4.5} fill="#3f3f46">Revisor</text>
+                  <text x={mx + 2} y={P.t + 7}     fontSize={4.5} fill="#3f3f46">Colaborador total</text>
+                  <text x={P.l + 2} y={H - P.b - 2} fontSize={4.5} fill="#3f3f46">Bajo perfil</text>
+                  <text x={mx + 2} y={H - P.b - 2}  fontSize={4.5} fill="#3f3f46">Dev</text>
+                  <line x1={P.l} y1={H - P.b} x2={W - P.r} y2={H - P.b} stroke="#3f3f46" strokeWidth={0.5} />
+                  <line x1={P.l} y1={P.t}     x2={P.l}     y2={H - P.b} stroke="#3f3f46" strokeWidth={0.5} />
+                  <text x={W / 2} y={H - 1} textAnchor="middle" fontSize={5} fill="#52525b">Commits →</text>
+                  <text x={5} y={H / 2} textAnchor="middle" fontSize={5} fill="#52525b" transform={`rotate(-90,5,${H / 2})`}>Reviews →</text>
+                  {[0, Math.round(maxSC / 2), maxSC].map(v => (
+                    <text key={v} x={px(v)} y={H - P.b + 7} textAnchor="middle" fontSize={3.8} fill="#3f3f46">{v}</text>
+                  ))}
+                  {[0, Math.round(maxSR / 2), maxSR].map(v => (
+                    <text key={v} x={P.l - 2} y={py(v) + 1.5} textAnchor="end" fontSize={3.8} fill="#3f3f46">{v}</text>
+                  ))}
+                  {memberStats.map(ms => {
+                    const cx = px(ms.commits), cy = py(ms.revs);
+                    const r  = 2.5 + Math.min(ms.pr.merged / Math.max(maxPRs, 1) * 3.5, 3.5);
+                    return (
+                      <g key={ms.m.login}>
+                        <circle cx={cx} cy={cy} r={r} fill={TC[ms.m.team]} opacity={0.85} />
+                        <text x={cx + r + 1} y={cy + 2} fontSize={3.8} fill="#94a3b8">
+                          {ms.m.name.split(" ")[0]}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </svg>
+              );
+            })()}
+            <div style={{ display: "flex", gap: 8, marginTop: 4, flexWrap: "wrap" }}>
+              {Object.entries(TC).map(([t, c]) => (
+                <span key={t} style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 8.5, color: "#94a3b8" }}>
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: c, display: "inline-block" }} />
+                  Eq.{t}
+                </span>
+              ))}
+              <span style={{ fontSize: 8.5, color: "#52525b" }}>· Tamaño = PRs</span>
+            </div>
+          </div>
+
+          {/* Team comparison */}
+          <div style={{ background: "#111113", border: "1px solid #27272a", borderRadius: 10, padding: "14px" }}>
+            <div style={{ color: "#94a3b8", fontWeight: 700, fontSize: 9, textTransform: "uppercase", letterSpacing: 2, marginBottom: 12 }}>
+              📊 Comparativa por equipo
+            </div>
+            {teamTotals.map(({ team, color, commits, prs, reviews, added, members, active }) => (
+              <div key={team} style={{ marginBottom: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+                  <span style={{ background: `${color}20`, color, fontWeight: 800, fontSize: 9, textTransform: "uppercase", letterSpacing: 2, padding: "2px 8px", borderRadius: 4 }}>
+                    Equipo {team}
+                  </span>
+                  <span style={{ color: "#52525b", fontSize: 8.5 }}>{active}/{members} activos</span>
+                </div>
+                {[
+                  { label: "Commits", val: commits, max: maxTC,  col: "#818cf8" },
+                  { label: "PRs",     val: prs,     max: maxTPR, col: "#34d399" },
+                  { label: "Reviews", val: reviews, max: maxTRV, col: "#f59e0b" },
+                  { label: "+Líneas", val: added,   max: maxTA,  col: "#38bdf8" },
+                ].map(({ label, val, max, col }) => (
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 3 }}>
+                    <span style={{ color: "#52525b", fontSize: 7.5, width: 38, flexShrink: 0 }}>{label}</span>
+                    <div style={{ flex: 1, height: 5, background: "#27272a", borderRadius: 3, overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${max > 0 ? val / max * 100 : 0}%`, background: col, borderRadius: 3, opacity: 0.9 }} />
                     </div>
+                    <span style={{ color: col, fontSize: 8.5, fontWeight: 700, width: 30, textAlign: "right", flexShrink: 0 }}>
+                      {val > 999 ? `${(val / 1000).toFixed(1)}k` : val}
+                    </span>
                   </div>
-                )}
-                {enab.length > 0 && (
-                  <div>
-                    <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", marginBottom:4 }}>Habilita</div>
-                    <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
-                      {enab.map(d => <span key={d} style={{ background:"#1a1a22", border:"1px solid #27272a", color:"#e2e8f0", padding:"2px 7px", borderRadius:4, fontSize:10 }}>{d} →</span>)}
-                    </div>
-                  </div>
-                )}
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── 52-week Activity Heatmap ──────────────────────── */}
+        {Array.isArray(stats?.commitActivity) && stats.commitActivity.length > 0 && (() => {
+          const weeks = stats.commitActivity.slice(-52);
+          const maxDay = Math.max(...weeks.flatMap(w => w.days), 1);
+          const cellSize = 11, gap = 2, step = cellSize + gap;
+          const DAYS = ["D", "L", "M", "X", "J", "V", "S"];
+          const W = 52 * step + 28, H = 7 * step + 22;
+          const color = (v) => {
+            if (v === 0) return "#1a1a2e";
+            const i = Math.min(Math.floor(v / maxDay * 4), 3);
+            return ["#1e3a5f", "#2563eb", "#3b82f6", "#93c5fd"][i];
+          };
+          return (
+            <div style={{ background: "#111113", border: "1px solid #27272a", borderRadius: 10, padding: "14px 16px" }}>
+              <div style={{ color: "#94a3b8", fontWeight: 700, fontSize: 9, textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 }}>
+                📈 Actividad de commits — últimas 52 semanas
+              </div>
+              <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto" }}>
+                {DAYS.map((d, i) => (
+                  <text key={d} x={14} y={20 + i * step + cellSize / 2} textAnchor="middle" fontSize={5} fill="#52525b">{d}</text>
+                ))}
+                {weeks.map((w, wi) => (
+                  w.days.map((count, di) => {
+                    const x = 22 + wi * step;
+                    const y = 16 + di * step;
+                    return (
+                      <rect key={`${wi}-${di}`} x={x} y={y} width={cellSize} height={cellSize} rx={2}
+                        fill={color(count)} opacity={0.95}>
+                        <title>{`Sem ${wi + 1}, ${DAYS[di]}: ${count} commits`}</title>
+                      </rect>
+                    );
+                  })
+                ))}
+                {/* Month labels (approximate) */}
+                {[0, 4, 8, 13, 17, 21, 26, 30, 34, 39, 43, 47].map((wi, mi) => {
+                  const x = 22 + wi * step + cellSize / 2;
+                  const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+                  return <text key={mi} x={x} y={11} textAnchor="middle" fontSize={4.5} fill="#3f3f46">{months[mi]}</text>;
+                })}
+              </svg>
+              <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 4 }}>
+                <span style={{ color: "#52525b", fontSize: 8 }}>Menos</span>
+                {["#1a1a2e", "#1e3a5f", "#2563eb", "#3b82f6", "#93c5fd"].map(c => (
+                  <span key={c} style={{ width: 8, height: 8, borderRadius: 1, background: c, display: "inline-block" }} />
+                ))}
+                <span style={{ color: "#52525b", fontSize: 8 }}>Más</span>
               </div>
             </div>
           );
-        })() : (
-          <div style={{ color:"#3f3f46", fontSize:11 }}>Pasa el ratón sobre un módulo para ver sus dependencias…</div>
-        )}
-      </div>
+        })()}
+
+        {/* ── Punch Card: commits por hora × día ───────────── */}
+        {Array.isArray(stats?.punchCard) && stats.punchCard.length > 0 && (() => {
+          const data = stats.punchCard;
+          const maxV = Math.max(...data.map(([, , c]) => c), 1);
+          const DAYS  = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+          const cellW = 20, cellH = 18, padL = 30, padT = 20;
+          const W = padL + 24 * cellW + 10, H = padT + 7 * cellH + 10;
+          return (
+            <div style={{ background: "#111113", border: "1px solid #27272a", borderRadius: 10, padding: "14px 16px" }}>
+              <div style={{ color: "#94a3b8", fontWeight: 700, fontSize: 9, textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 }}>
+                ⏰ Patrón temporal — commits por hora y día
+              </div>
+              <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto" }}>
+                {DAYS.map((d, i) => (
+                  <text key={d} x={padL - 3} y={padT + i * cellH + cellH / 2 + 1.5} textAnchor="end" fontSize={5} fill="#52525b">{d}</text>
+                ))}
+                {Array.from({ length: 24 }, (_, h) => (
+                  <text key={h} x={padL + h * cellW + cellW / 2} y={padT - 3} textAnchor="middle" fontSize={4.5} fill="#52525b">
+                    {h % 3 === 0 ? `${h}h` : ""}
+                  </text>
+                ))}
+                {data.map(([day, hour, count]) => {
+                  const r   = count > 0 ? Math.sqrt(count / maxV) * (cellH / 2 - 1.5) : 0;
+                  const cx  = padL + hour * cellW + cellW / 2;
+                  const cy  = padT + day  * cellH + cellH / 2;
+                  const col = day === 0 || day === 6 ? "#f59e0b" : "#818cf8";
+                  return r > 0 ? (
+                    <circle key={`${day}-${hour}`} cx={cx} cy={cy} r={r}
+                      fill={col} opacity={0.7}>
+                      <title>{`${DAYS[day]} ${hour}:00 — ${count} commits`}</title>
+                    </circle>
+                  ) : (
+                    <rect key={`${day}-${hour}`} x={cx - 1} y={cy - 1} width={2} height={2} fill="#1f2937" />
+                  );
+                })}
+              </svg>
+              <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
+                <span style={{ fontSize: 8.5, color: "#52525b" }}>
+                  <span style={{ display: "inline-block", width: 7, height: 7, borderRadius: "50%", background: "#818cf8", marginRight: 3 }} />
+                  Días laborables
+                </span>
+                <span style={{ fontSize: 8.5, color: "#52525b" }}>
+                  <span style={{ display: "inline-block", width: 7, height: 7, borderRadius: "50%", background: "#f59e0b", marginRight: 3 }} />
+                  Fines de semana
+                </span>
+                <span style={{ fontSize: 8.5, color: "#52525b" }}>· Tamaño proporcional al nº de commits</span>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* ── Per-team member cards ─────────────────────────── */}
+        {["A", "B", "C", "D"].map(team => {
+          const tc   = TC[team];
+          const rows = memberStats.filter(ms => ms.m.team === team);
+          const tt   = teamTotals.find(t => t.team === team);
+          return (
+            <div key={team}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                <span style={{ background: `${tc}20`, color: tc, fontWeight: 800, fontSize: 10,
+                  textTransform: "uppercase", letterSpacing: 2, padding: "3px 10px", borderRadius: 5, flexShrink: 0 }}>
+                  Equipo {team}
+                </span>
+                <span style={{ color: "#52525b", fontSize: 10 }}>
+                  {tt.commits} commits · {tt.prs} PRs · {tt.reviews} reviews · +{(tt.added/1000).toFixed(1)}k líneas
+                </span>
+                <div style={{ flex: 1, height: 1, background: "#27272a" }} />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {rows.map(({ m, commits, pr, revs, lns, cons, amt, wc, collabScore, prEfficiency }) => (
+                  <div key={m.login} style={{ background: "#111113", border: "1px solid #27272a", borderRadius: 10, padding: "10px 14px" }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
+                      {/* Avatar + name */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 160 }}>
+                        <img src={`https://github.com/${m.login}.png?size=36`} alt={m.name}
+                          style={{ width: 32, height: 32, borderRadius: "50%", border: `2px solid ${tc}50`, flexShrink: 0 }} />
+                        <div>
+                          <div style={{ color: "#e2e8f0", fontWeight: 700, fontSize: 12 }}>{m.name}</div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                            <a href={`https://github.com/${m.login}`} target="_blank" rel="noreferrer"
+                              style={{ display: "inline-flex", alignItems: "center", gap: 3, color: "#52525b", fontSize: 9, textDecoration: "none" }}
+                              title={`Ver perfil de @${m.login} en GitHub`}>
+                              <svg viewBox="0 0 16 16" width={10} height={10} fill="#52525b">
+                                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                              </svg>
+                              @{m.login}
+                            </a>
+                            <span style={{ color: "#3f3f46", fontSize: 9 }}>· {m.role}{m.coord ? " · Coord" : ""}</span>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Main metrics */}
+                      <div style={{ display: "flex", gap: 16, flex: 1, flexWrap: "wrap" }}>
+                        {[
+                          { value: commits,   label: "Commits",  color: "#818cf8" },
+                          { value: pr.merged, label: "PRs",      color: "#34d399", sub: `/${pr.total}` },
+                          ...(pr.open > 0 ? [{ value: pr.open,   label: "Open PRs", color: "#fbbf24" }] : []),
+                          { value: revs,      label: "Reviews",  color: "#f59e0b" },
+                        ].map(({ value, label, color, sub }) => (
+                          <div key={label} style={{ textAlign: "center" }}>
+                            <div style={{ color, fontWeight: 800, fontSize: 16, lineHeight: 1.1 }}>
+                              {value}{sub && <span style={{ color: "#52525b", fontSize: 10, fontWeight: 400 }}>{sub}</span>}
+                            </div>
+                            <div style={{ color: "#52525b", fontSize: 8, textTransform: "uppercase", letterSpacing: 1 }}>{label}</div>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Custom metric badges */}
+                      <div style={{ display: "flex", gap: 5, flexWrap: "wrap", alignItems: "center" }}>
+                        {cons !== null && (
+                          <span title={`${cons}% de semanas con ≥1 commit`}
+                            style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4,
+                              background: cons >= 50 ? "#38bdf820" : "#27272a",
+                              color: cons >= 70 ? "#38bdf8" : cons >= 40 ? "#94a3b8" : "#52525b",
+                              border: `1px solid ${cons >= 50 ? "#38bdf840" : "#3f3f46"}` }}>
+                            📅 {cons}%
+                          </span>
+                        )}
+                        <span title={`Score de colaboración (reviews vs commits)`}
+                          style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4,
+                            background: collabScore >= 60 ? "#a855f720" : "#27272a",
+                            color: collabScore >= 60 ? "#a855f7" : collabScore >= 30 ? "#94a3b8" : "#52525b",
+                            border: `1px solid ${collabScore >= 60 ? "#a855f740" : "#3f3f46"}` }}>
+                          🤝 {collabScore}
+                        </span>
+                        {prEfficiency !== null && (
+                          <span title={`${prEfficiency}% de PRs mergeadas`}
+                            style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4,
+                              background: prEfficiency >= 70 ? "#34d39920" : "#27272a",
+                              color: prEfficiency >= 70 ? "#34d399" : "#94a3b8",
+                              border: `1px solid ${prEfficiency >= 70 ? "#34d39940" : "#3f3f46"}` }}>
+                            🔀 {prEfficiency}%
+                          </span>
+                        )}
+                        {amt !== null && (
+                          <span title={`Promedio ${amt} días hasta merge`}
+                            style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4,
+                              background: amt <= 1 ? "#22c55e20" : amt <= 3 ? "#f59e0b20" : "#ef444420",
+                              color: amt <= 1 ? "#22c55e" : amt <= 3 ? "#f59e0b" : "#ef4444",
+                              border: `1px solid ${amt <= 1 ? "#22c55e40" : amt <= 3 ? "#f59e0b40" : "#ef444440"}` }}>
+                            ⚡ {amt}d
+                          </span>
+                        )}
+                        {lns.added > 0 && (
+                          <span title={`+${lns.added.toLocaleString()} líneas añadidas, -${lns.deleted.toLocaleString()} eliminadas`}
+                            style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4,
+                              background: "#38bdf815", color: "#38bdf8", border: "1px solid #38bdf830" }}>
+                            +{lns.added > 999 ? `${(lns.added / 1000).toFixed(1)}k` : lns.added}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {/* Mini bars */}
+                    <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                      {[
+                        { label: "Commits", val: commits,   max: maxCommits, col: "#818cf8" },
+                        { label: "PRs",     val: pr.merged, max: maxPRs,     col: "#34d399" },
+                        { label: "Reviews", val: revs,      max: maxRevs,    col: "#f59e0b" },
+                        { label: "+Líneas", val: lns.added, max: maxAdded,   col: "#38bdf8" },
+                      ].map(({ label, val, max, col }) => (
+                        <div key={label} style={{ flex: 1 }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
+                            <span style={{ color: "#52525b", fontSize: 7.5, textTransform: "uppercase", letterSpacing: 0.8 }}>{label}</span>
+                            <span style={{ color: col, fontSize: 7.5, fontWeight: 700 }}>
+                              {val > 999 ? `${(val / 1000).toFixed(1)}k` : val}
+                            </span>
+                          </div>
+                          <div style={{ height: 3, background: "#27272a", borderRadius: 2, overflow: "hidden" }}>
+                            <div style={{ height: "100%", width: `${max > 0 ? val / max * 100 : 0}%`, background: col, borderRadius: 2 }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+
+      </>)}
     </div>
   );
 }
+
 
 // ── APP ───────────────────────────────────────────────────────
 
@@ -1471,16 +1854,40 @@ function ExportMdModal({ report, sprint, onClose }) {
   );
 }
 
+const _CLOCK_KEY = "nexus_clockify_v1";
+function _saveClockify(rpt, fileName) {
+  try { localStorage.setItem(_CLOCK_KEY, JSON.stringify({ r: rpt, f: fileName, t: Date.now() })); } catch(_) {}
+}
+function _loadClockify() {
+  try {
+    const raw = localStorage.getItem(_CLOCK_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    return (s?.r) ? s : null;
+  } catch(_) { return null; }
+}
+
 function InformePane() {
+  // Lazy-init: localStorage > DEFAULT_CLOCKIFY > vacío (runs once per mount)
+  const [[initReport, initFileName, initStatus]] = useState(() => {
+    const s = _loadClockify();
+    if (s) {
+      const d = new Date(s.t).toLocaleDateString("es-ES", { day:"2-digit", month:"2-digit", year:"2-digit" });
+      return [s.r, `${s.f}  ·  ${d}`, "ok"];
+    }
+    if (DEFAULT_CLOCKIFY) return [
+      DEFAULT_CLOCKIFY,
+      `${DEFAULT_CLOCKIFY.sourceFile || "clockify-entries.json"}  ·  ${new Date(DEFAULT_CLOCKIFY.fetchedAt).toLocaleDateString("es-ES")}`,
+      "ok"
+    ];
+    return [null, "", "idle"];
+  });
+
   const [drag,     setDrag]     = useState(false);
-  const [status,   setStatus]   = useState(DEFAULT_CLOCKIFY ? "ok" : "idle");
+  const [status,   setStatus]   = useState(initStatus);
   const [errMsg,   setErrMsg]   = useState("");
-  const [report,   setReport]   = useState(DEFAULT_CLOCKIFY);
-  const [fileName, setFileName] = useState(
-    DEFAULT_CLOCKIFY
-      ? `${DEFAULT_CLOCKIFY.sourceFile || "clockify-entries.json"}  ·  ${new Date(DEFAULT_CLOCKIFY.fetchedAt).toLocaleDateString("es-ES")}`
-      : ""
-  );
+  const [report,   setReport]   = useState(initReport);
+  const [fileName, setFileName] = useState(initFileName);
   const [view,     setView]     = useState("equipo"); // open on team tab by default
   const [sprint,   setSprint]   = useState(0);
   const [showExport, setShowExport] = useState(false);
@@ -1505,6 +1912,7 @@ function InformePane() {
         setReport(rpt);
         setStatus("ok");
         setErrMsg("");
+        _saveClockify(rpt, file.name);
       } catch(ex) {
         setErrMsg(ex.message); setStatus("error");
       }
@@ -3270,7 +3678,7 @@ export default function App() {
         {tab === "s2"    && <BacklogPane sprint={2} />}
         {tab === "s3"    && <BacklogPane sprint={3} />}
         {tab === "cal"   && <CalendarPane />}
-        {tab === "graph"  && <GraphPane />}
+        {tab === "github" && <GitHubPane />}
         {tab === "costes"  && <CostesPane />}
         {tab === "informe" && <InformePane />}
       </div>
