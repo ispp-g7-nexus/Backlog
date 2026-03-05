@@ -254,13 +254,16 @@ const AREA_COLORS = [
   "#f87171","#38bdf8","#a3e635","#facc15","#c084fc","#4ade80","#60a5fa",
 ];
 const TABS = [
-  { id:"github",  label:"🐙 GitHub",       color:"#94a3b8" },
-  { id:"s1",      label:"Sprint 1",        color:"#818cf8" },
-  { id:"s2",      label:"Sprint 2",        color:"#34d399" },
-  { id:"s3",      label:"Sprint 3",        color:"#fbbf24" },
-  { id:"cal",     label:"📅 Calendario",   color:"#38bdf8" },
-  { id:"costes",  label:"💰 Costes",       color:"#f97316" },
-  { id:"informe", label:"📊 Informe CSV",  color:"#6ee7b7" },
+  { id:"github",   label:"🐙 GitHub",          color:"#94a3b8" },
+  { id:"project",  label:"📋 GitHub Project",  color:"#818cf8" },
+  { id:"informe",  label:"⏱️ Clockify",         color:"#6ee7b7" },
+  { id:"cal",      label:"📅 Calendario",       color:"#38bdf8" },
+  { id:"costes",   label:"💰 Costes",           color:"#f97316" },
+];
+const SPRINT_TABS = [
+  { id:"s1", label:"Sprint 1", color:"#818cf8" },
+  { id:"s2", label:"Sprint 2", color:"#34d399" },
+  { id:"s3", label:"Sprint 3", color:"#fbbf24" },
 ];
 
 // ── BADGES ────────────────────────────────────────────────────
@@ -758,7 +761,7 @@ async function fetchGitHubStats(token) {
     gs("stats/code_frequency"),
   ]);
 
-  const lines = {}, consistency = {}, weeklyCommits = {};
+  const lines = {}, consistency = {}, weeklyCommits = {}, linesWeekMap = {};
   if (Array.isArray(statsContribs)) {
     statsContribs.forEach(sc => {
       const l = sc.author?.login?.toLowerCase(); if (!l) return;
@@ -769,11 +772,27 @@ async function fetchGitHubStats(token) {
       const aw = sc.weeks.filter(w => w.c > 0).length;
       consistency[l] = sc.weeks.length ? Math.round(aw / sc.weeks.length * 100) : 0;
       weeklyCommits[l] = sc.weeks.slice(-26).map(w => w.c);
+      sc.weeks.forEach(w => {
+        if (w.a > 0 || w.d !== 0) {
+          if (!linesWeekMap[w.w]) linesWeekMap[w.w] = { a: 0, d: 0 };
+          linesWeekMap[w.w].a += w.a || 0;
+          linesWeekMap[w.w].d += Math.abs(w.d || 0);
+        }
+      });
     });
   }
+  // Build linesActivity (52 weeks) from statsContribs weekly data
+  const laNow = new Date(), laDow = laNow.getUTCDay();
+  const laSun = new Date(laNow); laSun.setUTCDate(laNow.getUTCDate() - laDow); laSun.setUTCHours(0,0,0,0);
+  const linesActivity = Array.from({length: 52}, (_, i) => {
+    const wStart = new Date(laSun); wStart.setUTCDate(laSun.getUTCDate() - (51 - i) * 7);
+    const ts = Math.floor(wStart.getTime() / 1000);
+    const e = linesWeekMap[ts] || { a: 0, d: 0 };
+    return { week: ts, added: e.a, deleted: e.d, total: e.a + e.d };
+  });
 
   // 6. PRs + reviews via GraphQL (paginated, with dates & line counts)
-  const prs = {}, reviews = {}, mergeTs = {};
+  const prs = {}, reviews = {}, mergeTs = {}, prDayMap = {}, prPunchRaw = {}, prLoginDayMap = {};
   let cursor = null, hasMore = true;
   while (hasMore) {
     const af = cursor ? `, after:"${cursor}"` : "";
@@ -795,6 +814,15 @@ async function fetchGitHubStats(token) {
         } else if (pr.state === "OPEN") prs[a].open++;
         prs[a].additions += pr.additions || 0;
         prs[a].deletions += pr.deletions || 0;
+        if (pr.createdAt) {
+          const d = new Date(pr.createdAt);
+          const dateStr = d.toISOString().slice(0, 10); // 'YYYY-MM-DD'
+          prDayMap[dateStr] = (prDayMap[dateStr] || 0) + 1;
+          const pk = `${d.getUTCDay()}-${d.getUTCHours()}`;
+          prPunchRaw[pk] = (prPunchRaw[pk] || 0) + 1;
+          if (!prLoginDayMap[a]) prLoginDayMap[a] = {};
+          prLoginDayMap[a][dateStr] = (prLoginDayMap[a][dateStr] || 0) + 1;
+        }
       }
       pr.reviews?.nodes?.forEach(rv => {
         const r2 = rv.author?.login?.toLowerCase();
@@ -809,15 +837,46 @@ async function fetchGitHubStats(token) {
     avgMergeTime[l] = Math.round(ts.reduce((s, d) => s + d, 0) / ts.length * 10) / 10;
   });
 
+  // Build prActivity in same format as commitActivity: [{week, total, days:[sun..sat]}, ...]
+  // Use Sunday-based weeks (same as GitHub stats/commit_activity)
+  const prNow = new Date(), prDow = prNow.getUTCDay();
+  const prSun = new Date(prNow); prSun.setUTCDate(prNow.getUTCDate() - prDow); prSun.setUTCHours(0,0,0,0);
+  const prActivity = Array.from({length: 52}, (_, i) => {
+    const wStart = new Date(prSun); wStart.setUTCDate(prSun.getUTCDate() - (51 - i) * 7);
+    const days = Array.from({length: 7}, (_, d) => {
+      const day = new Date(wStart); day.setUTCDate(wStart.getUTCDate() + d);
+      return prDayMap[day.toISOString().slice(0, 10)] || 0;
+    });
+    return { week: Math.floor(wStart.getTime() / 1000), total: days.reduce((s, c) => s + c, 0), days };
+  });
+  const prPunch = [];
+  for (let d = 0; d < 7; d++) for (let h = 0; h < 24; h++) prPunch.push([d, h, prPunchRaw[`${d}-${h}`] || 0]);
+
+  // Build weeklyPRs per login (last 26 weeks, same Sunday base as prActivity)
+  const weeklyPRs = {};
+  TEAM_MEMBERS.forEach(m => {
+    const l = m.login.toLowerCase();
+    const userDayMap = prLoginDayMap[l] || {};
+    weeklyPRs[l] = Array.from({length: 26}, (_, i) => {
+      const wStart = new Date(prSun); wStart.setUTCDate(prSun.getUTCDate() - (25 - i) * 7);
+      return Array.from({length: 7}, (_, d) => {
+        const day = new Date(wStart); day.setUTCDate(wStart.getUTCDate() + d);
+        return userDayMap[day.toISOString().slice(0, 10)] || 0;
+      }).reduce((s, c) => s + c, 0);
+    });
+  });
+
   return {
     commits, lines, consistency, weeklyCommits,
     prs, reviews, avgMergeTime,
     commitActivity, punchCard, codeFreq,
+    prActivity, prPunch,
+    linesActivity, weeklyPRs,
     fetchedAt: new Date().toISOString(),
   };
 }
 
-const GH_STATS_KEY = "nexus_gh_stats_v2";
+const GH_STATS_KEY = "nexus_gh_stats_v5";
 
 function GitHubPane() {
   const TC = { A: "#3b82f6", B: "#22c55e", C: "#f59e0b", D: "#a855f7" };
@@ -863,7 +922,9 @@ function GitHubPane() {
     const collabScore   = Math.min(Math.round(revs / (commits + 1) * 50), 100);
     const prEfficiency  = pr.total > 0 ? Math.round(pr.merged / pr.total * 100) : null;
     const codeImpact    = lns.added + lns.deleted;
-    return { m, commits, pr, revs, lns, cons, amt, wc, collabScore, prEfficiency, codeImpact };
+    const codeChurn     = codeImpact > 0 ? Math.round(lns.deleted / codeImpact * 100) : null;
+    const avgPRSize     = pr.merged > 0 ? Math.round((pr.additions + pr.deletions) / pr.merged) : null;
+    return { m, commits, pr, revs, lns, cons, amt, wc, collabScore, prEfficiency, codeImpact, codeChurn, avgPRSize };
   });
 
   const totalCommits  = memberStats.reduce((s, ms) => s + ms.commits, 0);
@@ -883,13 +944,19 @@ function GitHubPane() {
   const byPRs      = [...memberStats].sort((a, b) => b.pr.merged    - a.pr.merged);
   const byRevs     = [...memberStats].sort((a, b) => b.revs         - a.revs);
   const byLines    = [...memberStats].sort((a, b) => b.lns.added    - a.lns.added);
+  const byDeleted  = [...memberStats].sort((a, b) => b.lns.deleted  - a.lns.deleted);
   const byCons     = [...memberStats].sort((a, b) => (b.cons ?? -1) - (a.cons ?? -1));
   const byCollab   = [...memberStats].sort((a, b) => b.collabScore  - a.collabScore);
+  const byChurn    = [...memberStats].filter(ms => ms.codeChurn !== null && ms.lns.added > 0).sort((a, b) => a.codeChurn - b.codeChurn);
+  const byPRSize   = [...memberStats].filter(ms => ms.avgPRSize !== null).sort((a, b) => b.avgPRSize - a.avgPRSize);
+  const byMerge    = [...memberStats].filter(ms => ms.amt !== null).sort((a, b) => a.amt - b.amt);
 
   const maxCommits = Math.max(...memberStats.map(ms => ms.commits), 1);
   const maxPRs     = Math.max(...memberStats.map(ms => ms.pr.merged), 1);
   const maxRevs    = Math.max(...memberStats.map(ms => ms.revs), 1);
   const maxAdded   = Math.max(...memberStats.map(ms => ms.lns.added), 1);
+  const maxDeleted = Math.max(...memberStats.map(ms => ms.lns.deleted), 1);
+  const maxPRSize  = Math.max(...memberStats.filter(ms => ms.avgPRSize !== null).map(ms => ms.avgPRSize), 1);
 
   // Team totals
   const teamTotals = ["A", "B", "C", "D"].map(team => {
@@ -1119,7 +1186,7 @@ function GitHubPane() {
           <div style={{ display:"flex", flexDirection:"column", gap:3, position:"sticky", top:72 }}>
             {[
               { id:"commits", label:"💻 Commits",       color:"#818cf8" },
-              { id:"prs",     label:"🔀 PRs & Reviews", color:"#34d399" },
+              { id:"prs",     label:"🔀 Pull Requests",  color:"#34d399" },
               { id:"lineas",  label:"📦 Líneas",         color:"#38bdf8" },
             ].map(t => {
               const active = ghTab === t.id;
@@ -1229,6 +1296,179 @@ function GitHubPane() {
                         return <rect key={i} x={bx} y={28 - bh} width={9} height={bh} rx={1.5}
                           fill={i >= 4 ? color : "#27272a"} opacity={i >= 4 ? 0.9 : 0.6}/>;
                       })}
+                    </svg>
+                  </div>
+                );
+              })()}
+            </>)}
+
+            {/* ── Heatmap + Punch card + Tendencia — pestaña PRs ── */}
+            {ghTab === "prs" && (<>
+              {(() => {
+                const MN=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+                const DAYS=["D","L","M","X","J","V","S"];
+                // prActivity already has daily breakdown: [{week, total, days:[sun..sat]}, ...]
+                const weeks = Array.isArray(stats?.prActivity) && stats.prActivity[0]?.days
+                  ? stats.prActivity.slice(-52)
+                  : Array.from({length:52}, (_,i)=>({ week:0, total:0, days:Array(7).fill(0) }));
+                const maxDay=Math.max(...weeks.flatMap(w=>w.days),1);
+                const cellS=11,gap=2,step=cellS+gap,W=52*step+28,H=7*step+22;
+                const col=(v)=>{ if(v===0)return"#1a1a2e"; return["#1e3a5f","#6d28d9","#7c3aed","#a78bfa"][Math.min(Math.floor(v/maxDay*4),3)]; };
+                const mnLbls=[]; let prevM=-1;
+                weeks.forEach((w,wi)=>{ if(!w.week) return; const m=new Date(w.week*1000).getUTCMonth(); if(m!==prevM){mnLbls.push({wi,m});prevM=m;} });
+                return (
+                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>
+                      📊 Actividad PRs — últimas 52 semanas
+                      {!stats?.prActivity && <span style={{color:"#52525b",fontWeight:400,marginLeft:8,fontSize:8}}>(pulsa Actualizar para ver datos)</span>}
+                    </div>
+                    <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
+                      {DAYS.map((d,i)=><text key={d} x={14} y={20+i*step+cellS/2} textAnchor="middle" fontSize={5} fill="#52525b">{d}</text>)}
+                      {mnLbls.map(({wi,m})=><text key={m} x={22+wi*step+cellS/2} y={11} textAnchor="middle" fontSize={4.5} fill="#3f3f46">{MN[m]}</text>)}
+                      {weeks.map((w,wi)=>w.days.map((count,di)=>(
+                        <rect key={`${wi}-${di}`} x={22+wi*step} y={16+di*step} width={cellS} height={cellS} rx={2} fill={col(count)} opacity={0.95}>
+                          <title>{`Sem ${wi+1}, ${DAYS[di]}: ${count} PRs`}</title>
+                        </rect>
+                      )))}
+                    </svg>
+                    <div style={{ display:"flex", alignItems:"center", gap:4, marginTop:4 }}>
+                      <span style={{ color:"#52525b", fontSize:8 }}>Menos</span>
+                      {["#1a1a2e","#1e3a5f","#6d28d9","#7c3aed","#a78bfa"].map(c=><span key={c} style={{ width:8,height:8,borderRadius:1,background:c,display:"inline-block" }}/>)}
+                      <span style={{ color:"#52525b", fontSize:8 }}>Más</span>
+                    </div>
+                  </div>
+                );
+              })()}
+              {Array.isArray(stats?.prPunch) && stats.prPunch.some(([,,c])=>c>0) && (() => {
+                const data=stats.prPunch, maxV=Math.max(...data.map(([,,c])=>c),1);
+                const DAYS=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"], cellW=20,cellH=18,padL=30,padT=20;
+                const W=padL+24*cellW+10, H=padT+7*cellH+10;
+                return (
+                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>⏰ Patrón temporal — PRs por hora y día</div>
+                    <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
+                      {DAYS.map((d,i)=><text key={d} x={padL-3} y={padT+i*cellH+cellH/2+1.5} textAnchor="end" fontSize={5} fill="#52525b">{d}</text>)}
+                      {Array.from({length:24},(_,h)=><text key={h} x={padL+h*cellW+cellW/2} y={padT-3} textAnchor="middle" fontSize={4.5} fill="#52525b">{h%3===0?`${h}h`:""}</text>)}
+                      {data.map(([day,hour,count])=>{
+                        const r=count>0?Math.sqrt(count/maxV)*(cellH/2-1.5):0;
+                        const cx=padL+hour*cellW+cellW/2, cy=padT+day*cellH+cellH/2;
+                        const c=day===0||day===6?"#f59e0b":"#7c3aed";
+                        return r>0?<circle key={`${day}-${hour}`} cx={cx} cy={cy} r={r} fill={c} opacity={0.7}><title>{`${DAYS[day]} ${hour}:00 — ${count} PRs`}</title></circle>:<rect key={`${day}-${hour}`} x={cx-1} y={cy-1} width={2} height={2} fill="#1f2937"/>;
+                      })}
+                    </svg>
+                    <div style={{ display:"flex", gap:12, marginTop:4 }}>
+                      <span style={{ fontSize:8.5, color:"#52525b" }}><span style={{ display:"inline-block",width:7,height:7,borderRadius:"50%",background:"#7c3aed",marginRight:3 }}/>Días laborables</span>
+                      <span style={{ fontSize:8.5, color:"#52525b" }}><span style={{ display:"inline-block",width:7,height:7,borderRadius:"50%",background:"#f59e0b",marginRight:3 }}/>Fines de semana</span>
+                    </div>
+                  </div>
+                );
+              })()}
+              {Array.isArray(stats?.prActivity) && stats.prActivity.length >= 8 && (() => {
+                const acts=stats.prActivity;
+                const last4=acts.slice(-4).reduce((s,w)=>s+w.total,0);
+                const prev4=acts.slice(-8,-4).reduce((s,w)=>s+w.total,0);
+                // Si prev4=0, extender a ventana de 8 semanas anteriores (normalizado a 4 semanas)
+                const prev8=acts.slice(-12,-4).reduce((s,w)=>s+w.total,0)/2;
+                const base=prev4>0?prev4:prev8>0?prev8:null;
+                const pct=base!==null?Math.round((last4-base)/base*100):null;
+                const up=pct!==null&&pct>=0;
+                const color=pct===null?"#94a3b8":pct>10?"#22c55e":pct<-10?"#ef4444":"#f59e0b";
+                const w8=acts.slice(-8), mx=Math.max(...w8.map(w=>w.total),1);
+                return (
+                  <div style={{ background:"#111113", border:`1px solid ${color}25`, borderRadius:10, padding:"12px 16px", display:"flex", alignItems:"center", gap:20, flexWrap:"wrap" }}>
+                    <div>
+                      <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:4 }}>📈 Tendencia PRs — últimas 4 semanas</div>
+                      <div style={{ display:"flex", alignItems:"baseline", gap:6 }}>
+                        <span style={{ color, fontSize:24, fontWeight:800, lineHeight:1 }}>{pct!==null?`${up?"+":""}${pct}%`:"—"}</span>
+                        <span style={{ color, fontSize:16 }}>{pct!==null?(up?"↑":"↓"):""}</span>
+                      </div>
+                    </div>
+                    <div style={{ display:"flex", gap:20, alignItems:"center" }}>
+                      <div><div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ult. 4 sem</div><div style={{ color:"#e2e8f0", fontWeight:800, fontSize:15 }}>{last4}</div></div>
+                      <div style={{ width:1, height:28, background:"#27272a" }}/>
+                      <div><div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ant. 4 sem</div><div style={{ color:"#52525b", fontWeight:700, fontSize:15 }}>{prev4}</div></div>
+                    </div>
+                    <svg viewBox="0 0 88 28" style={{ width:88, height:28, flexShrink:0 }}>
+                      {w8.map((w,i)=>{ const bh=(w.total/mx)*24; return <rect key={i} x={i*11} y={28-bh} width={9} height={bh} rx={1.5} fill={i>=4?color:"#27272a"} opacity={i>=4?0.9:0.6}/>; })}
+                    </svg>
+                  </div>
+                );
+              })()}
+            </>)}
+
+            {/* ── Heatmap + Tendencia — pestaña Líneas ── */}
+            {ghTab === "lineas" && (<>
+              {(() => {
+                const MN=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+                const DAYS=["D","L","M","X","J","V","S"];
+                // Build 52 Sunday-based weekly slots (GitHub codeFreq uses Sunday)
+                const addMap={}, delMap={};
+                (stats?.codeFreq||[]).forEach(([ts,a,d])=>{ addMap[ts]=a; delMap[ts]=Math.abs(d); });
+                const now=new Date(), dow=now.getUTCDay();
+                const sun0=new Date(now); sun0.setUTCDate(now.getUTCDate()-dow); sun0.setUTCHours(0,0,0,0);
+                const wks52=Array.from({length:52},(_,i)=>{ const d=new Date(sun0); d.setUTCDate(sun0.getUTCDate()-(51-i)*7); const ts=Math.floor(d.getTime()/1000); return {ts,added:addMap[ts]||0,deleted:delMap[ts]||0}; });
+                const maxA=Math.max(...wks52.map(w=>w.added),1);
+                const maxD=Math.max(...wks52.map(w=>w.deleted),1);
+                const cellS=11,gap=2,step=cellS+gap,W=52*step+28,H=cellS+24;
+                const colA=(v)=>{ if(v===0)return"#1a1a2e"; return["#1e3a5f","#1d4ed8","#2563eb","#60a5fa"][Math.min(Math.floor(v/maxA*4),3)]; };
+                const colD=(v)=>{ if(v===0)return"#1a1a2e"; return["#1a1a2e","#7f1d1d","#b91c1c","#f87171"][Math.min(Math.floor(v/maxD*4),3)]; };
+                const mnLbls=[]; let prevM=-1;
+                wks52.forEach((w,wi)=>{ const m=new Date(w.ts*1000).getUTCMonth(); if(m!==prevM){mnLbls.push({wi,m});prevM=m;} });
+                const Row = ({vals, col, label, palette, titleFmt}) => (
+                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>{label}</div>
+                    <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
+                      {mnLbls.map(({wi,m})=><text key={m} x={22+wi*step+cellS/2} y={11} textAnchor="middle" fontSize={4.5} fill="#3f3f46">{MN[m]}</text>)}
+                      {vals.map((v,wi)=>(
+                        <rect key={wi} x={22+wi*step} y={16} width={cellS} height={cellS} rx={2} fill={col(v)} opacity={0.95}>
+                          <title>{titleFmt(v, wks52[wi].ts)}</title>
+                        </rect>
+                      ))}
+                    </svg>
+                    <div style={{ display:"flex", alignItems:"center", gap:4, marginTop:4 }}>
+                      <span style={{ color:"#52525b", fontSize:8 }}>Menos</span>
+                      {palette.map(c=><span key={c} style={{ width:8,height:8,borderRadius:1,background:c,display:"inline-block" }}/>)}
+                      <span style={{ color:"#52525b", fontSize:8 }}>Más</span>
+                    </div>
+                  </div>
+                );
+                return (<>
+                  <Row vals={wks52.map(w=>w.added)} col={colA} label="➕ Líneas añadidas — últimas 52 semanas"
+                    palette={["#1a1a2e","#1e3a5f","#1d4ed8","#2563eb","#60a5fa"]}
+                    titleFmt={(v,ts)=>`${new Date(ts*1000).toLocaleDateString('es')}: +${v.toLocaleString()} líneas`}/>
+                  <Row vals={wks52.map(w=>w.deleted)} col={colD} label="➖ Líneas eliminadas — últimas 52 semanas"
+                    palette={["#1a1a2e","#7f1d1d","#b91c1c","#ef4444","#f87171"]}
+                    titleFmt={(v,ts)=>`${new Date(ts*1000).toLocaleDateString('es')}: -${v.toLocaleString()} líneas`}/>
+                </>);
+              })()}
+              {Array.isArray(stats?.linesActivity) && stats.linesActivity.length >= 8 && (() => {
+                const acts=stats.linesActivity;
+                const tot=(w)=>w.total;
+                const last4=acts.slice(-4).reduce((s,w)=>s+tot(w),0);
+                const prev4=acts.slice(-8,-4).reduce((s,w)=>s+tot(w),0);
+                const prev8=acts.slice(-12,-4).reduce((s,w)=>s+tot(w),0)/2;
+                const base=prev4>0?prev4:prev8>0?prev8:null;
+                const pct=base!==null?Math.round((last4-base)/base*100):null;
+                const up=pct!==null&&pct>=0;
+                const color=pct===null?"#94a3b8":pct>10?"#22c55e":pct<-10?"#ef4444":"#f59e0b";
+                const w8=acts.slice(-8), mx=Math.max(...w8.map(tot),1);
+                const fmt=(n)=>n>=1000?`${(n/1000).toFixed(1)}k`:String(n);
+                return (
+                  <div style={{ background:"#111113", border:`1px solid ${color}25`, borderRadius:10, padding:"12px 16px", display:"flex", alignItems:"center", gap:20, flexWrap:"wrap" }}>
+                    <div>
+                      <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:4 }}>📈 Tendencia líneas — últimas 4 semanas</div>
+                      <div style={{ display:"flex", alignItems:"baseline", gap:6 }}>
+                        <span style={{ color, fontSize:24, fontWeight:800, lineHeight:1 }}>{pct!==null?`${up?"+":""}${pct}%`:"—"}</span>
+                        <span style={{ color, fontSize:16 }}>{pct!==null?(up?"↑":"↓"):""}</span>
+                      </div>
+                    </div>
+                    <div style={{ display:"flex", gap:20, alignItems:"center" }}>
+                      <div><div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ult. 4 sem</div><div style={{ color:"#e2e8f0", fontWeight:800, fontSize:15 }}>{fmt(last4)}</div></div>
+                      <div style={{ width:1, height:28, background:"#27272a" }}/>
+                      <div><div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ant. 4 sem</div><div style={{ color:"#52525b", fontWeight:700, fontSize:15 }}>{fmt(prev4)}</div></div>
+                    </div>
+                    <svg viewBox="0 0 88 28" style={{ width:88, height:28, flexShrink:0 }}>
+                      {w8.map((w,i)=>{ const bh=(tot(w)/mx)*24; return <rect key={i} x={i*11} y={28-bh} width={9} height={bh} rx={1.5} fill={i>=4?color:"#27272a"} opacity={i>=4?0.9:0.6}/>; })}
                     </svg>
                   </div>
                 );
@@ -1676,102 +1916,524 @@ function GitHubPane() {
 
             {/* ── PRs / PERSONA ──────────────────────────────── */}
             {ghTab === "prs" && ghView === "persona" && (<>
+              {/* Highlight cards */}
               {(() => {
-                const topCollab=byCollab[0], fastMerger=[...memberStats].filter(ms=>ms.amt!==null).sort((a,b)=>a.amt-b.amt)[0];
+                const topPR   = byPRs[0];
+                const topEff  = [...memberStats].filter(ms=>ms.prEfficiency!==null).sort((a,b)=>b.prEfficiency-a.prEfficiency)[0];
+                const avgMerged = memberStats.filter(ms=>ms.pr.merged>0).length > 0
+                  ? Math.round(totalPRs / memberStats.filter(ms=>ms.pr.merged>0).length) : 0;
                 return (
-                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:8 }}>
-                    <div title="reviews / (commits+1) × 50" style={{ background:"#111113", border:"1px solid #a855f725", borderRadius:10, padding:"10px 12px" }}>
-                      <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:4 }}>🤝 Mejor colaborador</div>
-                      <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:12, marginBottom:2 }}>{topCollab?.m.name.split(" ").slice(0,2).join(" ")}</div>
-                      <div style={{ color:"#a855f7", fontSize:11, fontWeight:700 }}>Score {topCollab?.collabScore}</div>
-                    </div>
-                    {fastMerger && (
-                      <div title="promedio días hasta merge" style={{ background:"#111113", border:"1px solid #fbbf2425", borderRadius:10, padding:"10px 12px" }}>
-                        <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:4 }}>⚡ PRs más rápidas</div>
-                        <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:12, marginBottom:2 }}>{fastMerger.m.name.split(" ").slice(0,2).join(" ")}</div>
-                        <div style={{ color:"#fbbf24", fontSize:11, fontWeight:700 }}>{fastMerger.amt}d promedio</div>
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(128px,1fr))", gap:8 }}>
+                    {[
+                      { label:"🥇 Más PRs",         name: topPR?.m.name.split(" ").slice(0,2).join(" "),   val:`${topPR?.pr.merged??0}`,                         color:"#34d399" },
+                      { label:"⚡ Merge más rápido", name: byMerge[0]?.m.name.split(" ").slice(0,2).join(" "), val: byMerge[0] ? `${byMerge[0].amt}d`:"—",          color:"#fbbf24" },
+                      { label:"📊 Media / persona",  name: null,                                             val:`${avgMerged} PRs`,                               color:"#94a3b8" },
+                      ...(topEff ? [{ label:"🎯 Mayor tasa merge", name: topEff.m.name.split(" ").slice(0,2).join(" "), val:`${topEff.prEfficiency}%`, color:"#22c55e" }] : []),
+                      ...(byPRSize[0] ? [{ label:"📦 PRs más grandes", name: byPRSize[0].m.name.split(" ").slice(0,2).join(" "), val:`${byPRSize[0].avgPRSize>999?(byPRSize[0].avgPRSize/1000).toFixed(1)+"k":byPRSize[0].avgPRSize} l/PR`, color:"#f97316" }] : []),
+                    ].map(({ label, name, val, color }) => (
+                      <div key={label} style={{ background:"#111113", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
+                        <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
+                        {name && <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
+                        <div style={{ color, fontSize:14, fontWeight:800 }}>{val}</div>
                       </div>
-                    )}
+                    ))}
                   </div>
                 );
               })()}
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10 }}>
+              {/* Weekly PRs chart */}
+              {Array.isArray(stats?.prActivity) && stats.prActivity.length > 0 && (() => {
+                const MN = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+                const W=440, H=96, padL=26, padB=16, padT=8;
+                const WEEK_S = 7 * 24 * 3600;
+                const actWeeks = stats.prActivity;
+                const lastSprintTs = Math.max(...Object.values(SC).map(s => Math.floor(new Date(s.end).getTime() / 1000)));
+                const futureTs = [];
+                let fw = actWeeks[actWeeks.length - 1].week + WEEK_S;
+                while (fw <= lastSprintTs + WEEK_S) { futureTs.push(fw); fw += WEEK_S; }
+                const allData = [
+                  ...actWeeks.map(w => ({ week: w.week, total: w.total })),
+                  ...futureTs.map(week => ({ week, total: 0 })),
+                ];
+                const firstIdx = allData.findIndex(w => w.total > 0);
+                if (firstIdx < 0) return null;
+                const display = allData.slice(firstIdx);
+                const maxW  = Math.max(...display.map(w => w.total), 1);
+                const colW  = (W - padL) / display.length;
+                const barW  = Math.max(1.5, colW * 0.7);
+                const yOf   = v => H - padB - (v / maxW) * (H - padT - padB);
+                let prevM = -1;
+                const lbls = display.map(({ week }) => {
+                  const m = new Date(week * 1000).getMonth();
+                  if (m !== prevM) { prevM = m; return MN[m]; }
+                  return "";
+                });
+                const nzW = display.filter(w => w.total > 0);
+                const avgW = nzW.length > 0 ? nzW.reduce((s,w) => s + w.total, 0) / nzW.length : 0;
+                const milestones = Object.values(SC).map(s => {
+                  const ts = Math.floor(new Date(s.end).getTime() / 1000);
+                  let best = 0, bestD = Infinity;
+                  display.forEach(({ week }, i) => { const d = Math.abs(week - ts); if (d < bestD) { bestD = d; best = i; } });
+                  return { label: s.label.replace("Sprint ","S"), color: s.color, bx: padL + best * colW + colW / 2 };
+                });
+                return (
+                  <div style={{ background:"#111113", border:"1px solid #34d39920", borderRadius:10, padding:"12px 14px 8px" }}>
+                    <div style={{ color:"#34d399", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📅 PRs por semana</div>
+                    <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
+                      {[maxW, Math.round(maxW/2), 0].map(v => {
+                        const y = yOf(v);
+                        return (
+                          <g key={v}>
+                            <line x1={padL - 2} y1={y} x2={padL} y2={y} stroke="#3f3f46" strokeWidth={0.5}/>
+                            <text x={padL - 4} y={y + 1.5} textAnchor="end" fontSize={4} fill="#52525b">{v}</text>
+                          </g>
+                        );
+                      })}
+                      <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="#3f3f46" strokeWidth={0.5}/>
+                      {milestones.map(({ label, color, bx }) => (
+                        <g key={label}>
+                          <line x1={bx} y1={padT} x2={bx} y2={H - padB} stroke={color} strokeWidth={0.8} strokeDasharray="2,1.5" opacity={0.6}/>
+                          <text x={bx + 1} y={padT + 3.5} fontSize={3.5} fill={color} opacity={0.85}>{label}</text>
+                        </g>
+                      ))}
+                      {display.map(({ week, total }, i) => {
+                        const bh = (total / maxW) * (H - padT - padB);
+                        const bx = padL + i * colW + (colW - barW) / 2;
+                        const d  = new Date(week * 1000);
+                        return (
+                          <g key={week}>
+                            {total > 0 && (
+                              <rect x={bx} y={H - padB - bh} width={barW} height={bh} rx={1} fill="#34d399" opacity={0.75}>
+                                <title>{`${d.toLocaleDateString("es-ES",{day:"2-digit",month:"short"})}: ${total} PRs`}</title>
+                              </rect>
+                            )}
+                            {lbls[i] && <text x={bx + barW/2} y={H - 2} textAnchor="middle" fontSize={4.5} fill="#52525b">{lbls[i]}</text>}
+                          </g>
+                        );
+                      })}
+                      {avgW > 0 && (() => {
+                        const ly = yOf(avgW);
+                        return (
+                          <g>
+                            <line x1={padL} y1={ly} x2={W - 2} y2={ly} stroke="#94a3b8" strokeWidth={0.7} strokeDasharray="3,2" opacity={0.5}/>
+                            <text x={W - 3} y={ly - 2} textAnchor="end" fontSize={4} fill="#94a3b8" opacity={0.7}>ø {Math.round(avgW)}</text>
+                          </g>
+                        );
+                      })()}
+                    </svg>
+                  </div>
+                );
+              })()}
+              {/* Bar charts */}
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:10 }}>
                 <div style={{ background:"#111113", border:"1px solid #34d39920", borderRadius:10, padding:"12px 12px 8px" }}>
                   <div style={{ color:"#34d399", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>🔀 PRs mergeadas</div>
-                  <HBar sorted={byPRs} getValue={ms=>ms.pr.merged} getLabel={ms=>`${ms.pr.merged}/${ms.pr.total}`} maxVal={Math.max(...memberStats.map(ms=>ms.pr.merged),1)} color="#34d399" showMax />
+                  <HBar sorted={byPRs} getValue={ms=>ms.pr.merged} getLabel={ms=>`${ms.pr.merged}/${ms.pr.total}`} maxVal={maxPRs} color="#34d399" showMax
+                    avgVal={memberStats.filter(ms=>ms.pr.merged>0).length>0 ? totalPRs/memberStats.filter(ms=>ms.pr.merged>0).length : undefined} />
                 </div>
-                <div style={{ background:"#111113", border:"1px solid #f59e0b20", borderRadius:10, padding:"12px 12px 8px" }}>
-                  <div style={{ color:"#f59e0b", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>👀 Code reviews</div>
-                  <HBar sorted={byRevs} getValue={ms=>ms.revs} getLabel={ms=>ms.revs} maxVal={Math.max(...memberStats.map(ms=>ms.revs),1)} color="#f59e0b" showMax />
-                </div>
-                <div style={{ background:"#111113", border:"1px solid #f43f5e20", borderRadius:10, padding:"12px 12px 8px" }}>
-                  <div style={{ color:"#f43f5e", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>🤝 Score colaboración</div>
-                  <HBar sorted={byCollab} getValue={ms=>ms.collabScore} getLabel={ms=>ms.collabScore} maxVal={Math.max(...memberStats.map(ms=>ms.collabScore),1)} color="#f43f5e" showMax />
+                <div style={{ background:"#111113", border:"1px solid #22c55e20", borderRadius:10, padding:"12px 12px 8px" }}>
+                  <div style={{ color:"#22c55e", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>🎯 Tasa de merge (%)</div>
+                  <HBar sorted={[...memberStats].filter(ms=>ms.prEfficiency!==null).sort((a,b)=>b.prEfficiency-a.prEfficiency)}
+                    getValue={ms=>ms.prEfficiency??0} getLabel={ms=>`${ms.prEfficiency}%`} maxVal={100} color="#22c55e" showMax />
                 </div>
               </div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:10 }}>
+                {byMerge.length > 0 && (
+                  <div style={{ background:"#111113", border:"1px solid #fbbf2420", borderRadius:10, padding:"12px 12px 8px" }}>
+                    <div style={{ color:"#fbbf24", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>⚡ Días hasta merge (↓ mejor)</div>
+                    <HBar sorted={byMerge} getValue={ms=>ms.amt??0} getLabel={ms=>`${ms.amt}d`}
+                      maxVal={Math.max(...byMerge.map(ms=>ms.amt),1)} color="#fbbf24" showMax />
+                  </div>
+                )}
+                {byPRSize.length > 0 && (
+                  <div style={{ background:"#111113", border:"1px solid #f9731620", borderRadius:10, padding:"12px 12px 8px" }}>
+                    <div style={{ color:"#f97316", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📦 Tamaño medio PR (líneas)</div>
+                    <HBar sorted={byPRSize} getValue={ms=>ms.avgPRSize??0}
+                      getLabel={ms=>ms.avgPRSize>999?`${(ms.avgPRSize/1000).toFixed(1)}k`:`${ms.avgPRSize}`}
+                      maxVal={maxPRSize} color="#f97316" showMax />
+                  </div>
+                )}
+              </div>
+              {/* Recommendation tips */}
+              {(() => {
+                const SCol = { red:"#ef4444", yellow:"#f59e0b", green:"#22c55e", blue:"#38bdf8" };
+                const SBg  = { red:"#ef444412", yellow:"#f59e0b12", green:"#22c55e12", blue:"#38bdf812" };
+                const tip  = (sev, icon, title, msg) => ({ sev, icon, title, msg });
+                const tips = [];
+                const withPRs = memberStats.filter(ms => ms.pr.total > 0);
+                const noPRs   = memberStats.filter(ms => ms.pr.total === 0);
+                const avgPRCount = withPRs.length > 0 ? totalPRs / withPRs.length : 0;
+                if (noPRs.length)
+                  tips.push(tip("yellow","📋","Sin PRs registradas",
+                    `${noPRs.map(ms=>ms.m.name.split(" ")[0]).join(", ")} no ${noPRs.length>1?"tienen":"tiene"} PRs. Verificar que estén contribuyendo vía pull requests.`));
+                const lowEff = withPRs.filter(ms => ms.prEfficiency !== null && ms.prEfficiency < 60);
+                if (lowEff.length)
+                  tips.push(tip("yellow","🔁","Alta tasa de PRs sin mergear",
+                    `${lowEff.map(ms=>`${ms.m.name.split(" ")[0]} (${ms.prEfficiency}%)`).join(", ")} ${lowEff.length>1?"tienen":"tiene"} menos del 60% de PRs mergeadas. Revisar si hay PRs abandonadas.`));
+                const slowMerge = byMerge.filter(ms => ms.amt > 3);
+                if (slowMerge.length)
+                  tips.push(tip("blue","⏱️","PRs con merge lento",
+                    `${slowMerge.map(ms=>`${ms.m.name.split(" ")[0]} (${ms.amt}d)`).join(", ")} tarda${slowMerge.length>1?"n":""} más de 3 días en mergear. Agilizar el proceso de revisión mejora el flujo.`));
+                const bigPRs = byPRSize.filter(ms => ms.avgPRSize > 500);
+                if (bigPRs.length)
+                  tips.push(tip("blue","📦","PRs muy grandes",
+                    `${bigPRs.map(ms=>`${ms.m.name.split(" ")[0]} (~${ms.avgPRSize>999?(ms.avgPRSize/1000).toFixed(1)+"k":ms.avgPRSize} l)`).join(", ")} envía${bigPRs.length>1?"n":""} PRs muy grandes. PRs más pequeñas facilitan la revisión.`));
+                if (!noPRs.length && !lowEff.length && !slowMerge.length)
+                  tips.push(tip("green","✅","Buen ritmo de PRs",
+                    `Todo el equipo tiene PRs y las tasas de merge son aceptables. Buen flujo de integración.`));
+                if (!tips.length) return null;
+                return (
+                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
+                    <div style={{ color:"#34d399", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>💡 Recomendaciones — PRs</div>
+                    <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
+                      {tips.map(({ sev, icon, title, msg }) => (
+                        <div key={title} style={{ background:SBg[sev], borderLeft:`3px solid ${SCol[sev]}`, borderRadius:6, padding:"8px 12px", display:"flex", gap:9, alignItems:"flex-start" }}>
+                          <span style={{ fontSize:12, flexShrink:0, lineHeight:1.5 }}>{icon}</span>
+                          <div>
+                            <div style={{ color:SCol[sev], fontWeight:700, fontSize:9.5, marginBottom:2 }}>{title}</div>
+                            <div style={{ color:"#94a3b8", fontSize:9, lineHeight:1.55 }}>{msg}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
             </>)}
 
             {/* ── PRs / EQUIPO ───────────────────────────────── */}
             {ghTab === "prs" && ghView === "equipo" && (<>
-              <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
-                <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:12 }}>📊 Comparativa — PRs & Reviews</div>
-                {teamTotals.map(({ team, color, prs, reviews, members, active }) => (
-                  <div key={team} style={{ marginBottom:12 }}>
-                    <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
-                      <span style={{ background:`${color}20`, color, fontWeight:800, fontSize:9, textTransform:"uppercase", letterSpacing:2, padding:"2px 8px", borderRadius:4 }}>Equipo {team}</span>
-                      <span style={{ color:"#52525b", fontSize:8.5 }}>{active}/{members} activos</span>
-                    </div>
-                    {[{ label:"PRs", val:prs, max:maxTPR, col:"#34d399" }, { label:"Reviews", val:reviews, max:maxTRV, col:"#f59e0b" }].map(({ label, val, max, col }) => (
-                      <div key={label} style={{ display:"flex", alignItems:"center", gap:5, marginBottom:3 }}>
-                        <span style={{ color:"#52525b", fontSize:7.5, width:38, flexShrink:0 }}>{label}</span>
-                        <div style={{ flex:1, height:5, background:"#27272a", borderRadius:3, overflow:"hidden" }}>
-                          <div style={{ height:"100%", width:`${max>0?val/max*100:0}%`, background:col, borderRadius:3, opacity:0.9 }}/>
-                        </div>
-                        <span style={{ color:col, fontSize:8.5, fontWeight:700, width:30, textAlign:"right", flexShrink:0 }}>{val}</span>
+              {/* Highlight team cards */}
+              {(() => {
+                const sorted = [...teamTotals].sort((a,b) => b.prs - a.prs);
+                const topT   = sorted[0], botT = sorted[sorted.length-1];
+                return (
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(128px,1fr))", gap:8 }}>
+                    {[
+                      { label:"🥇 Más PRs",   name:`Equipo ${topT?.team}`, val:`${topT?.prs}`,  color: TC[topT?.team] },
+                      { label:"🔻 Menos PRs", name:`Equipo ${botT?.team}`, val:`${botT?.prs}`,  color:"#f43f5e" },
+                      { label:"📊 Total PRs", name: null,                  val:`${totalPRs}`,   color:"#94a3b8" },
+                    ].map(({ label, name, val, color }) => (
+                      <div key={label} style={{ background:"#111113", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
+                        <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
+                        {name && <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
+                        <div style={{ color, fontSize:14, fontWeight:800 }}>{val}</div>
                       </div>
                     ))}
                   </div>
-                ))}
+                );
+              })()}
+              {/* Weekly PRs by team (stacked) */}
+              {Array.isArray(stats?.prActivity) && stats.prActivity.length > 0 && stats.weeklyPRs && memberStats.length > 0 && (() => {
+                const MN = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+                const W=440, H=96, padL=26, padB=16, padT=8;
+                const WEEK_S = 7 * 24 * 3600;
+                const teamsArr = ["A","B","C","D"];
+                // Use last 26 weeks from prActivity
+                const actWeeks = stats.prActivity.slice(-26);
+                const lastSprintTs = Math.max(...Object.values(SC).map(s => Math.floor(new Date(s.end).getTime() / 1000)));
+                const futureTs = [];
+                let fw = actWeeks[actWeeks.length - 1].week + WEEK_S;
+                while (fw <= lastSprintTs + WEEK_S) { futureTs.push(fw); fw += WEEK_S; }
+                // Build per-team stacked data from weeklyPRs
+                const allData = [
+                  ...actWeeks.map((w, i) => {
+                    const vals = { A:0, B:0, C:0, D:0 };
+                    memberStats.forEach(({ m, wc: _wc }) => {
+                      const ll = m.login.toLowerCase();
+                      const wp = stats.weeklyPRs[ll];
+                      if (!wp) return;
+                      // weeklyPRs has 26 entries; align with actWeeks
+                      const wpIdx = i - (actWeeks.length - wp.length);
+                      if (wpIdx >= 0 && wpIdx < wp.length) vals[m.team] += wp[wpIdx] || 0;
+                    });
+                    return { week: w.week, vals };
+                  }),
+                  ...futureTs.map(week => ({ week, vals: { A:0, B:0, C:0, D:0 } })),
+                ];
+                const firstIdx = allData.findIndex(w => Object.values(w.vals).some(v => v > 0));
+                if (firstIdx < 0) return null;
+                const display = allData.slice(firstIdx);
+                const maxW  = Math.max(...display.map(w => Object.values(w.vals).reduce((s,v)=>s+v,0)), 1);
+                const colW  = (W - padL) / display.length;
+                const barW  = Math.max(1.5, colW * 0.7);
+                const yOf   = v => H - padB - (v / maxW) * (H - padT - padB);
+                let prevM = -1;
+                const lbls = display.map(({ week }) => {
+                  const m = new Date(week * 1000).getMonth();
+                  if (m !== prevM) { prevM = m; return MN[m]; }
+                  return "";
+                });
+                const nzW = display.filter(w => Object.values(w.vals).some(v => v > 0));
+                const avgW = nzW.length > 0 ? nzW.reduce((s,w) => s + Object.values(w.vals).reduce((a,v)=>a+v,0), 0) / nzW.length : 0;
+                const milestones = Object.values(SC).map(s => {
+                  const ts = Math.floor(new Date(s.end).getTime() / 1000);
+                  let best = 0, bestD = Infinity;
+                  display.forEach(({ week }, i) => { const d = Math.abs(week - ts); if (d < bestD) { bestD = d; best = i; } });
+                  return { label: s.label.replace("Sprint ","S"), color: s.color, bx: padL + best * colW + colW / 2 };
+                });
+                return (
+                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"12px 14px 8px" }}>
+                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📅 PRs por semana — por equipo</div>
+                    <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
+                      {[maxW, Math.round(maxW/2), 0].map(v => {
+                        const y = yOf(v);
+                        return (
+                          <g key={v}>
+                            <line x1={padL - 2} y1={y} x2={padL} y2={y} stroke="#3f3f46" strokeWidth={0.5}/>
+                            <text x={padL - 4} y={y + 1.5} textAnchor="end" fontSize={4} fill="#52525b">{v}</text>
+                          </g>
+                        );
+                      })}
+                      <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="#3f3f46" strokeWidth={0.5}/>
+                      {milestones.map(({ label, color, bx }) => (
+                        <g key={label}>
+                          <line x1={bx} y1={padT} x2={bx} y2={H - padB} stroke={color} strokeWidth={0.8} strokeDasharray="2,1.5" opacity={0.6}/>
+                          <text x={bx + 1} y={padT + 3.5} fontSize={3.5} fill={color} opacity={0.85}>{label}</text>
+                        </g>
+                      ))}
+                      {display.map(({ week, vals }, i) => {
+                        const bx = padL + i * colW + (colW - barW) / 2;
+                        const d  = new Date(week * 1000);
+                        const stacks = teamsArr.reduce((acc, t) => {
+                          const v = vals[t] || 0;
+                          if (v > 0) {
+                            const bh = (v / maxW) * (H - padT - padB);
+                            acc.rects.push(<rect key={t} x={bx} y={acc.y - bh} width={barW} height={bh} fill={TC[t]} opacity={0.85}><title>{`Equipo ${t}: ${v} PRs`}</title></rect>);
+                            acc.y -= bh;
+                          }
+                          return acc;
+                        }, { rects: [], y: H - padB }).rects;
+                        return (
+                          <g key={week}>
+                            {stacks}
+                            {lbls[i] && <text x={bx + barW/2} y={H - 2} textAnchor="middle" fontSize={4.5} fill="#52525b">{lbls[i]}</text>}
+                          </g>
+                        );
+                      })}
+                      {avgW > 0 && (() => {
+                        const ly = yOf(avgW);
+                        return (
+                          <g>
+                            <line x1={padL} y1={ly} x2={W - 2} y2={ly} stroke="#94a3b8" strokeWidth={0.7} strokeDasharray="3,2" opacity={0.5}/>
+                            <text x={W - 3} y={ly - 2} textAnchor="end" fontSize={4} fill="#94a3b8" opacity={0.7}>ø {Math.round(avgW)}</text>
+                          </g>
+                        );
+                      })()}
+                    </svg>
+                    <div style={{ display:"flex", gap:12, marginTop:4, flexWrap:"wrap" }}>
+                      {Object.entries(TC).map(([t, c]) => (
+                        <span key={t} style={{ display:"flex", alignItems:"center", gap:3, fontSize:8.5, color:"#94a3b8" }}>
+                          <span style={{ width:8, height:8, background:c, display:"inline-block", borderRadius:1 }}/>Eq.{t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+              <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
+                <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:12 }}>📊 Comparativa — PRs por equipo</div>
+                {teamTotals.map(({ team, color, prs, members, active }) => {
+                  const teamEff = memberStats.filter(ms=>ms.m.team===team && ms.prEfficiency!==null);
+                  const avgEff  = teamEff.length ? Math.round(teamEff.reduce((s,ms)=>s+(ms.prEfficiency??0),0)/teamEff.length) : null;
+                  return (
+                    <div key={team} style={{ marginBottom:12 }}>
+                      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
+                        <span style={{ background:`${color}20`, color, fontWeight:800, fontSize:9, textTransform:"uppercase", letterSpacing:2, padding:"2px 8px", borderRadius:4 }}>Equipo {team}</span>
+                        <span style={{ color:"#52525b", fontSize:8.5 }}>{active}/{members} activos{avgEff!==null?` · ${avgEff}% merge rate`:""}</span>
+                      </div>
+                      <div style={{ display:"flex", alignItems:"center", gap:5 }}>
+                        <span style={{ color:"#52525b", fontSize:7.5, width:38, flexShrink:0 }}>PRs</span>
+                        <div style={{ flex:1, height:5, background:"#27272a", borderRadius:3, overflow:"hidden", position:"relative" }}>
+                          <div style={{ height:"100%", width:`${maxTPR>0?prs/maxTPR*100:0}%`, background:"#34d399", borderRadius:3, opacity:0.9 }}/>
+                          {maxTPR>0 && <div style={{ position:"absolute", top:0, bottom:0, left:`${totalPRs/4/maxTPR*100}%`, width:1, background:"#94a3b8", opacity:0.5 }}/>}
+                        </div>
+                        <span style={{ color:"#34d399", fontSize:8.5, fontWeight:700, width:30, textAlign:"right", flexShrink:0 }}>{prs}</span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
               <MemberCards />
             </>)}
 
             {/* ── LÍNEAS / PERSONA ───────────────────────────── */}
             {ghTab === "lineas" && ghView === "persona" && (<>
-              {(() => { const t=byLines[0]; return (
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:8 }}>
-                  <div title="líneas añadidas total" style={{ background:"#111113", border:"1px solid #34d39925", borderRadius:10, padding:"10px 12px" }}>
-                    <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:4 }}>📦 Más código aportado</div>
-                    <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:12, marginBottom:2 }}>{t?.m.name.split(" ").slice(0,2).join(" ")}</div>
-                    <div style={{ color:"#34d399", fontSize:11, fontWeight:700 }}>+{(t?.lns.added||0).toLocaleString()} líneas</div>
+              {/* Highlight cards */}
+              {(() => {
+                const topAdd  = byLines[0];
+                const topDel  = byDeleted[0];
+                const topImp  = [...memberStats].sort((a,b)=>b.codeImpact-a.codeImpact)[0];
+                const loChurn = byChurn[0];
+                const avgAdded = memberStats.filter(ms=>ms.lns.added>0).length > 0
+                  ? Math.round(totalAdded / memberStats.filter(ms=>ms.lns.added>0).length) : 0;
+                return (
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(128px,1fr))", gap:8 }}>
+                    {[
+                      { label:"🥇 Más añadido",    name: topAdd?.m.name.split(" ").slice(0,2).join(" "),   val:`+${topAdd?.lns.added>999?(topAdd.lns.added/1000).toFixed(1)+"k":topAdd?.lns.added}`,    color:"#38bdf8" },
+                      { label:"🗑️ Más borrado",    name: topDel?.m.name.split(" ").slice(0,2).join(" "),   val:`-${topDel?.lns.deleted>999?(topDel.lns.deleted/1000).toFixed(1)+"k":topDel?.lns.deleted}`, color:"#f43f5e" },
+                      { label:"📊 Media / persona", name: null,                                              val: avgAdded>999?`${(avgAdded/1000).toFixed(1)}k l`:`${avgAdded} l`,                          color:"#94a3b8" },
+                      { label:"💥 Mayor impacto",   name: topImp?.m.name.split(" ").slice(0,2).join(" "),   val:`${topImp?.codeImpact>999?(topImp.codeImpact/1000).toFixed(1)+"k":topImp?.codeImpact} total`, color:"#a855f7" },
+                      ...(loChurn ? [{ label:"⚖️ Menor churn", name: loChurn.m.name.split(" ").slice(0,2).join(" "), val:`${loChurn.codeChurn}% borrado`, color:"#22c55e" }] : []),
+                    ].map(({ label, name, val, color }) => (
+                      <div key={label} style={{ background:"#111113", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
+                        <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
+                        {name && <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
+                        <div style={{ color, fontSize:14, fontWeight:800 }}>{val}</div>
+                      </div>
+                    ))}
                   </div>
+                );
+              })()}
+              {/* codeFreq evolution chart */}
+              {Array.isArray(stats?.codeFreq) && stats.codeFreq.length > 0 && (() => {
+                const MN   = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+                const W=440, H=80, padL=32, padB=16, padT=8;
+                const data = stats.codeFreq.filter(([,a,d]) => a > 0 || d < 0);
+                if (!data.length) return null;
+                const maxV = Math.max(...data.map(([,a,d]) => Math.max(a, Math.abs(d))), 1);
+                const colW = (W - padL) / data.length;
+                const barW = Math.max(1.2, colW * 0.38);
+                const yMid = padT + (H - padT - padB) / 2;
+                let prevM = -1;
+                return (
+                  <div style={{ background:"#111113", border:"1px solid #38bdf820", borderRadius:10, padding:"12px 14px 8px" }}>
+                    <div style={{ color:"#38bdf8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📈 Evolución semanal — añadidas vs borradas</div>
+                    <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
+                      <line x1={padL} y1={yMid} x2={W-2} y2={yMid} stroke="#3f3f46" strokeWidth={0.5}/>
+                      <text x={padL-3} y={yMid+1.5} textAnchor="end" fontSize={4} fill="#3f3f46">0</text>
+                      {data.map(([ts, a, d], i) => {
+                        const bx  = padL + i * colW + (colW - barW * 2 - 1) / 2;
+                        const ah  = (a / maxV) * (yMid - padT);
+                        const dh  = (Math.abs(d) / maxV) * (H - padB - yMid);
+                        const m   = new Date(ts * 1000).getMonth();
+                        const lbl = m !== prevM ? (prevM = m, MN[m]) : "";
+                        return (
+                          <g key={ts}>
+                            {a > 0 && <rect x={bx} y={yMid-ah} width={barW} height={ah} fill="#38bdf8" opacity={0.75}><title>{`+${a.toLocaleString()} líneas`}</title></rect>}
+                            {d < 0 && <rect x={bx+barW+1} y={yMid} width={barW} height={dh} fill="#f43f5e" opacity={0.65}><title>{`${d.toLocaleString()} líneas`}</title></rect>}
+                            {lbl && <text x={bx+barW} y={H-2} textAnchor="middle" fontSize={4.5} fill="#52525b">{lbl}</text>}
+                          </g>
+                        );
+                      })}
+                    </svg>
+                    <div style={{ display:"flex", gap:12, marginTop:4 }}>
+                      <span style={{ fontSize:8.5, color:"#52525b" }}><span style={{ display:"inline-block", width:8, height:7, background:"#38bdf8", marginRight:3, borderRadius:1 }}/>Añadidas</span>
+                      <span style={{ fontSize:8.5, color:"#52525b" }}><span style={{ display:"inline-block", width:8, height:7, background:"#f43f5e", marginRight:3, borderRadius:1 }}/>Borradas</span>
+                    </div>
+                  </div>
+                );
+              })()}
+              {/* Bar charts */}
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:10 }}>
+                <div style={{ background:"#111113", border:"1px solid #38bdf820", borderRadius:10, padding:"12px 12px 8px" }}>
+                  <div style={{ color:"#38bdf8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📦 Líneas añadidas</div>
+                  <HBar sorted={byLines} getValue={ms=>ms.lns.added} getLabel={ms=>ms.lns.added>999?`${(ms.lns.added/1000).toFixed(1)}k`:ms.lns.added}
+                    maxVal={maxAdded} color="#38bdf8" showMax
+                    avgVal={memberStats.filter(ms=>ms.lns.added>0).length>0?totalAdded/memberStats.filter(ms=>ms.lns.added>0).length:undefined} />
                 </div>
-              ); })()}
-              <div style={{ background:"#111113", border:"1px solid #38bdf820", borderRadius:10, padding:"12px 12px 8px" }}>
-                <div style={{ color:"#38bdf8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📦 Líneas añadidas por persona</div>
-                <HBar sorted={byLines} getValue={ms=>ms.lns.added} getLabel={ms=>ms.lns.added>999?`${(ms.lns.added/1000).toFixed(1)}k`:ms.lns.added} maxVal={Math.max(...memberStats.map(ms=>ms.lns.added),1)} color="#38bdf8" showMax />
+                <div style={{ background:"#111113", border:"1px solid #f43f5e20", borderRadius:10, padding:"12px 12px 8px" }}>
+                  <div style={{ color:"#f43f5e", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>🗑️ Líneas borradas</div>
+                  <HBar sorted={byDeleted} getValue={ms=>ms.lns.deleted} getLabel={ms=>ms.lns.deleted>999?`${(ms.lns.deleted/1000).toFixed(1)}k`:ms.lns.deleted}
+                    maxVal={maxDeleted} color="#f43f5e" showMax />
+                </div>
               </div>
+              {byChurn.length > 0 && (
+                <div style={{ background:"#111113", border:"1px solid #a855f720", borderRadius:10, padding:"12px 12px 8px" }}>
+                  <div style={{ color:"#a855f7", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:4 }}>♻️ Code churn — % líneas borradas (↓ mejor)</div>
+                  <div style={{ color:"#52525b", fontSize:8, marginBottom:8 }}>Bajo churn = código estable. Alto churn = mucho refactor o reescritura.</div>
+                  <HBar sorted={byChurn} getValue={ms=>ms.codeChurn??0} getLabel={ms=>`${ms.codeChurn}%`} maxVal={100} color="#a855f7" showMax />
+                </div>
+              )}
+              {/* Recommendation tips */}
+              {(() => {
+                const SCol = { red:"#ef4444", yellow:"#f59e0b", green:"#22c55e", blue:"#38bdf8" };
+                const SBg  = { red:"#ef444412", yellow:"#f59e0b12", green:"#22c55e12", blue:"#38bdf812" };
+                const tip  = (sev, icon, title, msg) => ({ sev, icon, title, msg });
+                const tips = [];
+                const withLines = memberStats.filter(ms => ms.lns.added > 0);
+                const noLines   = memberStats.filter(ms => ms.lns.added === 0);
+                const avgAdded2 = withLines.length > 0 ? totalAdded / withLines.length : 0;
+                if (noLines.length)
+                  tips.push(tip("yellow","📭","Sin líneas de código registradas",
+                    `${noLines.map(ms=>ms.m.name.split(" ")[0]).join(", ")} no ${noLines.length>1?"tienen":"tiene"} líneas añadidas. Verificar que sus commits estén en el repositorio correcto.`));
+                const highChurn = byChurn.slice().reverse().filter(ms => (ms.codeChurn??0) > 60);
+                if (highChurn.length)
+                  tips.push(tip("blue","♻️","Alto code churn",
+                    `${highChurn.map(ms=>`${ms.m.name.split(" ")[0]} (${ms.codeChurn}%)`).join(", ")} tiene${highChurn.length>1?"n":""} más del 60% de sus líneas borradas. Puede indicar refactorización intensa.`));
+                const veryLow = withLines.filter(ms => ms.lns.added < avgAdded2 * 0.3);
+                if (veryLow.length && avgAdded2 > 0)
+                  tips.push(tip("yellow","📉","Pocas líneas aportadas",
+                    `${veryLow.map(ms=>`${ms.m.name.split(" ")[0]} (${ms.lns.added.toLocaleString()})`).join(", ")} está${veryLow.length>1?"n":""} por debajo del 30% de la media (${Math.round(avgAdded2).toLocaleString()}).`));
+                if (!noLines.length && !highChurn.length && !veryLow.length)
+                  tips.push(tip("green","✅","Buena distribución de código",
+                    `Todo el equipo tiene líneas de código y no hay casos de churn extremo. El código parece estable.`));
+                if (!tips.length) return null;
+                return (
+                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
+                    <div style={{ color:"#38bdf8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>💡 Recomendaciones — Líneas</div>
+                    <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
+                      {tips.map(({ sev, icon, title, msg }) => (
+                        <div key={title} style={{ background:SBg[sev], borderLeft:`3px solid ${SCol[sev]}`, borderRadius:6, padding:"8px 12px", display:"flex", gap:9, alignItems:"flex-start" }}>
+                          <span style={{ fontSize:12, flexShrink:0, lineHeight:1.5 }}>{icon}</span>
+                          <div>
+                            <div style={{ color:SCol[sev], fontWeight:700, fontSize:9.5, marginBottom:2 }}>{title}</div>
+                            <div style={{ color:"#94a3b8", fontSize:9, lineHeight:1.55 }}>{msg}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
             </>)}
 
             {/* ── LÍNEAS / EQUIPO ────────────────────────────── */}
             {ghTab === "lineas" && ghView === "equipo" && (<>
-              <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
-                <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:12 }}>📊 Comparativa — Líneas añadidas</div>
-                {teamTotals.map(({ team, color, added, members, active }) => (
-                  <div key={team} style={{ marginBottom:12 }}>
-                    <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
-                      <span style={{ background:`${color}20`, color, fontWeight:800, fontSize:9, textTransform:"uppercase", letterSpacing:2, padding:"2px 8px", borderRadius:4 }}>Equipo {team}</span>
-                      <span style={{ color:"#52525b", fontSize:8.5 }}>{active}/{members} activos</span>
-                    </div>
-                    <div style={{ display:"flex", alignItems:"center", gap:5 }}>
-                      <span style={{ color:"#52525b", fontSize:7.5, width:38, flexShrink:0 }}>+Líneas</span>
-                      <div style={{ flex:1, height:5, background:"#27272a", borderRadius:3, overflow:"hidden" }}>
-                        <div style={{ height:"100%", width:`${maxTA>0?added/maxTA*100:0}%`, background:"#38bdf8", borderRadius:3, opacity:0.9 }}/>
+              {/* Highlight team cards */}
+              {(() => {
+                const sorted = [...teamTotals].sort((a,b) => b.added - a.added);
+                return (
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(128px,1fr))", gap:8 }}>
+                    {sorted.map(({ team, color, added }) => (
+                      <div key={team} style={{ background:"#111113", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
+                        <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>Equipo {team}</div>
+                        <div style={{ color, fontSize:14, fontWeight:800 }}>+{added>999?`${(added/1000).toFixed(1)}k`:added}</div>
+                        <div style={{ color:"#52525b", fontSize:8, marginTop:2 }}>líneas añadidas</div>
                       </div>
-                      <span style={{ color:"#38bdf8", fontSize:8.5, fontWeight:700, width:36, textAlign:"right", flexShrink:0 }}>{added>999?`${(added/1000).toFixed(1)}k`:added}</span>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                );
+              })()}
+              <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
+                <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:12 }}>📊 Comparativa — Líneas por equipo</div>
+                {(() => {
+                  const maxDel = Math.max(...teamTotals.map(({ team }) =>
+                    memberStats.filter(ms=>ms.m.team===team).reduce((s,ms)=>s+ms.lns.deleted,0)), 1);
+                  return teamTotals.map(({ team, color, added, members, active }) => {
+                    const deleted = memberStats.filter(ms=>ms.m.team===team).reduce((s,ms)=>s+ms.lns.deleted,0);
+                    const net     = added - deleted;
+                    return (
+                      <div key={team} style={{ marginBottom:14 }}>
+                        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
+                          <span style={{ background:`${color}20`, color, fontWeight:800, fontSize:9, textTransform:"uppercase", letterSpacing:2, padding:"2px 8px", borderRadius:4 }}>Equipo {team}</span>
+                          <span style={{ color:"#52525b", fontSize:8.5 }}>{active}/{members} activos · net {net>0?"+":""}{net>999?`${(net/1000).toFixed(1)}k`:net}</span>
+                        </div>
+                        {[
+                          { label:"+Líneas", val:added,   max:maxTA,  col:"#38bdf8" },
+                          { label:"-Líneas", val:deleted, max:maxDel, col:"#f43f5e" },
+                        ].map(({ label, val, max, col }) => (
+                          <div key={label} style={{ display:"flex", alignItems:"center", gap:5, marginBottom:3 }}>
+                            <span style={{ color:"#52525b", fontSize:7.5, width:38, flexShrink:0 }}>{label}</span>
+                            <div style={{ flex:1, height:5, background:"#27272a", borderRadius:3, overflow:"hidden" }}>
+                              <div style={{ height:"100%", width:`${max>0?val/max*100:0}%`, background:col, borderRadius:3, opacity:0.9 }}/>
+                            </div>
+                            <span style={{ color:col, fontSize:8.5, fontWeight:700, width:36, textAlign:"right", flexShrink:0 }}>{val>999?`${(val/1000).toFixed(1)}k`:val}</span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  });
+                })()}
               </div>
               <MemberCards />
             </>)}
@@ -4183,6 +4845,7 @@ function CostesPane() {
 export default function App() {
   const [tab,      setTab]      = useState("github");
   const [showSync, setShowSync] = useState(false);
+  const [sprintTab, setSprintTab] = useState("s1");
   const isLive = _storedLive && _storedLive.fetchedAt > rawData.fetchedAt;
   return (
     <div style={{ background:"#09090b", minHeight:"100vh", fontFamily:"'Inter','Segoe UI',system-ui,sans-serif", color:"#e2e8f0" }}>
@@ -4227,9 +4890,28 @@ export default function App() {
 
       {/* CONTENT */}
       <div style={{ maxWidth:1080, margin:"0 auto", padding:"16px 16px 32px" }}>
-        {tab === "s1"    && <BacklogPane sprint={1} />}
-        {tab === "s2"    && <BacklogPane sprint={2} />}
-        {tab === "s3"    && <BacklogPane sprint={3} />}
+        {tab === "project" && (
+          <div>
+            <div style={{ display:"flex", gap:3, background:"#09090b", border:"1px solid #27272a", borderRadius:9, padding:3, marginBottom:16, width:"fit-content" }}>
+              {SPRINT_TABS.map(s => {
+                const active = sprintTab === s.id;
+                return (
+                  <button key={s.id} onClick={() => setSprintTab(s.id)}
+                    style={{
+                      padding:"5px 14px", borderRadius:6, fontSize:12, fontWeight:700, cursor:"pointer",
+                      background: active ? `${s.color}20` : "transparent",
+                      color:      active ? s.color : "#71717a",
+                      border:     active ? `1px solid ${s.color}45` : "1px solid transparent",
+                      transition:"all .12s",
+                    }}>{s.label}</button>
+                );
+              })}
+            </div>
+            {sprintTab === "s1" && <BacklogPane sprint={1} />}
+            {sprintTab === "s2" && <BacklogPane sprint={2} />}
+            {sprintTab === "s3" && <BacklogPane sprint={3} />}
+          </div>
+        )}
         {tab === "cal"   && <CalendarPane />}
         {tab === "github" && <GitHubPane />}
         {tab === "costes"  && <CostesPane />}
