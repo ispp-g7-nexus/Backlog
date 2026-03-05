@@ -1,4 +1,4 @@
-<h1>Lista de Cambios — Sprint 1 – NexUS</h1>
+# Lista de Cambios — Sprint 1 – NexUS
 
 <p align="center">
   <img src="../../images/logo-app.png" alt="Logo NexUS" width="500">
@@ -7,8 +7,8 @@
 <div align="center">
 
 <p>
-  <img src="https://img.shields.io/badge/Versión-1.0.0-blue?style=flat-square" alt="Versión">
-  <img src="https://img.shields.io/badge/Estado-Completado-yellow?style=flat-square" alt="Estado">
+  <img src="https://img.shields.io/badge/Versión-1.3.0-blue?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Estado-Finalizado-green?style=flat-square" alt="Estado">
   <img src="https://img.shields.io/badge/Grupo-7--NexUS-green?style=flat-square" alt="Grupo">
   <img src="https://img.shields.io/badge/Asignatura-ISPP-red?style=flat-square" alt="Asignatura">
 </p>
@@ -17,12 +17,12 @@
 
 ---
 
-**Proyecto:** NexUS
-**Grupo:** 7 - NexUS
-**Asignatura:** Ingeniería del Software y Práctica Profesional (ISPP)
-**Institución:** ETSII – Universidad de Sevilla
-**Curso académico:** 2025/2026
-**Sprint:** S1 — 19/02/2026 al 05/03/2026
+**Proyecto:** NexUS  
+**Grupo:** 7 - NexUS  
+**Asignatura:** Ingeniería del Software y Práctica Profesional (ISPP)  
+**Institución:** ETSII – Universidad de Sevilla  
+**Curso académico:** 2025/2026  
+**Sprint:** S1 — 19/02/2026 al 05/03/2026  
 
 <p align="center">
   <img src="../../images/logo-etsii.jpe" alt="Logo ETSII" width="400">
@@ -35,7 +35,7 @@
 | Versión | Fecha | Cambio principal |
 |---------|-------|------------------|
 | 1.0.0 | 19/02/2026 | Creación del documento |
-| 1.1.0 | 05/03/2026 | Cierre del sprint, registro completo |
+| 1.1.0 | 05/03/2026 | Cierre del sprint, registro completo de cambios reales |
 
 ---
 
@@ -49,7 +49,7 @@
 
 ## 1. Descripción
 
-Registro completo de cambios realizados en el Sprint 1. Este sprint estuvo centrado en la infraestructura base del proyecto: Docker Compose, CI/CD, autenticación, panel administrativo y sistema de incidencias.
+Este documento detalla los cambios realizados durante el Sprint 1. El foco principal ha sido la estabilización de la infraestructura base, la definición de estándares de comunicación (APIs) y el despliegue de los módulos core de Autenticación, Eventos y Gestión de Incidencias, superando bloqueos críticos de entorno y diseño.
 
 ---
 
@@ -57,39 +57,28 @@ Registro completo de cambios realizados en el Sprint 1. Este sprint estuvo centr
 
 | ID | Fecha | Tipo | Descripción | Motivo | Responsable | Historia Relacionada |
 |----|-------|------|-------------|--------|-------------|----------------------|
-| CHG-001 | 19/02/2026 | `config` | Creación de estructura Docker Compose con servicios: postgres, redis, backend, celery_worker, celery_beat, frontend, tenant_gateway, nginx | Necesario para tener un entorno de desarrollo reproducible y consistente en todos los equipos | Alejandro de los Reyes | S1-01 |
-| CHG-002 | 19/02/2026 | `config` | Configuración de Nginx como reverse proxy y tenant-gateway (Node.js) para inyección de contexto tenant | Arquitectura multitenant requiere resolución del tenant por cabecera Host antes de enrutar al frontend/backend | Alejandro de los Reyes | S1-01, S1-05 |
-| CHG-003 | 19/02/2026 | `config` | Setup de Django 5 con django-tenants y multitenancy por esquema PostgreSQL | Requisito core de la plataforma: cada residencia tiene su propio esquema aislado | Ignacio Martínez | S1-01, S1-05 |
-| CHG-004 | 19/02/2026 | `feat` | Workflows CI/CD en GitHub Actions: ci.yml (backend/frontend checks + compose validate), pr-title.yml (conventional commits), release-please.yml, promote-tag.yml, tagged-release.yml | Automatizar validaciones en cada PR y preparar pipeline de releases por entorno | Manuel Niza | S1-03 |
-| CHG-005 | 19/02/2026 | `feat` | Seed demo automático al arrancar backend: crea tenant demo.nexus.local, admin y estudiante de prueba | Facilitar el desarrollo sin necesidad de crear datos manualmente en cada reset de BD | Ignacio Martínez | S1-05 |
-| CHG-006 | 19/02/2026 | `docs` | README.md completo con arquitectura, stack, instrucciones de arranque, flujo HTTP y decisiones técnicas | Permitir que cualquier miembro del equipo configure el proyecto desde cero | Todo el equipo | S1-06 |
-| CHG-007 | 19/02/2026 | `docs` | Guía de developer (7-DP-Developer-Guide.md) y guía de setup Docker (7-DP-Base-Setup-Docker-Compose.md) | Documentar el entorno de desarrollo para facilitar onboarding | Alejandro de los Reyes | S1-06 |
-| CHG-008 | 20/02/2026 | `feat` | Sistema de autenticación JWT: registro, login, refresh token, logout con cookies HttpOnly | Requisito de seguridad: tokens en cookies evitan acceso desde JavaScript (XSS) | Ignacio Martínez | S1-07, S1-08 |
-| CHG-009 | 21/02/2026 | `feat` | Gestión de roles RBAC: Admin, Estudiante, Personal con restricción de acceso por rol | Control de acceso a recursos según el rol del usuario autenticado | Juan José Cardesa | S1-10 |
-| CHG-010 | 23/02/2026 | `feat` | Dashboard administrativo con métricas: nº estudiantes, habitaciones, incidencias abiertas, % ocupación | Proporcionar al administrador una visión general del estado de la residencia | Miguel Regidor | S1-12 |
-| CHG-011 | 24/02/2026 | `feat` | CRUD completo de habitaciones: crear, editar, eliminar, con validaciones de capacidad y soft delete | Gestión básica del inventario de habitaciones de la residencia | Marta Recio | S1-13 |
-| CHG-012 | 24/02/2026 | `feat` | Sistema de asignación de estudiantes a habitaciones con control de capacidad | Necesario para gestionar la ocupación real de la residencia | Celia Suárez | S1-14 |
-| CHG-013 | 25/02/2026 | `feat` | Sistema de incidencias: creación por estudiante, vista admin, cambio de estado (Abierta/En progreso/Resuelta/Cerrada), filtrado | Funcionalidad core del MVP: los estudiantes deben poder reportar problemas | Paula Suárez | S1-17, S1-19, S1-20, S1-21 |
-| CHG-014 | 26/02/2026 | `feat` | Perfil básico de usuario: ver y editar nombre, foto de perfil, datos personales | Los usuarios necesitan gestionar su información personal | Nicolás Gómez | S1-11 |
-| CHG-015 | 26/02/2026 | `feat` | Sistema de diseño base: paleta de colores, tipografía, componentes reutilizables (Button, Input, Card, Table, Modal) | Base visual consistente para todo el frontend del sprint | Carolina Murillo, Olga Cantalejo | S1-22, S1-24 |
-| CHG-016 | 27/02/2026 | `feat` | Wireframes en Figma de todas las pantallas principales: login, registro, dashboard, habitaciones, incidencias | Diseñar antes de implementar reduce reproceso y alinea al equipo visualmente | Carolina Murillo | S1-23 |
-| CHG-017 | 27/02/2026 | `feat` | Listado paginado de estudiantes con filtros básicos (nombre, habitación, estado) | El admin necesita buscar y gestionar estudiantes fácilmente | Javier Castilla | S1-15, S1-16 |
-| CHG-018 | 02/03/2026 | `feat` | Tests de integración básicos: endpoints de autenticación, CRUD habitaciones, flujos de incidencias | Garantizar que el código integrado funciona correctamente de extremo a extremo | Francisco de Castro | S1-25, S1-26 |
-| CHG-019 | 01/03/2026 | `config` | Creación de `.wslconfig` con límites de memoria (3 GB) y CPU (2 cores) para WSL2 | El proceso vmmem consumía hasta 6 GB de RAM en equipos con 8 GB, haciendo imposible el desarrollo | Carlos Gallero | — |
-| CHG-020 | 01/03/2026 | `config` | Añadido `demo.nexus.local` al hosts file de Windows | Permitir acceder al entorno de desarrollo con el dominio configurado sin necesitar DNS externo | Alejandro de los Reyes | — |
-| CHG-021 | 03/03/2026 | `feat` | Historial de incidencias del estudiante: vista personal con ordenación por fecha y detalle de cada incidencia | Los estudiantes necesitan seguimiento de sus propias incidencias | Ángel Mateos | S1-18 |
-| CHG-022 | 04/03/2026 | `fix` | Corrección del healthcheck de PostgreSQL: ajuste de retries y timeout para soportar primera inicialización del cluster | En primera ejecución, PostgreSQL tarda más de 50s en inicializar; con 10 retries fallaba antes de estar listo | Ignacio Martínez | S1-05 |
+| CHG-001 | 19/02 | `config` | Setup de stack tecnológico, repositorios y estrategia de ramas | Base necesaria para el desarrollo colaborativo | Equipo D | NX-S1.01, NX-S1.03 |
+| CHG-002 | 21/02 | `feat` | Implementación de Pipeline CI/CD básico y SonarQube | Garantizar la calidad de código y automatización de despliegues | Equipo D / B | NX-S1.02, NX-S1.42 |
+| CHG-003 | 23/02 | `fix` | **Reversión de Backend:** Limpieza del proyecto base y edición de tutoriales | El código heredado causaba errores de entorno masivos; se priorizó la estabilidad | Equipo A / D | NX-S1.74, NX-S1.71 |
+| CHG-004 | 24/02 | `feat` | Módulo completo de Autenticación (Login, Registro, Roles) | Seguridad core para diferenciar Residencia, Residente y Personal | Equipo C | NX-S1.06 - 08 |
+| CHG-005 | 25/02 | `config` | **Estandarización de APIs:** Creación de documento de contratos de datos | Evitar que el frontend se bloquee por cambios en el esquema de la BD | Equipo B | NX-S1.72 |
+| CHG-006 | 26/02 | `feat` | CRUD de Eventos, moderación y sistema de inscripción | Funcionalidad core de dinamización de la residencia | Equipo A | NX-S1.29 - 31 |
+| CHG-007 | 27/02 | `feat` | Sistema de Incidencias (Creación y Vista Global con filtros) | Permitir a residentes reportar fallos y al staff gestionarlos | Equipo C | NX-S1.18, NX-S1.20 |
+| CHG-008 | 01/03 | `feat` | CRUD de Objetos y condiciones de préstamo | Gestión de inventario compartido de la residencia | Equipo A | NX-S1.35 |
+| CHG-009 | 02/03 | `feat` | Creación de Landing Page oficial NexUS | Presencia pública y presentación del producto | Equipo D | NX-S1.77 |
+| CHG-010 | 03/03 | `feat` | Sistema de Avisos con notificaciones visuales | Comunicación urgente de la administración a residentes | Equipo C | NX-S1.23, NX-S1.24 |
+| CHG-011 | 04/03 | `docs` | **Modelo Entidad-Relación (ER)** definitivo | Base de datos validada tras retraso inicial; desbloquea migraciones finales | Equipo D | NX-S1.78 |
+| CHG-012 | 04/03 | `feat` | Interfaz de reserva de espacios y cancelación propia | Gestión de zonas comunes de la residencia | Equipo B | NX-S1.27, NX-S1.28 |
+| CHG-013 | 05/03 | `docs` | Registro de lecciones aprendidas, contingencias y métricas Scrum | Documentación de cierre requerida para la retrospectiva | Equipo C / SM | NX-S1.65, NX-S1.83 |
 
 ---
 
 ## 3. Resumen por Tipo
 
-| Tipo | Cantidad |
-|------|----------|
-| `feat` | 15 |
-| `fix` | 1 |
-| `refactor` | 0 |
-| `config` | 4 |
-| `docs` | 2 |
-| `scope` | 0 |
-| **Total** | **22** |
+| Tipo | Cantidad | Descripción |
+|------|----------|-------------|
+| `feat` | 8 | Funcionalidades de módulos terminadas. |
+| `config` | 2 | Estándares de API y Setup de Repositorio. |
+| `fix` | 1 | Reversión técnica para estabilidad. |
+| `docs` | 2 | Modelo de datos y documentación de gestión. |
+| **Total** | **13** | **Cambios significativos validados.** |
