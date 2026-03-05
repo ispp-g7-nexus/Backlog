@@ -1787,11 +1787,172 @@ function ExportMdModal({ report, sprint, onClose }) {
     ].join('\n');
   }
 
+  function genDedication() {
+    if (!report || sprint <= 0)
+      return '> Selecciona Sprint 1, 2 o 3 para exportar el Dedication Template.';
+
+    const spTasks = Object.values(BACKLOG_MAP).filter(t => t.sprint === sprint);
+    const spInfo  = SC[sprint];
+    const today   = new Date().toLocaleDateString('es-ES');
+
+    // Per-person hours: split task effort among all participants
+    // direct assignees share the task equally; implied (no assignee) split across team
+    const personH = (t, ll2) => {
+      const ass = t.assignees || [];
+      const eqL = EQUIPO_LOGINS[t.equipo] || [];
+      const directlyAssigned = ass.some(a => a.login.toLowerCase() === ll2);
+      const impliedByEquipo  = ass.length === 0 && eqL.includes(ll2);
+      if (!directlyAssigned && !impliedByEquipo) return 0;
+      const base = t.estimated_h || 0;
+      return directlyAssigned
+        ? base / (ass.length || 1)     // share among direct assignees
+        : base / (eqL.length || 1);    // share across implied team
+    };
+
+    const memberData = TEAM_MEMBERS.map(m => {
+      const ll   = m.email?.toLowerCase();
+      const ue   = report.byEmail?.[ll] || {};
+      const clkH = ue[`s${sprint}_h`] || 0;
+      const ll2  = m.login.toLowerCase();
+      const myTasks = spTasks.filter(t => {
+        const ass = t.assignees || [];
+        const eqL = EQUIPO_LOGINS[t.equipo] || [];
+        return ass.some(a => a.login.toLowerCase() === ll2) ||
+               (ass.length === 0 && eqL.includes(ll2));
+      });
+      const doneTasks = myTasks.filter(t => t.status === 'Done');
+      const planH     = myTasks.reduce((s, t) => s + personH(t, ll2), 0);
+      const doneH     = doneTasks.reduce((s, t) => s + personH(t, ll2), 0);
+      const pctDone   = myTasks.length > 0 ? doneTasks.length / myTasks.length * 100 : 0;
+      const rend      = clkH > 0 ? doneH / clkH * 100 : 0;
+      const desv      = doneH - clkH;
+      return { m, clkH, myTasks, doneTasks, planH, doneH, pctDone, rend, desv };
+    });
+
+    const active  = memberData.filter(d => d.clkH > 0 || d.myTasks.length > 0);
+    const withClk = active.filter(d => d.clkH > 0);
+    const avgDone = active.length  ? active.reduce((s, d) => s + d.pctDone, 0) / active.length : 0;
+    const avgRend = withClk.length ? withClk.reduce((s, d) => s + d.rend, 0) / withClk.length  : 0;
+
+    const estHArr   = memberData.map(d => d.planH).filter(h => h > 0);
+    const avgEstH   = estHArr.length ? estHArr.reduce((s, h) => s + h, 0) / estHArr.length : 0;
+    const sigmaEstH = estHArr.length >= 2
+      ? Math.sqrt(estHArr.reduce((s, h) => s + (h - avgEstH) ** 2, 0) / estHArr.length) : 0;
+    const cvEstH    = avgEstH > 0 ? sigmaEstH / avgEstH * 100 : 0;
+
+    const sigmaDone = active.length >= 2
+      ? Math.sqrt(active.reduce((s, d) => s + (d.pctDone - avgDone) ** 2, 0) / active.length) : 0;
+
+    // Pearson correlation: pctDone vs pctHours (same variables as UsersView)
+    const corrSample = active.filter(d => d.myTasks.length > 0 && d.clkH > 0);
+    const xs = corrSample.map(d => d.pctDone);
+    const ys = corrSample.map(d => Math.min(d.doneH / d.clkH * 100, 200)); // rendimiento capped
+    const nc = corrSample.length;
+    const mx = nc ? xs.reduce((s, v) => s + v, 0) / nc : 0;
+    const my = nc ? ys.reduce((s, v) => s + v, 0) / nc : 0;
+    const num = xs.reduce((s, x, i) => s + (x - mx) * (ys[i] - my), 0);
+    const den = Math.sqrt(xs.reduce((s, x) => s + (x - mx) ** 2, 0) * ys.reduce((s, y) => s + (y - my) ** 2, 0));
+    const corr = den > 0 ? num / den : 0;
+
+    const cvInterp   = cvEstH <= 20 ? 'Distribución equilibrada de carga'
+      : cvEstH <= 35 ? '⚠️ Desequilibrio en el reparto de tareas'
+      : '❌ Desequilibrio severo — revisar asignación';
+    const rendInterp = avgRend >= 150 ? 'Alta eficiencia técnica del equipo'
+      : avgRend >= 100 ? 'Rendimiento dentro de lo esperado'
+      : 'Rendimiento bajo — revisar estimaciones';
+    const corrInterp = Math.abs(corr) >= 0.7 ? 'Relación lógica entre esfuerzo y resultado'
+      : Math.abs(corr) >= 0.4 ? 'Correlación moderada entre tareas y horas'
+      : 'Baja correlación tareas–horas';
+
+    const TEAM_NAMES = { A:'Infraestructura y coordinación', B:'Producto y gestión', C:'Desarrollo e incidencias', D:'Backend e IA' };
+    const teamSections = ['A','B','C','D'].flatMap(team => {
+      const rows = active.filter(d => d.m.team === team);
+      if (!rows.length) return [];
+      const tr   = rows.filter(d => d.clkH > 0);
+      const tavg = tr.length ? tr.reduce((s, d) => s + d.rend, 0) / tr.length : 0;
+      const top  = [...rows].sort((a, b) => b.myTasks.length - a.myTasks.length)[0];
+      const estado = tavg >= 150 ? 'Alta eficiencia. Han superado ampliamente las estimaciones.'
+        : tavg >= 100 ? 'Rendimiento dentro de lo esperado. Progreso estable.'
+        : 'Por debajo del rendimiento esperado. Revisar posibles bloqueos.';
+      return [
+        `### **Equipo ${team} — ${TEAM_NAMES[team]}**`,
+        `* **Rendimiento:** ~${Math.round(tavg / 5) * 5}% (Media).`,
+        `* **Estado:** ${estado}`,
+        `* **Carga:** ${top ? `${top.m.name} lidera con ${top.myTasks.length} tareas asignadas.` : '—'}`,
+        ``,
+      ];
+    });
+
+    const tableRows = ['A','B','C','D'].flatMap(team =>
+      active.filter(d => d.m.team === team).map(({ m, clkH, myTasks, doneTasks, pctDone, rend, desv }) =>
+        `| **${team}** | ${m.name} | ${doneTasks.length}/${myTasks.length} | ${pctDone.toFixed(0)}% | ${clkH > 0 ? clkH.toFixed(1)+'h' : '—'} | ${clkH > 0 ? rend.toFixed(0)+'%' : '—'} | ${clkH > 0 ? (desv >= 0 ? '+' : '')+desv.toFixed(0)+'h' : '—'} |`
+      )
+    ).join('\n');
+
+    const nextSp  = sprint < 3 ? ` para el Sprint ${sprint + 1}` : '';
+    const lowPerf = active.filter(d => d.clkH > 0 && d.rend < 80);
+
+    return [
+      `# Informe de rendimiento y métricas final — Sprint ${sprint} – NexUS`, ``,
+      `<p align="center">`,
+      `  <img src="../../images/logo-app.png" alt="Logo NexUS" width="500">`,
+      `</p>`, ``,
+      `<div align="center">`, ``,
+      `<p>`,
+      `  <img src="https://img.shields.io/badge/Versión-1.0.0-blue?style=flat-square" alt="Versión">`,
+      `  <img src="https://img.shields.io/badge/Estado-Finalizado-green?style=flat-square" alt="Estado">`,
+      `  <img src="https://img.shields.io/badge/Grupo-7--NexUS-green?style=flat-square" alt="Grupo">`,
+      `  <img src="https://img.shields.io/badge/Asignatura-ISPP-red?style=flat-square" alt="Asignatura">`,
+      `</p>`, ``,
+      `</div>`, ``,
+      `---`, ``,
+      `**Proyecto:** NexUS  `,
+      `**Grupo:** 7 - NexUS  `,
+      `**Asignatura:** Ingeniería del Software y Práctica Profesional (ISPP)  `,
+      `**Institución:** ETSII – Universidad de Sevilla  `,
+      `**Curso académico:** 2025/2026  `,
+      `**Sprint:** S${sprint} — ${fFull(spInfo?.start)} al ${fFull(spInfo?.end)}  `, ``,
+      `<p align="center">`,
+      `  <img src="../../images/logo-etsii.jpe" alt="Logo ETSII" width="400">`,
+      `</p>`, ``,
+      `---`, ``,
+      `## Historial de versiones`, ``,
+      `| Versión | Fecha | Cambio principal |`,
+      `|---------|-------|------------------|`,
+      `| 1.0.0 | ${today} | Creación del documento |`, ``,
+      `---`, ``,
+      `| Métrica Global | Valor | Interpretación |`,
+      `| :--- | :---: | :--- |`,
+      `| **Media completitud tareas** | **${avgDone.toFixed(1)}%** | ${avgDone >= 70 ? 'Progreso sólido (0 tareas sin avance)' : avgDone >= 50 ? 'Progreso moderado' : 'Progreso bajo — revisar bloqueos'} |`,
+      `| **Rendimiento medio** | **${avgRend.toFixed(1)}%** | ${rendInterp} |`,
+      `| **Desbalance de carga (CV)** | **${cvEstH.toFixed(0)}%** | ${cvInterp} |`,
+      `| **Equilibrio del equipo (σ)** | **${sigmaDone.toFixed(1)}%** | ${sigmaDone <= 15 ? 'Ritmo de entrega sincronizado' : 'Alta dispersión en el ritmo de entrega'} |`,
+      `| **Correlación tareas ↔ horas** | **${corr.toFixed(2)}** | ${corrInterp} |`, ``,
+      `---`, ``,
+      `## 1. Análisis por células de trabajo`, ``,
+      ...teamSections,
+      `---`, ``,
+      `## 2. Registro detallado de rendimiento (${active.length} Integrantes)`, ``,
+      `| Equipo | Usuario | Tareas (D/Total) | % Done | Horas Real | Rendimiento | Desviación |`,
+      `| :--- | :--- | :---: | :---: | :---: | :---: | :---: |`,
+      tableRows, ``,
+      `---`, ``,
+      `## 3. Conclusiones y Plan de Acción${nextSp}`, ``,
+      `1.  **Redistribución de carga:** El **CV del ${cvEstH.toFixed(0)}%** ${cvEstH > 30 ? 'confirma un desequilibrio. Se debe nivelar la carga en el siguiente Sprint Planning.' : 'muestra una distribución aceptable. Mantener el criterio de asignación actual.'}`,
+      `2.  **Gestión de cuellos de botella:** Revisar tareas en *In Review* y priorizarlas antes de iniciar nuevas funcionalidades para evitar acumulación de deuda técnica.`,
+      `3.  **Ajuste de velocidad:** Con un rendimiento medio del **${avgRend.toFixed(1)}%**, ${avgRend > 130 ? 'el equipo ha demostrado mayor eficiencia que lo estimado. Se propone aumentar el compromiso del Backlog en el siguiente sprint en un **15%**.' : 'las estimaciones se ajustan bien a la velocidad real. Mantener la cadencia actual.'}`,
+      `4.  **Optimización individual:** ${lowPerf.length > 0 ? `${lowPerf.length} miembro(s) con rendimiento por debajo del 80% (${lowPerf.map(d => d.m.name.split(' ')[0]).join(', ')}). Revisar posibles bloqueos.` : 'Todos los miembros mantienen un rendimiento aceptable.'}`, ``,
+      `---`,
+      `*Este informe ha sido generado automáticamente integrando datos de Clockify y el estado del Backlog en GitHub al cierre del ${fFull(spInfo?.end) !== '—' ? fFull(spInfo?.end) : today}.*`,
+    ].join('\n');
+  }
+
   const spLabel = sprint > 0 ? sprint : 'X';
   const docs = [
-    { id:'burndown', label:'📈 Burndown §4–5', file:`7-DP-S${spLabel}-Burndown-Chart.md`, gen:genBurndown },
-    { id:'velocity', label:'⚡ Velocity §3',    file:`7-DP-S1-Velocity-Chart.md`,          gen:genVelocity },
-    { id:'retro',    label:'🔄 Retro §1',        file:`7-DP-S${spLabel}-Retrospectiva.md`,  gen:genRetro    },
+    { id:'burndown',   label:'📈 Burndown §4–5',     file:`7-DP-S${spLabel}-Burndown-Chart.md`,      gen:genBurndown   },
+    { id:'velocity',   label:'⚡ Velocity §3',         file:`7-DP-S1-Velocity-Chart.md`,               gen:genVelocity   },
+    { id:'retro',      label:'🔄 Retro §1',            file:`7-DP-S${spLabel}-Retrospectiva.md`,       gen:genRetro      },
+    { id:'dedication', label:'🏅 Dedication Template', file:`7-DP-S${spLabel}-Dedication-Template.md`, gen:genDedication },
   ];
   const active  = docs.find(d => d.id === docType);
   const content = active.gen();
@@ -2183,9 +2344,11 @@ function InformePane() {
         const impliedByEquipo  = assignees.length === 0 && equipoLogins.includes(loginLower);
         if (directlyAssigned || impliedByEquipo) {
           statusCounts[t.status] = (statusCounts[t.status] || 0) + 1;
-          const perPersonH = (t.area === "Asistencia" && impliedByEquipo && equipoLogins.length > 0)
-            ? t.estimated_h / equipoLogins.length
-            : t.estimated_h;
+          // Split task effort among participants: direct assignees share equally,
+          // implied (no assignee) split across the equipo group
+          const perPersonH = directlyAssigned
+            ? (t.estimated_h || 0) / (assignees.length || 1)
+            : (t.estimated_h || 0) / (equipoLogins.length || 1);
           estimatedH += perPersonH || 0;
           if (t.status === "Done") doneEstimatedH += perPersonH || 0;
         }
