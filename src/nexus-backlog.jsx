@@ -3366,6 +3366,25 @@ function InformePane() {
     const STATUSES   = ["Backlog","Ready","In progress","In review","Done"];
     const TEAM_COLOR = { A:"#3b82f6", B:"#22c55e", C:"#f59e0b", D:"#a855f7" };
 
+    // GitHub stats — PRs sprint-filtradas + reviews (hard to manipulate: peer-validated)
+    const ghStats = (() => { try { const r = localStorage.getItem(GH_STATS_KEY); return r ? JSON.parse(r) : null; } catch(_) { return null; } })();
+    const S1_WPR_IDX = [22, 23, 24, 25]; // weeklyPRs indices → semanas 2026-02-15..2026-03-08
+    const ghCombinedByLogin = Object.fromEntries(
+      TEAM_MEMBERS.map(m => {
+        const ll = m.login.toLowerCase();
+        const wpr = ghStats?.weeklyPRs?.[ll] || [];
+        const totalMerged = ghStats?.prs?.[ll]?.merged || 0;
+        const s1Prs = S1_WPR_IDX.reduce((s, i) => s + (wpr[i] || 0), 0);
+        const sprintPrs = sprint === 1 ? s1Prs
+          : sprint === 2 ? Math.max(0, totalMerged - s1Prs)
+          : sprint === 0 ? totalMerged : 0;
+        const reviews = ghStats?.reviews?.[ll] || 0;
+        return [ll, sprintPrs + reviews];
+      })
+    );
+    const ghValues = Object.values(ghCombinedByLogin);
+    const meanGhCombined = ghValues.length ? ghValues.reduce((s, v) => s + v, 0) / ghValues.length : 1;
+
     // Tasks in scope for this sprint filter
     const relevantTasks = sprint === -1
       ? []
@@ -3386,8 +3405,9 @@ function InformePane() {
         totalH  = ue[`s${sprint}_h`]        || 0;
         taggedH = ue[`s${sprint}_tagged_h`] || 0;
       }
+      const TALLA_PTS = { XS:1, S:2, M:3, L:5, XL:8 };
       const statusCounts = Object.fromEntries(STATUSES.map(s => [s, 0]));
-      let estimatedH = 0, doneEstimatedH = 0;
+      let estimatedH = 0, doneEstimatedH = 0, totalPts = 0, effPts = 0;
       relevantTasks.forEach(t => {
         const assignees = t.assignees || [];
         // Direct assignee, OR (no assignees + person belongs to task's equipo group)
@@ -3396,13 +3416,16 @@ function InformePane() {
         const impliedByEquipo  = assignees.length === 0 && equipoLogins.includes(loginLower);
         if (directlyAssigned || impliedByEquipo) {
           statusCounts[t.status] = (statusCounts[t.status] || 0) + 1;
-          // Split task effort among participants: direct assignees share equally,
-          // implied (no assignee) split across the equipo group
-          const perPersonH = directlyAssigned
-            ? (t.estimated_h || 0) / (assignees.length || 1)
-            : (t.estimated_h || 0) / (equipoLogins.length || 1);
-          estimatedH += perPersonH || 0;
-          if (t.status === "Done") doneEstimatedH += perPersonH || 0;
+          const n = directlyAssigned ? (assignees.length || 1) : (equipoLogins.length || 1);
+          const perPersonH = (t.estimated_h || 0) / n;
+          // Story points repartidos entre asignados
+          const perPersonPts = (TALLA_PTS[t.size] || 1) / n;
+          estimatedH    += perPersonH;
+          if (t.status === "Done") doneEstimatedH += perPersonH;
+          totalPts      += perPersonPts;
+          // Crédito parcial por estado: Done×1, In review×0.8, In progress×0.2
+          const w = t.status === "Done" ? 1 : t.status === "In review" ? 0.8 : t.status === "In progress" ? 0.2 : 0;
+          effPts += perPersonPts * w;
         }
       });
       const totalTasks  = STATUSES.reduce((s, st) => s + statusCounts[st], 0);
@@ -3410,9 +3433,17 @@ function InformePane() {
       const pctTasks    = totalTasks > 0 ? doneCount / totalTasks * 100   : null;
       const pctHours    = estimatedH > 0 ? totalH / estimatedH * 100      : null;
       const pctTagged   = totalH > 0     ? taggedH / totalH * 100         : null;
-      // Rendimiento = valor estimado entregado (h estimadas de tareas Done) / horas reales invertidas
-      const rendimiento = totalH > 0     ? doneEstimatedH / totalH * 100  : null;
-      return { member, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento };
+      // Rendimiento = 0.30×CR + 0.70×EF
+      // CR = pts_efectivos / pts_totales (ponderado por talla, con crédito parcial por estado)
+      // EF asimétrico suave: sobreimputar penaliza 1.5× más que infraimputar (0.5×)
+      const cr       = totalPts > 0 ? effPts / totalPts : null;
+      const dev      = estimatedH > 0 ? (taggedH - estimatedH) / estimatedH : 0;
+      const ef       = estimatedH > 0 ? (dev > 0 ? 1 / (1 + 1.5 * dev) : 1 / (1 + 0.5 * Math.abs(dev))) : null;
+      const ghCombined = ghCombinedByLogin[loginLower] || 0;
+      const ghNorm   = meanGhCombined > 0 ? ghCombined / meanGhCombined : 0;
+      // 0.25×CR(tallas+crédito parcial) + 0.50×EF(horas etiq. asimétrico) + 0.25×GH(PRs sprint + reviews)
+      const rendimiento = cr !== null && ef !== null ? (0.25 * cr + 0.50 * ef + 0.25 * ghNorm) * 100 : null;
+      return { member, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalPts, effPts, prMerged: ghCombined, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento };
     });
 
     // ── Global metrics ────────────────────────────────────────────
@@ -3428,10 +3459,14 @@ function InformePane() {
     const sigmaTasks = withTasks.length >= 2 && avgPctTasks !== null
       ? Math.sqrt(withTasks.reduce((s, ms) => s + (ms.pctTasks - avgPctTasks) ** 2, 0) / withTasks.length)
       : null;
-    // Rendimiento medio: valor estimado entregado / horas reales (solo miembros con horas)
+    // Rendimiento medio y score normalizado (suma siempre = N×100%)
     const withRendimiento = memberStats.filter(ms => ms.rendimiento !== null);
     const avgRendimiento  = withRendimiento.length
       ? withRendimiento.reduce((s, ms) => s + ms.rendimiento, 0) / withRendimiento.length : null;
+    const memberStatsScored = memberStats.map(ms => ({
+      ...ms,
+      score: ms.rendimiento !== null && avgRendimiento ? ms.rendimiento / avgRendimiento * 100 : null,
+    }));
     // Workload balance: CV of estimatedH across all members with tasks
     const avgMemberEstH = withHours.length ? withHours.reduce((s, ms) => s + ms.estimatedH, 0) / withHours.length : null;
     const sigmaMemberEstH = avgMemberEstH && withHours.length >= 2
@@ -3502,7 +3537,7 @@ function InformePane() {
         {globalMetrics}
         {["A","B","C","D"].map(team => {
           const tc = TEAM_COLOR[team];
-          const rows = memberStats
+          const rows = memberStatsScored
             .filter(ms => ms.member.team === team)
             .sort((a, b) => a.member.name.localeCompare(b.member.name));
           return (
@@ -3513,7 +3548,7 @@ function InformePane() {
                 <div style={{ flex:1, height:1, background:"#27272a" }}/>
               </div>
               <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                {rows.map(({ member, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento }) => {
+                {rows.map(({ member, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento, score }) => {
                   const hoursColor      = pctHours===null?"#3f3f46":pctHours>=100?"#ef4444":pctHours>=75?"#f59e0b":"#22c55e";
                   const tasksColor      = pctTasks===null?"#3f3f46":pctTasks===100?"#22c55e":pctTasks>=50?"#f59e0b":"#94a3b8";
                   const taggedColor     = pctTagged===null?"#3f3f46":pctTagged>=60?"#22c55e":pctTagged>=25?"#f59e0b":"#ef4444";
@@ -3557,8 +3592,21 @@ function InformePane() {
                             )}
                           </div>
                           {rendimiento !== null && (
-                            <div style={{ fontSize:9, color:rendColor, fontWeight:700 }} title="Valor estimado entregado (h estimadas Done) / horas Clockify · ideal ≥100%">
-                              ⚡ {rendimiento.toFixed(0)}% rendimiento
+                            <div style={{ display:"flex", alignItems:"center", gap:5, justifyContent:"flex-end" }}>
+                              <span style={{ fontSize:9, color:rendColor, fontWeight:700 }} title="(tareas done / total) × (1 − |h_real − h_est| / h_est) · ideal 100%">
+                                ⚡ {rendimiento.toFixed(0)}% rendimiento
+                              </span>
+                              {score !== null && (() => {
+                                const sc = score;
+                                const sc100 = sc >= 95 && sc <= 105;
+                                const scColor = sc100 ? "#52525b" : sc > 100 ? "#22c55e" : "#ef4444";
+                                return (
+                                  <span title={`Score relativo: rendimiento / media del grupo × 100. Media = 100%`}
+                                    style={{ fontSize:9, fontWeight:800, background:`${scColor}20`, color:scColor, padding:"1px 6px", borderRadius:4, border:`1px solid ${scColor}40` }}>
+                                    {sc.toFixed(0)}%
+                                  </span>
+                                );
+                              })()}
                             </div>
                           )}
                         </div>
@@ -3663,10 +3711,13 @@ function InformePane() {
     const step  = Math.max(1, Math.ceil(points.length/8));
 
     // Date → X mapper (linear calendar interpolation across index-spaced axis)
-    const t0ms = new Date(points[0].day).getTime();
-    const t1ms = new Date(points[points.length-1].day).getTime();
+    // Use min/max so the range is correct even when the sprint-start anchor is
+    // chronologically after some Clockify entries (e.g. sprint not started yet).
+    const allDayMs = points.map(p => new Date(p.day).getTime());
+    const t0ms = Math.min(...allDayMs);
+    const t1ms = Math.max(...allDayMs);
     const dateToX = (dateStr) => {
-      if (t1ms <= t0ms) return pad.l;
+      if (t1ms <= t0ms) return pad.l + cW;
       const t = new Date(dateStr).getTime();
       return pad.l + ((t - t0ms) / (t1ms - t0ms)) * (points.length - 1) * xS;
     };
@@ -3675,7 +3726,7 @@ function InformePane() {
     const idealX2 = (() => {
       if (!sprintInfo) return pad.l + cW;
       const x = dateToX(sprintInfo.end);
-      return Math.min(pad.l + cW, x);
+      return Math.min(pad.l + cW, Math.max(pad.l + 1, x));
     })();
 
     // ── Completion estimate ────────────────────────────────────
@@ -3741,7 +3792,7 @@ function InformePane() {
                 stroke="#52525b" strokeWidth={1} strokeDasharray="3,3" opacity={0.7} />
             )}
             {/* Ideal line */}
-            <line x1={pad.l} y1={pad.t} x2={idealX2} y2={pad.t+cH} stroke="#3f3f46" strokeWidth={1.5} strokeDasharray="6,4" />
+            <line x1={pad.l} y1={pad.t} x2={idealX2} y2={pad.t+cH} stroke="#52525b" strokeWidth={1.5} strokeDasharray="6,4" />
             {/* Real burndown */}
             <path d={pathA} fill="none" stroke={sprintColor} strokeWidth={2.5} />
             {points.map((p,i)=>(
@@ -3845,6 +3896,25 @@ function InformePane() {
     const STATUSES   = ["Backlog","Ready","In progress","In review","Done"];
     const TEAM_COLOR = { A:"#3b82f6", B:"#22c55e", C:"#f59e0b", D:"#a855f7" };
 
+    // GitHub stats para gh_norm por equipo — PRs sprint-filtradas + reviews
+    const ghStatsE = (() => { try { const r = localStorage.getItem(GH_STATS_KEY); return r ? JSON.parse(r) : null; } catch(_) { return null; } })();
+    const S1_WPR_IDX_E = [22, 23, 24, 25];
+    const ghCombinedByLoginE = Object.fromEntries(
+      TEAM_MEMBERS.map(m => {
+        const ll = m.login.toLowerCase();
+        const wpr = ghStatsE?.weeklyPRs?.[ll] || [];
+        const totalMerged = ghStatsE?.prs?.[ll]?.merged || 0;
+        const s1Prs = S1_WPR_IDX_E.reduce((s, i) => s + (wpr[i] || 0), 0);
+        const sprintPrs = sprint === 1 ? s1Prs
+          : sprint === 2 ? Math.max(0, totalMerged - s1Prs)
+          : sprint === 0 ? totalMerged : 0;
+        const reviews = ghStatsE?.reviews?.[ll] || 0;
+        return [ll, sprintPrs + reviews];
+      })
+    );
+    const ghValuesE = Object.values(ghCombinedByLoginE);
+    const meanGhCombinedE = ghValuesE.length ? ghValuesE.reduce((s, v) => s + v, 0) / ghValuesE.length : 1;
+
     const relevantTasks = sprint === -1
       ? []
       : Object.values(BACKLOG_MAP).filter(t => sprint === 0 || t.sprint === sprint);
@@ -3872,7 +3942,8 @@ function InformePane() {
       // Count tasks and estimated hours using same per-member logic as UsersView
       // so that sum of member estimates equals team total
       const statusCounts = Object.fromEntries(STATUSES.map(s => [s, 0]));
-      let estimatedH = 0, doneEstimatedH = 0;
+      const TALLA_PTS_T = { XS:1, S:2, M:3, L:5, XL:8 };
+      let estimatedH = 0, doneEstimatedH = 0, totalPts = 0, effPts = 0;
       const seenTaskIds = new Set();
       members.forEach(m => {
         const loginLower = m.login.toLowerCase();
@@ -3889,8 +3960,13 @@ function InformePane() {
             const perPersonH = (t.area === "Asistencia" && implied && equipoLogins.length > 0)
               ? t.estimated_h / equipoLogins.length
               : t.estimated_h;
-            estimatedH     += perPersonH || 0;
+            estimatedH += perPersonH || 0;
             if (t.status === "Done") doneEstimatedH += perPersonH || 0;
+            const n = direct ? (assignees.length || 1) : (equipoLogins.length || 1);
+            const perPersonPts = (TALLA_PTS_T[t.size] || 1) / n;
+            totalPts += perPersonPts;
+            const w = t.status === "Done" ? 1 : t.status === "In review" ? 0.8 : t.status === "In progress" ? 0.2 : 0;
+            effPts += perPersonPts * w;
           }
         });
       });
@@ -3900,7 +3976,14 @@ function InformePane() {
       const pctTasks    = totalTasks > 0 ? doneCount / totalTasks * 100   : null;
       const pctHours    = estimatedH > 0 ? totalH / estimatedH * 100      : null;
       const pctTagged   = totalH > 0     ? taggedH / totalH * 100         : null;
-      const rendimiento = totalH > 0     ? doneEstimatedH / totalH * 100  : null;
+      const crT  = totalPts > 0 ? effPts / totalPts : null;
+      const devT = estimatedH > 0 ? (taggedH - estimatedH) / estimatedH : 0;
+      const efT  = estimatedH > 0 ? (devT > 0 ? 1 / (1 + 1.5 * devT) : 1 / (1 + 0.5 * Math.abs(devT))) : null;
+      // ghNorm por equipo = media de los ghNorm individuales de sus miembros
+      const teamGhNorm = members.length
+        ? members.reduce((s, m) => s + (meanGhCombinedE > 0 ? (ghCombinedByLoginE[m.login.toLowerCase()] || 0) / meanGhCombinedE : 0), 0) / members.length
+        : 0;
+      const rendimiento = crT !== null && efT !== null ? (0.25 * crT + 0.50 * efT + 0.25 * teamGhNorm) * 100 : null;
 
       // Intra-team workload balance: CV of per-member estimated hours
       const memberEstHArr = members.map(m => {
@@ -3919,7 +4002,7 @@ function InformePane() {
         ? Math.sqrt(memberEstHArr.reduce((s, h) => s + (h - avgMemberEstH) ** 2, 0) / memberEstHArr.length) / avgMemberEstH * 100
         : null;
 
-      return { team, members, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento, memberEstHArr, avgMemberEstH, intraCV };
+      return { team, members, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalPts, effPts, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento, memberEstHArr, avgMemberEstH, intraCV };
     });
 
     // Global comparison metrics across teams
@@ -3930,6 +4013,10 @@ function InformePane() {
     const best  = withTasks.length ? withTasks.reduce((a, b) => b.pctTasks > a.pctTasks ? b : a) : null;
     const withRend = teamStats.filter(ts => ts.rendimiento !== null);
     const avgRendimiento = withRend.length ? withRend.reduce((s, ts) => s + ts.rendimiento, 0) / withRend.length : null;
+    const teamStatsScored = teamStats.map(ts => ({
+      ...ts,
+      score: ts.rendimiento !== null && avgRendimiento ? ts.rendimiento / avgRendimiento * 100 : null,
+    }));
 
     // Inter-team workload balance: CV of estimatedH across teams
     const avgTeamEstH = withHours.length ? withHours.reduce((s, ts) => s + ts.estimatedH, 0) / withHours.length : null;
@@ -3984,7 +4071,7 @@ function InformePane() {
     return (
       <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
         {globalMetrics}
-        {teamStats.map(({ team, members, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento, memberEstHArr, avgMemberEstH, intraCV }) => {
+        {teamStatsScored.map(({ team, members, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento, score, memberEstHArr, avgMemberEstH, intraCV }) => {
           const tc         = TEAM_COLOR[team];
           const hoursColor = pctHours===null?"#3f3f46":pctHours>=100?"#ef4444":pctHours>=75?"#f59e0b":"#22c55e";
           const tasksColor = pctTasks===null?"#3f3f46":pctTasks===100?"#22c55e":pctTasks>=50?"#f59e0b":"#94a3b8";
@@ -4027,8 +4114,21 @@ function InformePane() {
                     )}
                   </div>
                   {rendimiento !== null && (
-                    <div style={{ fontSize:9, color:rendColor, fontWeight:700 }} title="Valor estimado entregado (h estimadas Done) / horas Clockify · ideal ≥100%">
-                      ⚡ {rendimiento.toFixed(0)}% rendimiento
+                    <div style={{ display:"flex", alignItems:"center", gap:5, justifyContent:"flex-end" }}>
+                      <span style={{ fontSize:9, color:rendColor, fontWeight:700 }} title="(tareas done / total) × (1 − |h_real − h_est| / h_est) · ideal 100%">
+                        ⚡ {rendimiento.toFixed(0)}% rendimiento
+                      </span>
+                      {score !== null && (() => {
+                        const sc = score;
+                        const sc100 = sc >= 95 && sc <= 105;
+                        const scColor = sc100 ? "#52525b" : sc > 100 ? "#22c55e" : "#ef4444";
+                        return (
+                          <span title="Score relativo: rendimiento / media de equipos × 100. Media = 100%"
+                            style={{ fontSize:9, fontWeight:800, background:`${scColor}20`, color:scColor, padding:"1px 6px", borderRadius:4, border:`1px solid ${scColor}40` }}>
+                            {sc.toFixed(0)}%
+                          </span>
+                        );
+                      })()}
                     </div>
                   )}
                 </div>
