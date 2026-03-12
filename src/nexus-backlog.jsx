@@ -1,4 +1,4 @@
-import { useState, useMemo, Fragment, useEffect } from "react";
+import { useState, useMemo, Fragment, useEffect, lazy, Suspense } from "react";
 import clockifyRaw   from '../data/clockify-entries.json';
 import { saveClockify, loadClockify, getGitHubStats, saveGitHubStats, getGitHubToken, saveGitHubToken, getLiveData, saveLiveData } from './lib/cache.js';
 import { normDate } from './lib/utils.js';
@@ -8,11 +8,11 @@ import { ProgressBar } from './components/ProgressBar.jsx';
 import { BACKLOG, rawData } from './data.js';
 import { MOSCOW_META, STATUS_META, SIZE_META, SC, AREA_COLORS, TABS, SIZE_H_MAP } from './constants.js';
 import { fetchFromGitHub } from './api/github.js';
-import BacklogPane from './panes/BacklogPane.jsx';
-import CalendarPane from './panes/CalendarPane.jsx';
-import GitHubPane from './panes/GitHubPane.jsx';
-import InformePane from './panes/InformePane.jsx';
-import CostesPane from './panes/CostesPane.jsx';
+const BacklogPane = lazy(() => import('./panes/BacklogPane.jsx'));
+const CalendarPane = lazy(() => import('./panes/CalendarPane.jsx'));
+const GitHubPane = lazy(() => import('./panes/GitHubPane.jsx'));
+const InformePane = lazy(() => import('./panes/InformePane.jsx'));
+const CostesPane = lazy(() => import('./panes/CostesPane.jsx'));
 
 // GitHub sync function moved to api/github.js
 
@@ -99,6 +99,18 @@ function SyncModal({ onClose }) {
 }
 
 // BACKLOG, MOSCOW_META, STATUS_META, SIZE_META, SC, AREA_COLORS, TABS moved to constants.js, data.js
+
+// ── LAZY LOADING FALLBACK ─────────────────────────────────────
+function PaneLoader() {
+  return (
+    <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:"200px", color:"var(--tx3)" }}>
+      <div style={{ textAlign:"center" }}>
+        <div style={{ fontSize:12, marginBottom:8 }}>⏳ Cargando pane…</div>
+        <div style={{ width:20, height:20, border:"2px solid var(--bdr)", borderTopColor:"#818cf8", borderRadius:"50%", margin:"0 auto", animation:"spin 1s linear infinite" }} />
+      </div>
+    </div>
+  );
+}
 
 // ── GRAPH DATA ────────────────────────────────────────────────
 const NW = 128, NH = 46;
@@ -397,6 +409,7 @@ export default function App() {
     <style>{`
       :root{--bg0:#09090b;--bg1:#0c0c10;--bg2:#111113;--bg3:#18181b;--bg4:#1c1c1f;--bdr:#27272a;--bdr2:#3f3f46;--tx0:#e2e8f0;--tx1:#cbd5e1;--tx2:#94a3b8;--tx3:#71717a;--tx4:#52525b;--cal-day:#0f0f18;--st-ready-bg:#1e3a8a;--st-ready-tx:#93c5fd;--st-prog-bg:#064e3b;--st-prog-tx:#6ee7b7;--st-rev-bg:#4c1d95;--st-rev-tx:#c4b5fd;--st-done-bg:#052e16;--st-done-tx:#34d399;--sz-xs-bg:#4c1d95;--sz-xs-tx:#e9d5ff;--sz-s-bg:#064e3b;--sz-s-tx:#6ee7b7;--sz-m-bg:#1e3a8a;--sz-m-tx:#93c5fd;--sz-l-bg:#7c2d12;--sz-l-tx:#fdba74;--sz-xl-bg:#881337;--sz-xl-tx:#fda4af;}
       :root[data-theme="light"]{--bg0:#f8fafc;--bg1:#f1f5f9;--bg2:#ffffff;--bg3:#f8fafc;--bg4:#f1f5f9;--bdr:#e2e8f0;--bdr2:#cbd5e1;--tx0:#111827;--tx1:#1f2937;--tx2:#4b5563;--tx3:#6b7280;--tx4:#9ca3af;--cal-day:#eef2ff;--st-ready-bg:#dbeafe;--st-ready-tx:#1d4ed8;--st-prog-bg:#d1fae5;--st-prog-tx:#065f46;--st-rev-bg:#ede9fe;--st-rev-tx:#6d28d9;--st-done-bg:#dcfce7;--st-done-tx:#15803d;--sz-xs-bg:#ede9fe;--sz-xs-tx:#6d28d9;--sz-s-bg:#d1fae5;--sz-s-tx:#065f46;--sz-m-bg:#dbeafe;--sz-m-tx:#1d4ed8;--sz-l-bg:#ffedd5;--sz-l-tx:#c2410c;--sz-xl-bg:#ffe4e6;--sz-xl-tx:#be123c;}
+      @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
     `}</style>
     <div style={{ background:"var(--bg0)", minHeight:"100vh", fontFamily:"'Inter','Segoe UI',system-ui,sans-serif", color:"var(--tx0)" }}>
       {showSync && <SyncModal onClose={() => setShowSync(false)} />}
@@ -463,15 +476,17 @@ export default function App() {
                 );
               })}
             </div>
-            {sprintTab === "s1" && <BacklogPane sprint={1} />}
-            {sprintTab === "s2" && <BacklogPane sprint={2} />}
-            {sprintTab === "s3" && <BacklogPane sprint={3} />}
+            <Suspense fallback={<PaneLoader />}>
+              {sprintTab === "s1" && <BacklogPane sprint={1} />}
+              {sprintTab === "s2" && <BacklogPane sprint={2} />}
+              {sprintTab === "s3" && <BacklogPane sprint={3} />}
+            </Suspense>
           </div>
         )}
-        {tab === "cal"   && <CalendarPane />}
-        {tab === "github" && <GitHubPane />}
-        {tab === "costes"  && <CostesPane />}
-        {tab === "informe" && <InformePane />}
+        {tab === "cal" && <Suspense fallback={<PaneLoader />}><CalendarPane /></Suspense>}
+        {tab === "github" && <Suspense fallback={<PaneLoader />}><GitHubPane /></Suspense>}
+        {tab === "costes" && <Suspense fallback={<PaneLoader />}><CostesPane /></Suspense>}
+        {tab === "informe" && <Suspense fallback={<PaneLoader />}><InformePane /></Suspense>}
       </div>
     </div>
     </>
