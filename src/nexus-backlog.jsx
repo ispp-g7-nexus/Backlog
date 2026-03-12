@@ -155,25 +155,25 @@ function SyncModal({ onClose }) {
   return (
     <div style={{ position:"fixed", inset:0, background:"#000000bb", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center" }}
          onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ background:"#18181b", border:"1px solid #3f3f46", borderRadius:12, padding:24, width:420, maxWidth:"92vw" }}>
+      <div style={{ background:"var(--bg3)", border:"1px solid var(--bdr2)", borderRadius:12, padding:24, width:420, maxWidth:"92vw" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
-          <div style={{ fontWeight:700, fontSize:14, color:"#f1f5f9" }}>🔄 Sincronizar con GitHub</div>
-          <button onClick={onClose} style={{ background:"none", border:"none", color:"#71717a", cursor:"pointer", fontSize:20, lineHeight:1 }}>×</button>
+          <div style={{ fontWeight:700, fontSize:14, color:"var(--tx0)" }}>🔄 Sincronizar con GitHub</div>
+          <button onClick={onClose} style={{ background:"none", border:"none", color:"var(--tx3)", cursor:"pointer", fontSize:20, lineHeight:1 }}>×</button>
         </div>
-        <div style={{ fontSize:12, color:"#71717a", marginBottom:12, lineHeight:1.6 }}>
+        <div style={{ fontSize:12, color:"var(--tx3)", marginBottom:12, lineHeight:1.6 }}>
           Necesitas un <strong style={{color:"#a1a1aa"}}>Personal Access Token</strong> con permisos
-          {' '}<code style={{background:"#09090b",padding:"1px 4px",borderRadius:3,color:"#818cf8"}}>read:project</code> y{' '}
-          <code style={{background:"#09090b",padding:"1px 4px",borderRadius:3,color:"#818cf8"}}>repo</code>.
+          {' '}<code style={{background:"var(--bg0)",padding:"1px 4px",borderRadius:3,color:"#818cf8"}}>read:project</code> y{' '}
+          <code style={{background:"var(--bg0)",padding:"1px 4px",borderRadius:3,color:"#818cf8"}}>repo</code>.
         </div>
         <input
           type="password" placeholder="ghp_…" value={token}
           onChange={e => setToken(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && status !== 'loading' && handleSync()}
           autoFocus
-          style={{ width:"100%", background:"#09090b", border:"1px solid #3f3f46", borderRadius:6,
-            padding:"8px 10px", color:"#f1f5f9", fontSize:13, outline:"none", boxSizing:"border-box" }}
+          style={{ width:"100%", background:"var(--bg0)", border:"1px solid var(--bdr2)", borderRadius:6,
+            padding:"8px 10px", color:"var(--tx0)", fontSize:13, outline:"none", boxSizing:"border-box" }}
         />
-        <label style={{ display:"flex", alignItems:"center", gap:6, marginTop:8, fontSize:11, color:"#71717a", cursor:"pointer", userSelect:"none" }}>
+        <label style={{ display:"flex", alignItems:"center", gap:6, marginTop:8, fontSize:11, color:"var(--tx3)", cursor:"pointer", userSelect:"none" }}>
           <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)} />
           Recordar token en este navegador
         </label>
@@ -185,17 +185,17 @@ function SyncModal({ onClose }) {
         )}
         <div style={{ display:"flex", gap:8, marginTop:16 }}>
           <button onClick={onClose}
-            style={{ flex:1, padding:"8px", borderRadius:6, background:"transparent", border:"1px solid #3f3f46", color:"#71717a", cursor:"pointer", fontSize:12 }}>
+            style={{ flex:1, padding:"8px", borderRadius:6, background:"transparent", border:"1px solid var(--bdr2)", color:"var(--tx3)", cursor:"pointer", fontSize:12 }}>
             Cancelar
           </button>
           <button onClick={handleSync} disabled={status==='loading' || !token.trim()}
             style={{ flex:2, padding:"8px", borderRadius:6, background:"#6366f130", border:"1px solid #6366f155",
-              color: status==='loading' ? "#52525b" : "#818cf8", cursor: status==='loading' ? "default" : "pointer", fontSize:12, fontWeight:700 }}>
+              color: status==='loading' ? "var(--tx4)" : "#818cf8", cursor: status==='loading' ? "default" : "pointer", fontSize:12, fontWeight:700 }}>
             {status === 'loading' ? '⏳ Sincronizando…' : '🔄 Sincronizar ahora'}
           </button>
         </div>
         {_storedLive && (
-          <div style={{ marginTop:12, fontSize:10, color:"#3f3f46", textAlign:"center" }}>
+          <div style={{ marginTop:12, fontSize:10, color:"var(--bdr2)", textAlign:"center" }}>
             Último sync: {new Date(_storedLive.fetchedAt).toLocaleString("es-ES")} · {_storedLive.total} HU
             {' '}·{' '}
             <span style={{ color:"#ef4444", cursor:"pointer", textDecoration:"underline" }}
@@ -228,21 +228,21 @@ const MOSCOW_META = {
   M:{ label:"Must Have",   bg:"#dc2626", text:"#fff" },
   S:{ label:"Should Have", bg:"#b45309", text:"#fff" },
   C:{ label:"Could Have",  bg:"#0369a1", text:"#fff" },
-  W:{ label:"Won't Have",  bg:"#3f3f46", text:"#fff" },
+  W:{ label:"Won't Have",  bg:"var(--bdr2)", text:"#fff" },
 };
 const STATUS_META = {
-  "Backlog":     { bg:"#27272a", text:"#71717a" },
-  "Ready":       { bg:"#1e3a8a", text:"#93c5fd" },
-  "In progress": { bg:"#064e3b", text:"#6ee7b7" },
-  "In review":   { bg:"#4c1d95", text:"#c4b5fd" },
-  "Done":        { bg:"#052e16", text:"#34d399" },
+  "Backlog":     { bg:"var(--bdr)", text:"var(--tx3)" },
+  "Ready":       { bg:"var(--st-ready-bg)", text:"var(--st-ready-tx)" },
+  "In progress": { bg:"var(--st-prog-bg)",  text:"var(--st-prog-tx)" },
+  "In review":   { bg:"var(--st-rev-bg)",   text:"var(--st-rev-tx)" },
+  "Done":        { bg:"var(--st-done-bg)",  text:"var(--st-done-tx)" },
 };
 const SIZE_META = {
-  XS:{ bg:"#4c1d95", text:"#e9d5ff" },
-  S: { bg:"#064e3b", text:"#6ee7b7" },
-  M: { bg:"#1e3a8a", text:"#93c5fd" },
-  L: { bg:"#7c2d12", text:"#fdba74" },
-  XL:{ bg:"#881337", text:"#fda4af" },
+  XS:{ bg:"var(--sz-xs-bg)", text:"var(--sz-xs-tx)" },
+  S: { bg:"var(--sz-s-bg)",  text:"var(--sz-s-tx)" },
+  M: { bg:"var(--sz-m-bg)",  text:"var(--sz-m-tx)" },
+  L: { bg:"var(--sz-l-bg)",  text:"var(--sz-l-tx)" },
+  XL:{ bg:"var(--sz-xl-bg)", text:"var(--sz-xl-tx)" },
 };
 const SC = {
   1:{ label:"Sprint 1", date:"19 feb–5 mar",  start:"2026-02-19", end:"2026-03-05", weight:"10%", color:"#818cf8" },
@@ -254,7 +254,7 @@ const AREA_COLORS = [
   "#f87171","#38bdf8","#a3e635","#facc15","#c084fc","#4ade80","#60a5fa",
 ];
 const TABS = [
-  { id:"github",   label:"🐙 GitHub",          color:"#94a3b8" },
+  { id:"github",   label:"🐙 GitHub",          color:"var(--tx2)" },
   { id:"project",  label:"📋 GitHub Project",  color:"#818cf8" },
   { id:"informe",  label:"⏱️ Clockify",         color:"#6ee7b7" },
   { id:"cal",      label:"📅 Calendario",       color:"#38bdf8" },
@@ -285,7 +285,7 @@ function SizeBadge({ s }) {
   );
 }
 function StatusBadge({ s }) {
-  const meta = STATUS_META[s] || { bg:"#27272a", text:"#71717a" };
+  const meta = STATUS_META[s] || { bg:"var(--bdr)", text:"var(--tx3)" };
   return (
     <span style={{
       background:meta.bg, color:meta.text,
@@ -355,8 +355,8 @@ function BacklogPane({ sprint }) {
         style={{
           padding:"3px 10px", borderRadius:5, fontSize:11, fontWeight:700, cursor:"pointer",
           background: active ? activeBg   : "transparent",
-          color:      active ? activeColor : "#71717a",
-          border:     active ? `1px solid ${activeBg}` : "1px solid #27272a",
+          color:      active ? activeColor : "var(--tx3)",
+          border:     active ? `1px solid ${activeBg}` : "1px solid var(--bdr)",
           transition:"all .12s",
         }}
       >{children}</button>
@@ -366,14 +366,14 @@ function BacklogPane({ sprint }) {
   return (
     <div>
       {/* Banner */}
-      <div style={{ background:"#111113", border:`1px solid ${sc.color}25`, borderRadius:12, padding:"13px 18px", marginBottom:12, display:"flex", flexWrap:"wrap", gap:12, alignItems:"center", justifyContent:"space-between" }}>
+      <div style={{ background:"var(--bg2)", border:`1px solid ${sc.color}25`, borderRadius:12, padding:"13px 18px", marginBottom:12, display:"flex", flexWrap:"wrap", gap:12, alignItems:"center", justifyContent:"space-between" }}>
         <div>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3 }}>
             <div style={{ width:8, height:8, borderRadius:"50%", background:sc.color, boxShadow:`0 0 8px ${sc.color}` }} />
             <span style={{ color:sc.color, fontWeight:800, fontSize:14 }}>{sc.label}</span>
-            <span style={{ color:"#71717a", fontSize:11 }}>{sc.date}</span>
+            <span style={{ color:"var(--tx3)", fontSize:11 }}>{sc.date}</span>
           </div>
-          <div style={{ color:"#94a3b8", fontSize:11 }}>
+          <div style={{ color:"var(--tx2)", fontSize:11 }}>
             {sprint === 1 && "Core del MVP + infraestructura base"}
             {sprint === 2 && "MVP v1 completo · ciclo de mejora continua · pilotaje"}
             {sprint === 3 && "MVP v2 · diferenciadores · matching IA · marketing"}
@@ -381,31 +381,31 @@ function BacklogPane({ sprint }) {
         </div>
         <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
           {[
-            { l:"Total",       val:stats.total,      c:"#e2e8f0" },
+            { l:"Total",       val:stats.total,      c:"var(--tx0)" },
             { l:"En curso",    val:stats.inProgress, c:"#6ee7b7" },
             { l:"En revisión", val:stats.inReview,   c:"#c4b5fd" },
             { l:"Hecho",       val:stats.done,       c:"#34d399" },
           ].map(s => (
-            <div key={s.l} style={{ background:"#09090b", border:"1px solid #27272a", borderRadius:8, padding:"6px 12px", textAlign:"center", minWidth:48 }}>
+            <div key={s.l} style={{ background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:8, padding:"6px 12px", textAlign:"center", minWidth:48 }}>
               <div style={{ color:s.c, fontSize:17, fontWeight:800, lineHeight:1 }}>{s.val}</div>
-              <div style={{ color:"#52525b", fontSize:9, marginTop:2 }}>{s.l}</div>
+              <div style={{ color:"var(--tx4)", fontSize:9, marginTop:2 }}>{s.l}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Filters */}
-      <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:"13px 18px", marginBottom:12 }}>
+      <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, padding:"13px 18px", marginBottom:12 }}>
         <input
           value={query}
           onChange={e => setQuery(e.target.value)}
           placeholder="Buscar por ID o título…"
-          style={{ width:"100%", background:"#09090b", border:"1px solid #27272a", borderRadius:7, padding:"7px 10px", fontSize:12, color:"#e2e8f0", outline:"none", boxSizing:"border-box", marginBottom:9 }}
+          style={{ width:"100%", background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:7, padding:"7px 10px", fontSize:12, color:"var(--tx0)", outline:"none", boxSizing:"border-box", marginBottom:9 }}
         />
         <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:6, alignItems:"center" }}>
-          <span style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", width:46, flexShrink:0 }}>Estado</span>
+          <span style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", width:46, flexShrink:0 }}>Estado</span>
           {rawData.statuses.map(s => {
-            const meta = STATUS_META[s] || { bg:"#27272a", text:"#71717a" };
+            const meta = STATUS_META[s] || { bg:"var(--bdr)", text:"var(--tx3)" };
             return (
               <FilterBtn key={s} active={stf.includes(s)} onClick={() => toggle(stf, setStf, s)} activeBg={meta.bg} activeColor={meta.text}>
                 {s}
@@ -414,13 +414,13 @@ function BacklogPane({ sprint }) {
           })}
         </div>
         <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:6, alignItems:"center" }}>
-          <span style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", width:46, flexShrink:0 }}>Talla</span>
+          <span style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", width:46, flexShrink:0 }}>Talla</span>
           {["XS","S","M","L","XL"].map(s => (
             <FilterBtn key={s} active={sf.includes(s)} onClick={() => toggle(sf, setSf, s)} activeBg={SIZE_META[s].bg} activeColor={SIZE_META[s].text}>{s}</FilterBtn>
           ))}
         </div>
         <div style={{ display:"flex", flexWrap:"wrap", gap:5, alignItems:"center" }}>
-          <span style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", width:46, flexShrink:0 }}>Área</span>
+          <span style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", width:46, flexShrink:0 }}>Área</span>
           {areas.map(a => (
             <FilterBtn key={a} active={af.includes(a)} onClick={() => toggle(af, setAf, a)} activeBg={`${areaColor[a]}35`} activeColor={areaColor[a]}>{a}</FilterBtn>
           ))}
@@ -434,18 +434,18 @@ function BacklogPane({ sprint }) {
 
       {/* Table */}
       {Object.keys(byArea).length === 0 ? (
-        <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:48, textAlign:"center", color:"#52525b" }}>
+        <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, padding:48, textAlign:"center", color:"var(--tx4)" }}>
           Sin resultados para los filtros seleccionados
         </div>
       ) : (
         <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
           {Object.entries(byArea).sort(([a], [b]) => (areaMinId[a] ?? 9999) - (areaMinId[b] ?? 9999)).map(([area, its]) => (
-            <div key={area} style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, overflow:"hidden" }}>
+            <div key={area} style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, overflow:"hidden" }}>
               {/* Area header */}
-              <div style={{ background:"#09090b", borderBottom:"1px solid #27272a", padding:"8px 16px", display:"flex", alignItems:"center", gap:10 }}>
+              <div style={{ background:"var(--bg0)", borderBottom:"1px solid var(--bdr)", padding:"8px 16px", display:"flex", alignItems:"center", gap:10 }}>
                 <div style={{ width:4, height:14, borderRadius:3, background:areaColor[area] }} />
                 <span style={{ color:areaColor[area], fontWeight:700, fontSize:12 }}>{area}</span>
-                <span style={{ color:"#3f3f46", fontSize:10 }}>({its.length} HU)</span>
+                <span style={{ color:"var(--bdr2)", fontSize:10 }}>({its.length} HU)</span>
               </div>
 
               {/* Table */}
@@ -459,9 +459,9 @@ function BacklogPane({ sprint }) {
                     <col style={{ width:72 }} />
                   </colgroup>
                   <thead>
-                    <tr style={{ borderBottom:"1px solid #27272a" }}>
+                    <tr style={{ borderBottom:"1px solid var(--bdr)" }}>
                       {["ID","Historia de usuario","Equipo","Estado","Talla"].map(h => (
-                        <th key={h} style={{ textAlign:"left", padding:"7px 14px", color:"#52525b", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:".07em", whiteSpace:"nowrap" }}>{h}</th>
+                        <th key={h} style={{ textAlign:"left", padding:"7px 14px", color:"var(--tx4)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:".07em", whiteSpace:"nowrap" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -492,19 +492,19 @@ function BacklogPane({ sprint }) {
                                 <span style={{ color:"#6b7280", fontSize:10, fontFamily:"monospace", fontWeight:600 }}>{item.id}</span>
                               )}
                             </td>
-                            <td style={{ padding:"9px 14px", color:"#cbd5e1", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                            <td style={{ padding:"9px 14px", color:"var(--tx1)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
                               <span>{item.title}</span>
                               {item.assignees && item.assignees.length > 0 && (
                                 <span style={{ marginLeft:8, display:"inline-flex", gap:2, verticalAlign:"middle" }}>
                                   {item.assignees.map(a => (
                                     <img key={a.login} src={a.avatarUrl} title={a.name || a.login}
-                                      style={{ width:16, height:16, borderRadius:"50%", border:"1px solid #3f3f46", verticalAlign:"middle" }}
+                                      style={{ width:16, height:16, borderRadius:"50%", border:"1px solid var(--bdr2)", verticalAlign:"middle" }}
                                     />
                                   ))}
                                 </span>
                               )}
                             </td>
-                            <td style={{ padding:"9px 14px", color:"#71717a", whiteSpace:"nowrap", fontSize:11 }}>{item.equipo || "—"}</td>
+                            <td style={{ padding:"9px 14px", color:"var(--tx3)", whiteSpace:"nowrap", fontSize:11 }}>{item.equipo || "—"}</td>
                             <td style={{ padding:"9px 14px" }}><StatusBadge s={item.status} /></td>
                             <td style={{ padding:"9px 14px" }}>{item.size ? <SizeBadge s={item.size} /> : null}</td>
                           </tr>
@@ -518,8 +518,8 @@ function BacklogPane({ sprint }) {
                                 borderBottom: (si < item.subtasks.length - 1 || idx < its.length - 1) ? "1px solid #18181f" : "none",
                               }}
                             >
-                              <td style={{ padding:"6px 14px 6px 36px", color:"#3f3f46", fontSize:11, whiteSpace:"nowrap" }}>└</td>
-                              <td style={{ padding:"6px 14px", color:"#71717a", fontSize:11, fontStyle:"italic" }}>{sub.title}</td>
+                              <td style={{ padding:"6px 14px 6px 36px", color:"var(--bdr2)", fontSize:11, whiteSpace:"nowrap" }}>└</td>
+                              <td style={{ padding:"6px 14px", color:"var(--tx3)", fontSize:11, fontStyle:"italic" }}>{sub.title}</td>
                               <td colSpan={3} style={{ padding:"6px 14px" }} />
                             </tr>
                           ))}
@@ -536,21 +536,21 @@ function BacklogPane({ sprint }) {
 
       {/* Legend */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:12 }}>
-        <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:"12px 16px" }}>
-          <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", marginBottom:7 }}>Estado del Kanban</div>
+        <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, padding:"12px 16px" }}>
+          <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", marginBottom:7 }}>Estado del Kanban</div>
           <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
             {Object.keys(STATUS_META).map(k => (
               <StatusBadge key={k} s={k} />
             ))}
           </div>
         </div>
-        <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:"12px 16px" }}>
-          <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", marginBottom:7 }}>Tallas (estimación orientativa)</div>
+        <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, padding:"12px 16px" }}>
+          <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:".07em", marginBottom:7 }}>Tallas (estimación orientativa)</div>
           <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
             {[["XS","~2h"],["S","~4h"],["M","~8h"],["L","~16h"],["XL","~30h+"]].map(([s,h]) => (
               <div key={s} style={{ display:"flex", alignItems:"center", gap:5 }}>
                 <SizeBadge s={s} />
-                <span style={{ color:"#94a3b8", fontSize:10 }}>{h}</span>
+                <span style={{ color:"var(--tx2)", fontSize:10 }}>{h}</span>
               </div>
             ))}
           </div>
@@ -597,7 +597,7 @@ function CalendarPane() {
     if (title.includes("Weekly"))               return { label:"Weekly",   color:"#fbbf24", dot:"#f59e0b" };
     if (title.includes("Review"))               return { label:"Review",   color:"#f472b6", dot:"#ec4899" };
     if (title.includes("Retrospective"))        return { label:"Retro",    color:"#fb923c", dot:"#f97316" };
-    return { label:title, color:"#94a3b8", dot:"#64748b" };
+    return { label:title, color:"var(--tx2)", dot:"#64748b" };
   }
 
   function renderMonth({ year, month, label }) {
@@ -612,15 +612,15 @@ function CalendarPane() {
     while (cells.length % 7 !== 0) cells.push(null);
 
     return (
-      <div key={label} style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, overflow:"hidden" }}>
-        <div style={{ background:"#09090b", borderBottom:"1px solid #27272a", padding:"10px 16px" }}>
-          <span style={{ color:"#e2e8f0", fontWeight:700, fontSize:13 }}>{label}</span>
+      <div key={label} style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, overflow:"hidden" }}>
+        <div style={{ background:"var(--bg0)", borderBottom:"1px solid var(--bdr)", padding:"10px 16px" }}>
+          <span style={{ color:"var(--tx0)", fontWeight:700, fontSize:13 }}>{label}</span>
         </div>
         <div style={{ padding:12 }}>
           {/* Day headers */}
           <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", marginBottom:4 }}>
             {DAYS.map(d => (
-              <div key={d} style={{ textAlign:"center", color:"#52525b", fontSize:10, fontWeight:700, padding:"4px 0", letterSpacing:".05em" }}>{d}</div>
+              <div key={d} style={{ textAlign:"center", color:"var(--tx4)", fontSize:10, fontWeight:700, padding:"4px 0", letterSpacing:".05em" }}>{d}</div>
             ))}
           </div>
           {/* Weeks */}
@@ -640,13 +640,13 @@ function CalendarPane() {
                 return (
                   <div key={di} style={{
                     minHeight:64, borderRadius:8, padding:"5px 6px",
-                    background: dayEvents.length || endSprint ? "#0f0f18" : "transparent",
-                    border: isToday ? "1px solid #818cf840" : (dayEvents.length || endSprint) ? "1px solid #27272a" : "1px solid transparent",
+                    background: dayEvents.length || endSprint ? "var(--cal-day)" : "transparent",
+                    border: isToday ? "1px solid #818cf840" : (dayEvents.length || endSprint) ? "1px solid var(--bdr)" : "1px solid transparent",
                     position:"relative",
                   }}>
                     <div style={{
                       fontSize:11, fontWeight: dayEvents.length || endSprint ? 700 : 400,
-                      color: isToday ? "#818cf8" : (dayEvents.length || endSprint) ? "#e2e8f0" : "#3f3f46",
+                      color: isToday ? "#818cf8" : (dayEvents.length || endSprint) ? "var(--tx0)" : "var(--bdr2)",
                       marginBottom:3,
                     }}>{day}</div>
                     {endSprint && (
@@ -700,22 +700,22 @@ function CalendarPane() {
   return (
     <div>
       {/* Header */}
-      <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:"12px 18px", marginBottom:12, display:"flex", flexWrap:"wrap", gap:14, alignItems:"center", justifyContent:"space-between" }}>
+      <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, padding:"12px 18px", marginBottom:12, display:"flex", flexWrap:"wrap", gap:14, alignItems:"center", justifyContent:"space-between" }}>
         <div>
           <div style={{ color:"#38bdf8", fontWeight:700, fontSize:13, marginBottom:2 }}>📅 Calendario de Asistencia</div>
-          <div style={{ color:"#71717a", fontSize:11 }}>Clases y ceremonias Scrum · Feb – Abr 2026</div>
+          <div style={{ color:"var(--tx3)", fontSize:11 }}>Clases y ceremonias Scrum · Feb – Abr 2026</div>
         </div>
         <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
           {legend.map(l => (
             <div key={l.label} style={{ display:"flex", alignItems:"center", gap:5 }}>
               <div style={{ width:7, height:7, borderRadius:"50%", background:l.dot }} />
-              <span style={{ color:"#94a3b8", fontSize:10 }}>{l.label}</span>
+              <span style={{ color:"var(--tx2)", fontSize:10 }}>{l.label}</span>
             </div>
           ))}
           {[1,2,3].map(s => (
             <div key={s} style={{ display:"flex", alignItems:"center", gap:5 }}>
               <div style={{ width:7, height:7, borderRadius:2, background:SC_COLOR[s] }} />
-              <span style={{ color:"#94a3b8", fontSize:10 }}>S{s}</span>
+              <span style={{ color:"var(--tx2)", fontSize:10 }}>S{s}</span>
             </div>
           ))}
         </div>
@@ -992,12 +992,12 @@ function GitHubPane() {
         <div key={ms.m.login} style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 3 }}>
           <img src={`https://github.com/${ms.m.login}.png?size=20`} alt={ms.m.name}
             style={{ width: 16, height: 16, borderRadius: "50%", flexShrink: 0, border: `1px solid ${TC[ms.m.team]}50` }} />
-          <span style={{ color: "#94a3b8", fontSize: 8.5, width: 46, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flexShrink: 0 }}>
+          <span style={{ color: "var(--tx2)", fontSize: 8.5, width: 46, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flexShrink: 0 }}>
             {ms.m.name.split(" ")[0]}
           </span>
-          <div style={{ flex: 1, height: 6, background: "#27272a", borderRadius: 3, overflow: "hidden", position: "relative" }}>
+          <div style={{ flex: 1, height: 6, background: "var(--bdr)", borderRadius: 3, overflow: "hidden", position: "relative" }}>
             <div style={{ height: "100%", width: `${mv > 0 ? v / mv * 100 : 0}%`, background: TC[ms.m.team], borderRadius: 3 }} />
-            {avgPct !== null && <div style={{ position:"absolute", top:0, bottom:0, left:`${avgPct}%`, width:1, background:"#94a3b8", opacity:0.6 }}/>}
+            {avgPct !== null && <div style={{ position:"absolute", top:0, bottom:0, left:`${avgPct}%`, width:1, background:"var(--tx2)", opacity:0.6 }}/>}
           </div>
           <span style={{ color, fontSize: 8.5, fontWeight: 700, width: 28, textAlign: "right", flexShrink: 0 }}>
             {getLabel ? getLabel(ms) : v}
@@ -1019,31 +1019,31 @@ function GitHubPane() {
             <span style={{ background:`${tc}20`, color:tc, fontWeight:800, fontSize:10, textTransform:"uppercase", letterSpacing:2, padding:"3px 10px", borderRadius:5, flexShrink:0 }}>
               Equipo {team}
             </span>
-            <span style={{ color:"#52525b", fontSize:10 }}>
+            <span style={{ color:"var(--tx4)", fontSize:10 }}>
               {ghTab === "commits"
                 ? `${tt.commits} commits`
                 : `${tt.commits} commits · ${tt.prs} PRs · ${tt.reviews} reviews · +${(tt.added/1000).toFixed(1)}k líneas`}
             </span>
-            <div style={{ flex:1, height:1, background:"#27272a" }} />
+            <div style={{ flex:1, height:1, background:"var(--bdr)" }} />
           </div>
           <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
             {rows.map(({ m, commits, pr, revs, lns, cons, amt, collabScore, prEfficiency }) => (
-              <div key={m.login} style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"10px 14px" }}>
+              <div key={m.login} style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"10px 14px" }}>
                 <div style={{ display:"flex", alignItems:"flex-start", gap:12, flexWrap:"wrap" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:10, minWidth:160 }}>
                     <img src={`https://github.com/${m.login}.png?size=36`} alt={m.name}
                       style={{ width:32, height:32, borderRadius:"50%", border:`2px solid ${tc}50`, flexShrink:0 }} />
                     <div>
-                      <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:12 }}>{m.name}</div>
+                      <div style={{ color:"var(--tx0)", fontWeight:700, fontSize:12 }}>{m.name}</div>
                       <div style={{ display:"flex", alignItems:"center", gap:4 }}>
                         <a href={`https://github.com/${m.login}`} target="_blank" rel="noreferrer"
-                          style={{ display:"inline-flex", alignItems:"center", gap:3, color:"#52525b", fontSize:9, textDecoration:"none" }}>
-                          <svg viewBox="0 0 16 16" width={10} height={10} fill="#52525b">
+                          style={{ display:"inline-flex", alignItems:"center", gap:3, color:"var(--tx4)", fontSize:9, textDecoration:"none" }}>
+                          <svg viewBox="0 0 16 16" width={10} height={10} fill="var(--tx4)">
                             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
                           </svg>
                           @{m.login}
                         </a>
-                        <span style={{ color:"#3f3f46", fontSize:9 }}>· {m.role}{m.coord?" · Coord":""}</span>
+                        <span style={{ color:"var(--bdr2)", fontSize:9 }}>· {m.role}{m.coord?" · Coord":""}</span>
                       </div>
                     </div>
                   </div>
@@ -1051,7 +1051,7 @@ function GitHubPane() {
                     <div style={{ display:"flex", gap:16, flex:1, flexWrap:"wrap", alignItems:"center" }}>
                       <div style={{ textAlign:"center" }}>
                         <div style={{ color:"#818cf8", fontWeight:800, fontSize:20, lineHeight:1.1 }}>{commits}</div>
-                        <div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1 }}>Commits</div>
+                        <div style={{ color:"var(--tx4)", fontSize:8, textTransform:"uppercase", letterSpacing:1 }}>Commits</div>
                       </div>
                     </div>
                   ) : (
@@ -1064,18 +1064,18 @@ function GitHubPane() {
                       ].map(({ value, label, color, sub }) => (
                         <div key={label} style={{ textAlign:"center" }}>
                           <div style={{ color, fontWeight:800, fontSize:16, lineHeight:1.1 }}>
-                            {value}{sub && <span style={{ color:"#52525b", fontSize:10, fontWeight:400 }}>{sub}</span>}
+                            {value}{sub && <span style={{ color:"var(--tx4)", fontSize:10, fontWeight:400 }}>{sub}</span>}
                           </div>
-                          <div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1 }}>{label}</div>
+                          <div style={{ color:"var(--tx4)", fontSize:8, textTransform:"uppercase", letterSpacing:1 }}>{label}</div>
                         </div>
                       ))}
                     </div>
                   )}
                   {ghTab !== "commits" && (
                     <div style={{ display:"flex", gap:5, flexWrap:"wrap", alignItems:"center" }}>
-                      {cons!==null && <span title={`${cons}% semanas con ≥1 commit`} style={{ fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:4, background:cons>=50?"#38bdf820":"#27272a", color:cons>=70?"#38bdf8":cons>=40?"#94a3b8":"#52525b", border:`1px solid ${cons>=50?"#38bdf840":"#3f3f46"}` }}>📅 {cons}%</span>}
-                      <span title="Score colaboración" style={{ fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:4, background:collabScore>=60?"#a855f720":"#27272a", color:collabScore>=60?"#a855f7":collabScore>=30?"#94a3b8":"#52525b", border:`1px solid ${collabScore>=60?"#a855f740":"#3f3f46"}` }}>🤝 {collabScore}</span>
-                      {prEfficiency!==null && <span title={`${prEfficiency}% PRs mergeadas`} style={{ fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:4, background:prEfficiency>=70?"#34d39920":"#27272a", color:prEfficiency>=70?"#34d399":"#94a3b8", border:`1px solid ${prEfficiency>=70?"#34d39940":"#3f3f46"}` }}>🔀 {prEfficiency}%</span>}
+                      {cons!==null && <span title={`${cons}% semanas con ≥1 commit`} style={{ fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:4, background:cons>=50?"#38bdf820":"var(--bdr)", color:cons>=70?"#38bdf8":cons>=40?"var(--tx2)":"var(--tx4)", border:`1px solid ${cons>=50?"#38bdf840":"var(--bdr2)"}` }}>📅 {cons}%</span>}
+                      <span title="Score colaboración" style={{ fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:4, background:collabScore>=60?"#a855f720":"var(--bdr)", color:collabScore>=60?"#a855f7":collabScore>=30?"var(--tx2)":"var(--tx4)", border:`1px solid ${collabScore>=60?"#a855f740":"var(--bdr2)"}` }}>🤝 {collabScore}</span>
+                      {prEfficiency!==null && <span title={`${prEfficiency}% PRs mergeadas`} style={{ fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:4, background:prEfficiency>=70?"#34d39920":"var(--bdr)", color:prEfficiency>=70?"#34d399":"var(--tx2)", border:`1px solid ${prEfficiency>=70?"#34d39940":"var(--bdr2)"}` }}>🔀 {prEfficiency}%</span>}
                       {amt!==null && <span title={`${amt}d promedio hasta merge`} style={{ fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:4, background:amt<=1?"#22c55e20":amt<=3?"#f59e0b20":"#ef444420", color:amt<=1?"#22c55e":amt<=3?"#f59e0b":"#ef4444", border:`1px solid ${amt<=1?"#22c55e40":amt<=3?"#f59e0b40":"#ef444440"}` }}>⚡ {amt}d</span>}
                       {lns.added>0 && <span title={`+${lns.added.toLocaleString()} líneas`} style={{ fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:4, background:"#38bdf815", color:"#38bdf8", border:"1px solid #38bdf830" }}>+{lns.added>999?`${(lns.added/1000).toFixed(1)}k`:lns.added}</span>}
                     </div>
@@ -1089,12 +1089,12 @@ function GitHubPane() {
                     return (
                       <div style={{ flex:1 }}>
                         <div style={{ display:"flex", justifyContent:"space-between", marginBottom:2 }}>
-                          <span style={{ color:"#52525b", fontSize:7.5, textTransform:"uppercase", letterSpacing:0.8 }}>Commits</span>
+                          <span style={{ color:"var(--tx4)", fontSize:7.5, textTransform:"uppercase", letterSpacing:0.8 }}>Commits</span>
                           <span style={{ color:"#818cf8", fontSize:7.5, fontWeight:700 }}>{commits}</span>
                         </div>
-                        <div style={{ height:4, background:"#27272a", borderRadius:2, overflow:"hidden", position:"relative" }}>
+                        <div style={{ height:4, background:"var(--bdr)", borderRadius:2, overflow:"hidden", position:"relative" }}>
                           <div style={{ height:"100%", width:`${maxCommits>0?commits/maxCommits*100:0}%`, background:"#818cf8", borderRadius:2 }} />
-                          {globalAvg > 0 && <div title={`Media global: ${Math.round(globalAvg)}`} style={{ position:"absolute", top:0, bottom:0, left:`${maxCommits>0?globalAvg/maxCommits*100:0}%`, width:1, background:"#94a3b8", opacity:0.7 }}/>}
+                          {globalAvg > 0 && <div title={`Media global: ${Math.round(globalAvg)}`} style={{ position:"absolute", top:0, bottom:0, left:`${maxCommits>0?globalAvg/maxCommits*100:0}%`, width:1, background:"var(--tx2)", opacity:0.7 }}/>}
                           {teamAvg > 0 && <div title={`Media equipo ${team}: ${Math.round(teamAvg)}`} style={{ position:"absolute", top:0, bottom:0, left:`${maxCommits>0?teamAvg/maxCommits*100:0}%`, width:1, background:tc, opacity:0.9 }}/>}
                         </div>
                       </div>
@@ -1107,10 +1107,10 @@ function GitHubPane() {
                   ].map(({ label, val, max, col }) => (
                     <div key={label} style={{ flex:1 }}>
                       <div style={{ display:"flex", justifyContent:"space-between", marginBottom:2 }}>
-                        <span style={{ color:"#52525b", fontSize:7.5, textTransform:"uppercase", letterSpacing:0.8 }}>{label}</span>
+                        <span style={{ color:"var(--tx4)", fontSize:7.5, textTransform:"uppercase", letterSpacing:0.8 }}>{label}</span>
                         <span style={{ color:col, fontSize:7.5, fontWeight:700 }}>{val>999?`${(val/1000).toFixed(1)}k`:val}</span>
                       </div>
-                      <div style={{ height:3, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                      <div style={{ height:3, background:"var(--bdr)", borderRadius:2, overflow:"hidden" }}>
                         <div style={{ height:"100%", width:`${max>0?val/max*100:0}%`, background:col, borderRadius:2 }} />
                       </div>
                     </div>
@@ -1130,11 +1130,11 @@ function GitHubPane() {
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <span style={{ color: "#e2e8f0", fontWeight: 800, fontSize: 15 }}>🐙 GitHub — Insights & Métricas</span>
+        <span style={{ color: "var(--tx0)", fontWeight: 800, fontSize: 15 }}>🐙 GitHub — Insights & Métricas</span>
         {loading
-          ? <span style={{ color: "#52525b", fontSize: 10 }}>⏳ actualizando métricas…</span>
+          ? <span style={{ color: "var(--tx4)", fontSize: 10 }}>⏳ actualizando métricas…</span>
           : stats?.fetchedAt && (
-            <span style={{ color: "#52525b", fontSize: 10 }}>
+            <span style={{ color: "var(--tx4)", fontSize: 10 }}>
               Actualizado {new Date(stats.fetchedAt).toLocaleString("es-ES", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}
             </span>
           )
@@ -1150,10 +1150,10 @@ function GitHubPane() {
 
       {/* No data */}
       {!hasData && !loading && (
-        <div style={{ background: "#111113", border: "1px solid #27272a", borderRadius: 10, padding: "32px 24px", textAlign: "center" }}>
+        <div style={{ background: "var(--bg2)", border: "1px solid var(--bdr)", borderRadius: 10, padding: "32px 24px", textAlign: "center" }}>
           <div style={{ fontSize: 32, marginBottom: 8 }}>🐙</div>
-          <div style={{ color: "#94a3b8", fontSize: 13, fontWeight: 600 }}>No hay datos de GitHub cargados</div>
-          <div style={{ color: "#52525b", fontSize: 11, marginTop: 4 }}>Sincroniza el backlog con tu token y pulsa «Actualizar métricas»</div>
+          <div style={{ color: "var(--tx2)", fontSize: 13, fontWeight: 600 }}>No hay datos de GitHub cargados</div>
+          <div style={{ color: "var(--tx4)", fontSize: 11, marginTop: 4 }}>Sincroniza el backlog con tu token y pulsa «Actualizar métricas»</div>
         </div>
       )}
 
@@ -1193,9 +1193,9 @@ function GitHubPane() {
               return (
                 <button key={t.id} onClick={() => setGhTab(t.id)}
                   style={{ padding:"9px 12px", borderRadius:7, fontSize:11, fontWeight:700, cursor:"pointer", textAlign:"left",
-                    border: active ? `1px solid ${t.color}45` : "1px solid #27272a",
-                    background: active ? `${t.color}15` : "#111113",
-                    color: active ? t.color : "#71717a", transition:"all .12s" }}>
+                    border: active ? `1px solid ${t.color}45` : "1px solid var(--bdr)",
+                    background: active ? `${t.color}15` : "var(--bg2)",
+                    color: active ? t.color : "var(--tx3)", transition:"all .12s" }}>
                   {t.label}
                 </button>
               );
@@ -1213,10 +1213,10 @@ function GitHubPane() {
                 const W=52*step+28,H=7*step+22;
                 const col=(v)=>{ if(v===0)return"#1a1a2e"; return["#1e3a5f","#2563eb","#3b82f6","#93c5fd"][Math.min(Math.floor(v/maxDay*4),3)]; };
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px" }}>
-                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>📈 Actividad — últimas 52 semanas</div>
+                  <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>📈 Actividad — últimas 52 semanas</div>
                     <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
-                      {DAYS.map((d,i)=><text key={d} x={14} y={20+i*step+cellSize/2} textAnchor="middle" fontSize={5} fill="#52525b">{d}</text>)}
+                      {DAYS.map((d,i)=><text key={d} x={14} y={20+i*step+cellSize/2} textAnchor="middle" fontSize={5} fill="var(--tx4)">{d}</text>)}
                       {weeks.map((w,wi)=>w.days.map((count,di)=>(
                         <rect key={`${wi}-${di}`} x={22+wi*step} y={16+di*step} width={cellSize} height={cellSize} rx={2} fill={col(count)} opacity={0.95}>
                           <title>{`Sem ${wi+1}, ${DAYS[di]}: ${count} commits`}</title>
@@ -1224,13 +1224,13 @@ function GitHubPane() {
                       )))}
                       {[0,4,8,13,17,21,26,30,34,39,43,47].map((wi,mi)=>{
                         const months=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
-                        return <text key={mi} x={22+wi*step+cellSize/2} y={11} textAnchor="middle" fontSize={4.5} fill="#3f3f46">{months[mi]}</text>;
+                        return <text key={mi} x={22+wi*step+cellSize/2} y={11} textAnchor="middle" fontSize={4.5} fill="var(--bdr2)">{months[mi]}</text>;
                       })}
                     </svg>
                     <div style={{ display:"flex", alignItems:"center", gap:4, marginTop:4 }}>
-                      <span style={{ color:"#52525b", fontSize:8 }}>Menos</span>
+                      <span style={{ color:"var(--tx4)", fontSize:8 }}>Menos</span>
                       {["#1a1a2e","#1e3a5f","#2563eb","#3b82f6","#93c5fd"].map(c=><span key={c} style={{ width:8, height:8, borderRadius:1, background:c, display:"inline-block" }}/>)}
-                      <span style={{ color:"#52525b", fontSize:8 }}>Más</span>
+                      <span style={{ color:"var(--tx4)", fontSize:8 }}>Más</span>
                     </div>
                   </div>
                 );
@@ -1240,11 +1240,11 @@ function GitHubPane() {
                 const DAYS=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"], cellW=20,cellH=18,padL=30,padT=20;
                 const W=padL+24*cellW+10, H=padT+7*cellH+10;
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px" }}>
-                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>⏰ Patrón temporal — commits por hora y día</div>
+                  <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>⏰ Patrón temporal — commits por hora y día</div>
                     <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
-                      {DAYS.map((d,i)=><text key={d} x={padL-3} y={padT+i*cellH+cellH/2+1.5} textAnchor="end" fontSize={5} fill="#52525b">{d}</text>)}
-                      {Array.from({length:24},(_,h)=><text key={h} x={padL+h*cellW+cellW/2} y={padT-3} textAnchor="middle" fontSize={4.5} fill="#52525b">{h%3===0?`${h}h`:""}</text>)}
+                      {DAYS.map((d,i)=><text key={d} x={padL-3} y={padT+i*cellH+cellH/2+1.5} textAnchor="end" fontSize={5} fill="var(--tx4)">{d}</text>)}
+                      {Array.from({length:24},(_,h)=><text key={h} x={padL+h*cellW+cellW/2} y={padT-3} textAnchor="middle" fontSize={4.5} fill="var(--tx4)">{h%3===0?`${h}h`:""}</text>)}
                       {data.map(([day,hour,count])=>{
                         const r=count>0?Math.sqrt(count/maxV)*(cellH/2-1.5):0;
                         const cx=padL+hour*cellW+cellW/2, cy=padT+day*cellH+cellH/2;
@@ -1253,8 +1253,8 @@ function GitHubPane() {
                       })}
                     </svg>
                     <div style={{ display:"flex", gap:12, marginTop:4 }}>
-                      <span style={{ fontSize:8.5, color:"#52525b" }}><span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%", background:"#818cf8", marginRight:3 }}/>Días laborables</span>
-                      <span style={{ fontSize:8.5, color:"#52525b" }}><span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%", background:"#f59e0b", marginRight:3 }}/>Fines de semana</span>
+                      <span style={{ fontSize:8.5, color:"var(--tx4)" }}><span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%", background:"#818cf8", marginRight:3 }}/>Días laborables</span>
+                      <span style={{ fontSize:8.5, color:"var(--tx4)" }}><span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%", background:"#f59e0b", marginRight:3 }}/>Fines de semana</span>
                     </div>
                   </div>
                 );
@@ -1266,13 +1266,13 @@ function GitHubPane() {
                 const prev4 = acts.slice(-8, -4).reduce((s, w) => s + w.total, 0);
                 const pct   = prev4 > 0 ? Math.round((last4 - prev4) / prev4 * 100) : null;
                 const up    = pct !== null && pct >= 0;
-                const color = pct === null ? "#94a3b8" : pct > 10 ? "#22c55e" : pct < -10 ? "#ef4444" : "#f59e0b";
+                const color = pct === null ? "var(--tx2)" : pct > 10 ? "#22c55e" : pct < -10 ? "#ef4444" : "#f59e0b";
                 const w8    = acts.slice(-8);
                 const mx    = Math.max(...w8.map(w => w.total), 1);
                 return (
-                  <div style={{ background:"#111113", border:`1px solid ${color}25`, borderRadius:10, padding:"12px 16px", display:"flex", alignItems:"center", gap:20, flexWrap:"wrap" }}>
+                  <div style={{ background:"var(--bg2)", border:`1px solid ${color}25`, borderRadius:10, padding:"12px 16px", display:"flex", alignItems:"center", gap:20, flexWrap:"wrap" }}>
                     <div>
-                      <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:4 }}>📈 Tendencia — últimas 4 semanas</div>
+                      <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:4 }}>📈 Tendencia — últimas 4 semanas</div>
                       <div style={{ display:"flex", alignItems:"baseline", gap:6 }}>
                         <span style={{ color, fontSize:24, fontWeight:800, lineHeight:1 }}>{pct !== null ? `${up?"+":""}${pct}%` : "—"}</span>
                         <span style={{ color, fontSize:16 }}>{pct !== null ? (up ? "↑" : "↓") : ""}</span>
@@ -1280,13 +1280,13 @@ function GitHubPane() {
                     </div>
                     <div style={{ display:"flex", gap:20, alignItems:"center" }}>
                       <div>
-                        <div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ult. 4 sem</div>
-                        <div style={{ color:"#e2e8f0", fontWeight:800, fontSize:15 }}>{last4}</div>
+                        <div style={{ color:"var(--tx4)", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ult. 4 sem</div>
+                        <div style={{ color:"var(--tx0)", fontWeight:800, fontSize:15 }}>{last4}</div>
                       </div>
-                      <div style={{ width:1, height:28, background:"#27272a" }}/>
+                      <div style={{ width:1, height:28, background:"var(--bdr)" }}/>
                       <div>
-                        <div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ant. 4 sem</div>
-                        <div style={{ color:"#52525b", fontWeight:700, fontSize:15 }}>{prev4}</div>
+                        <div style={{ color:"var(--tx4)", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ant. 4 sem</div>
+                        <div style={{ color:"var(--tx4)", fontWeight:700, fontSize:15 }}>{prev4}</div>
                       </div>
                     </div>
                     <svg viewBox="0 0 88 28" style={{ width:88, height:28, flexShrink:0 }}>
@@ -1294,7 +1294,7 @@ function GitHubPane() {
                         const bh = (w.total / mx) * 24;
                         const bx = i * 11;
                         return <rect key={i} x={bx} y={28 - bh} width={9} height={bh} rx={1.5}
-                          fill={i >= 4 ? color : "#27272a"} opacity={i >= 4 ? 0.9 : 0.6}/>;
+                          fill={i >= 4 ? color : "var(--bdr)"} opacity={i >= 4 ? 0.9 : 0.6}/>;
                       })}
                     </svg>
                   </div>
@@ -1317,14 +1317,14 @@ function GitHubPane() {
                 const mnLbls=[]; let prevM=-1;
                 weeks.forEach((w,wi)=>{ if(!w.week) return; const m=new Date(w.week*1000).getUTCMonth(); if(m!==prevM){mnLbls.push({wi,m});prevM=m;} });
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px" }}>
-                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>
+                  <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>
                       📊 Actividad PRs — últimas 52 semanas
-                      {!stats?.prActivity && <span style={{color:"#52525b",fontWeight:400,marginLeft:8,fontSize:8}}>(pulsa Actualizar para ver datos)</span>}
+                      {!stats?.prActivity && <span style={{color:"var(--tx4)",fontWeight:400,marginLeft:8,fontSize:8}}>(pulsa Actualizar para ver datos)</span>}
                     </div>
                     <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
-                      {DAYS.map((d,i)=><text key={d} x={14} y={20+i*step+cellS/2} textAnchor="middle" fontSize={5} fill="#52525b">{d}</text>)}
-                      {mnLbls.map(({wi,m})=><text key={m} x={22+wi*step+cellS/2} y={11} textAnchor="middle" fontSize={4.5} fill="#3f3f46">{MN[m]}</text>)}
+                      {DAYS.map((d,i)=><text key={d} x={14} y={20+i*step+cellS/2} textAnchor="middle" fontSize={5} fill="var(--tx4)">{d}</text>)}
+                      {mnLbls.map(({wi,m})=><text key={m} x={22+wi*step+cellS/2} y={11} textAnchor="middle" fontSize={4.5} fill="var(--bdr2)">{MN[m]}</text>)}
                       {weeks.map((w,wi)=>w.days.map((count,di)=>(
                         <rect key={`${wi}-${di}`} x={22+wi*step} y={16+di*step} width={cellS} height={cellS} rx={2} fill={col(count)} opacity={0.95}>
                           <title>{`Sem ${wi+1}, ${DAYS[di]}: ${count} PRs`}</title>
@@ -1332,9 +1332,9 @@ function GitHubPane() {
                       )))}
                     </svg>
                     <div style={{ display:"flex", alignItems:"center", gap:4, marginTop:4 }}>
-                      <span style={{ color:"#52525b", fontSize:8 }}>Menos</span>
+                      <span style={{ color:"var(--tx4)", fontSize:8 }}>Menos</span>
                       {["#1a1a2e","#1e3a5f","#6d28d9","#7c3aed","#a78bfa"].map(c=><span key={c} style={{ width:8,height:8,borderRadius:1,background:c,display:"inline-block" }}/>)}
-                      <span style={{ color:"#52525b", fontSize:8 }}>Más</span>
+                      <span style={{ color:"var(--tx4)", fontSize:8 }}>Más</span>
                     </div>
                   </div>
                 );
@@ -1344,11 +1344,11 @@ function GitHubPane() {
                 const DAYS=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"], cellW=20,cellH=18,padL=30,padT=20;
                 const W=padL+24*cellW+10, H=padT+7*cellH+10;
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px" }}>
-                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>⏰ Patrón temporal — PRs por hora y día</div>
+                  <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>⏰ Patrón temporal — PRs por hora y día</div>
                     <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
-                      {DAYS.map((d,i)=><text key={d} x={padL-3} y={padT+i*cellH+cellH/2+1.5} textAnchor="end" fontSize={5} fill="#52525b">{d}</text>)}
-                      {Array.from({length:24},(_,h)=><text key={h} x={padL+h*cellW+cellW/2} y={padT-3} textAnchor="middle" fontSize={4.5} fill="#52525b">{h%3===0?`${h}h`:""}</text>)}
+                      {DAYS.map((d,i)=><text key={d} x={padL-3} y={padT+i*cellH+cellH/2+1.5} textAnchor="end" fontSize={5} fill="var(--tx4)">{d}</text>)}
+                      {Array.from({length:24},(_,h)=><text key={h} x={padL+h*cellW+cellW/2} y={padT-3} textAnchor="middle" fontSize={4.5} fill="var(--tx4)">{h%3===0?`${h}h`:""}</text>)}
                       {data.map(([day,hour,count])=>{
                         const r=count>0?Math.sqrt(count/maxV)*(cellH/2-1.5):0;
                         const cx=padL+hour*cellW+cellW/2, cy=padT+day*cellH+cellH/2;
@@ -1357,8 +1357,8 @@ function GitHubPane() {
                       })}
                     </svg>
                     <div style={{ display:"flex", gap:12, marginTop:4 }}>
-                      <span style={{ fontSize:8.5, color:"#52525b" }}><span style={{ display:"inline-block",width:7,height:7,borderRadius:"50%",background:"#7c3aed",marginRight:3 }}/>Días laborables</span>
-                      <span style={{ fontSize:8.5, color:"#52525b" }}><span style={{ display:"inline-block",width:7,height:7,borderRadius:"50%",background:"#f59e0b",marginRight:3 }}/>Fines de semana</span>
+                      <span style={{ fontSize:8.5, color:"var(--tx4)" }}><span style={{ display:"inline-block",width:7,height:7,borderRadius:"50%",background:"#7c3aed",marginRight:3 }}/>Días laborables</span>
+                      <span style={{ fontSize:8.5, color:"var(--tx4)" }}><span style={{ display:"inline-block",width:7,height:7,borderRadius:"50%",background:"#f59e0b",marginRight:3 }}/>Fines de semana</span>
                     </div>
                   </div>
                 );
@@ -1372,24 +1372,24 @@ function GitHubPane() {
                 const base=prev4>0?prev4:prev8>0?prev8:null;
                 const pct=base!==null?Math.round((last4-base)/base*100):null;
                 const up=pct!==null&&pct>=0;
-                const color=pct===null?"#94a3b8":pct>10?"#22c55e":pct<-10?"#ef4444":"#f59e0b";
+                const color=pct===null?"var(--tx2)":pct>10?"#22c55e":pct<-10?"#ef4444":"#f59e0b";
                 const w8=acts.slice(-8), mx=Math.max(...w8.map(w=>w.total),1);
                 return (
-                  <div style={{ background:"#111113", border:`1px solid ${color}25`, borderRadius:10, padding:"12px 16px", display:"flex", alignItems:"center", gap:20, flexWrap:"wrap" }}>
+                  <div style={{ background:"var(--bg2)", border:`1px solid ${color}25`, borderRadius:10, padding:"12px 16px", display:"flex", alignItems:"center", gap:20, flexWrap:"wrap" }}>
                     <div>
-                      <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:4 }}>📈 Tendencia PRs — últimas 4 semanas</div>
+                      <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:4 }}>📈 Tendencia PRs — últimas 4 semanas</div>
                       <div style={{ display:"flex", alignItems:"baseline", gap:6 }}>
                         <span style={{ color, fontSize:24, fontWeight:800, lineHeight:1 }}>{pct!==null?`${up?"+":""}${pct}%`:"—"}</span>
                         <span style={{ color, fontSize:16 }}>{pct!==null?(up?"↑":"↓"):""}</span>
                       </div>
                     </div>
                     <div style={{ display:"flex", gap:20, alignItems:"center" }}>
-                      <div><div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ult. 4 sem</div><div style={{ color:"#e2e8f0", fontWeight:800, fontSize:15 }}>{last4}</div></div>
-                      <div style={{ width:1, height:28, background:"#27272a" }}/>
-                      <div><div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ant. 4 sem</div><div style={{ color:"#52525b", fontWeight:700, fontSize:15 }}>{prev4}</div></div>
+                      <div><div style={{ color:"var(--tx4)", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ult. 4 sem</div><div style={{ color:"var(--tx0)", fontWeight:800, fontSize:15 }}>{last4}</div></div>
+                      <div style={{ width:1, height:28, background:"var(--bdr)" }}/>
+                      <div><div style={{ color:"var(--tx4)", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ant. 4 sem</div><div style={{ color:"var(--tx4)", fontWeight:700, fontSize:15 }}>{prev4}</div></div>
                     </div>
                     <svg viewBox="0 0 88 28" style={{ width:88, height:28, flexShrink:0 }}>
-                      {w8.map((w,i)=>{ const bh=(w.total/mx)*24; return <rect key={i} x={i*11} y={28-bh} width={9} height={bh} rx={1.5} fill={i>=4?color:"#27272a"} opacity={i>=4?0.9:0.6}/>; })}
+                      {w8.map((w,i)=>{ const bh=(w.total/mx)*24; return <rect key={i} x={i*11} y={28-bh} width={9} height={bh} rx={1.5} fill={i>=4?color:"var(--bdr)"} opacity={i>=4?0.9:0.6}/>; })}
                     </svg>
                   </div>
                 );
@@ -1415,10 +1415,10 @@ function GitHubPane() {
                 const mnLbls=[]; let prevM=-1;
                 wks52.forEach((w,wi)=>{ const m=new Date(w.ts*1000).getUTCMonth(); if(m!==prevM){mnLbls.push({wi,m});prevM=m;} });
                 const Row = ({vals, col, label, palette, titleFmt}) => (
-                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px" }}>
-                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>{label}</div>
+                  <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px 16px" }}>
+                    <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>{label}</div>
                     <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
-                      {mnLbls.map(({wi,m})=><text key={m} x={22+wi*step+cellS/2} y={11} textAnchor="middle" fontSize={4.5} fill="#3f3f46">{MN[m]}</text>)}
+                      {mnLbls.map(({wi,m})=><text key={m} x={22+wi*step+cellS/2} y={11} textAnchor="middle" fontSize={4.5} fill="var(--bdr2)">{MN[m]}</text>)}
                       {vals.map((v,wi)=>(
                         <rect key={wi} x={22+wi*step} y={16} width={cellS} height={cellS} rx={2} fill={col(v)} opacity={0.95}>
                           <title>{titleFmt(v, wks52[wi].ts)}</title>
@@ -1426,9 +1426,9 @@ function GitHubPane() {
                       ))}
                     </svg>
                     <div style={{ display:"flex", alignItems:"center", gap:4, marginTop:4 }}>
-                      <span style={{ color:"#52525b", fontSize:8 }}>Menos</span>
+                      <span style={{ color:"var(--tx4)", fontSize:8 }}>Menos</span>
                       {palette.map(c=><span key={c} style={{ width:8,height:8,borderRadius:1,background:c,display:"inline-block" }}/>)}
-                      <span style={{ color:"#52525b", fontSize:8 }}>Más</span>
+                      <span style={{ color:"var(--tx4)", fontSize:8 }}>Más</span>
                     </div>
                   </div>
                 );
@@ -1450,25 +1450,25 @@ function GitHubPane() {
                 const base=prev4>0?prev4:prev8>0?prev8:null;
                 const pct=base!==null?Math.round((last4-base)/base*100):null;
                 const up=pct!==null&&pct>=0;
-                const color=pct===null?"#94a3b8":pct>10?"#22c55e":pct<-10?"#ef4444":"#f59e0b";
+                const color=pct===null?"var(--tx2)":pct>10?"#22c55e":pct<-10?"#ef4444":"#f59e0b";
                 const w8=acts.slice(-8), mx=Math.max(...w8.map(tot),1);
                 const fmt=(n)=>n>=1000?`${(n/1000).toFixed(1)}k`:String(n);
                 return (
-                  <div style={{ background:"#111113", border:`1px solid ${color}25`, borderRadius:10, padding:"12px 16px", display:"flex", alignItems:"center", gap:20, flexWrap:"wrap" }}>
+                  <div style={{ background:"var(--bg2)", border:`1px solid ${color}25`, borderRadius:10, padding:"12px 16px", display:"flex", alignItems:"center", gap:20, flexWrap:"wrap" }}>
                     <div>
-                      <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:4 }}>📈 Tendencia líneas — últimas 4 semanas</div>
+                      <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:4 }}>📈 Tendencia líneas — últimas 4 semanas</div>
                       <div style={{ display:"flex", alignItems:"baseline", gap:6 }}>
                         <span style={{ color, fontSize:24, fontWeight:800, lineHeight:1 }}>{pct!==null?`${up?"+":""}${pct}%`:"—"}</span>
                         <span style={{ color, fontSize:16 }}>{pct!==null?(up?"↑":"↓"):""}</span>
                       </div>
                     </div>
                     <div style={{ display:"flex", gap:20, alignItems:"center" }}>
-                      <div><div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ult. 4 sem</div><div style={{ color:"#e2e8f0", fontWeight:800, fontSize:15 }}>{fmt(last4)}</div></div>
-                      <div style={{ width:1, height:28, background:"#27272a" }}/>
-                      <div><div style={{ color:"#52525b", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ant. 4 sem</div><div style={{ color:"#52525b", fontWeight:700, fontSize:15 }}>{fmt(prev4)}</div></div>
+                      <div><div style={{ color:"var(--tx4)", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ult. 4 sem</div><div style={{ color:"var(--tx0)", fontWeight:800, fontSize:15 }}>{fmt(last4)}</div></div>
+                      <div style={{ width:1, height:28, background:"var(--bdr)" }}/>
+                      <div><div style={{ color:"var(--tx4)", fontSize:8, textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Ant. 4 sem</div><div style={{ color:"var(--tx4)", fontWeight:700, fontSize:15 }}>{fmt(prev4)}</div></div>
                     </div>
                     <svg viewBox="0 0 88 28" style={{ width:88, height:28, flexShrink:0 }}>
-                      {w8.map((w,i)=>{ const bh=(tot(w)/mx)*24; return <rect key={i} x={i*11} y={28-bh} width={9} height={bh} rx={1.5} fill={i>=4?color:"#27272a"} opacity={i>=4?0.9:0.6}/>; })}
+                      {w8.map((w,i)=>{ const bh=(tot(w)/mx)*24; return <rect key={i} x={i*11} y={28-bh} width={9} height={bh} rx={1.5} fill={i>=4?color:"var(--bdr)"} opacity={i>=4?0.9:0.6}/>; })}
                     </svg>
                   </div>
                 );
@@ -1476,7 +1476,7 @@ function GitHubPane() {
             </>)}
 
             {/* Persona / Equipo toggle */}
-            <div style={{ display:"flex", gap:3, background:"#09090b", border:"1px solid #27272a", borderRadius:9, padding:3, alignSelf:"flex-start" }}>
+            <div style={{ display:"flex", gap:3, background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:9, padding:3, alignSelf:"flex-start" }}>
               {[{ id:"persona", label:"👥 Persona" }, { id:"equipo", label:"👤 Equipo" }].map(vt => {
                 const active = ghView === vt.id;
                 return (
@@ -1484,7 +1484,7 @@ function GitHubPane() {
                     style={{ padding:"5px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer",
                       border: active ? "1px solid #94a3b845" : "1px solid transparent",
                       background: active ? "#94a3b820" : "transparent",
-                      color: active ? "#94a3b8" : "#71717a", transition:"all .12s" }}>
+                      color: active ? "var(--tx2)" : "var(--tx3)", transition:"all .12s" }}>
                     {vt.label}
                   </button>
                 );
@@ -1515,13 +1515,13 @@ function GitHubPane() {
                     {[
                       { label:"🥇 Más commits",    name: top?.m.name.split(" ").slice(0,2).join(" "),        val:`${top?.commits ?? 0}`,                            color:"#818cf8" },
                       { label:"🔻 Menos commits",  name: bottom?.m.name.split(" ").slice(0,2).join(" "),      val:`${bottom?.commits ?? 0}`,                         color:"#f43f5e" },
-                      { label:"📊 Media / persona",name: null,                                                 val:`${avg}`,                                          color:"#94a3b8" },
+                      { label:"📊 Media / persona",name: null,                                                 val:`${avg}`,                                          color:"var(--tx2)" },
                       { label:"🎯 Más regular",    name: mostReg?.ms.m.name.split(" ").slice(0,2).join(" "),  val:`${mostReg?.avg.toFixed(1)} c/sem`,                color:"#22c55e" },
                       { label:"📉 Menos regular",  name: leastReg?.ms.m.name.split(" ").slice(0,2).join(" "), val:`${leastReg?.avg.toFixed(1)} c/sem`,               color:"#f97316" },
                     ].map(({ label, name, val, color }) => (
-                      <div key={label} style={{ background:"#111113", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
-                        <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
-                        {name && <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
+                      <div key={label} style={{ background:"var(--bg2)", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
+                        <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
+                        {name && <div style={{ color:"var(--tx0)", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
                         <div style={{ color, fontSize:14, fontWeight:800 }}>{val}</div>
                       </div>
                     ))}
@@ -1578,19 +1578,19 @@ function GitHubPane() {
                   return { label: s.label.replace("Sprint ","S"), color: s.color, bx: padL + best * colW + colW / 2 };
                 });
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #818cf820", borderRadius:10, padding:"12px 14px 8px" }}>
+                  <div style={{ background:"var(--bg2)", border:"1px solid #818cf820", borderRadius:10, padding:"12px 14px 8px" }}>
                     <div style={{ color:"#818cf8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📅 Commits por semana</div>
                     <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
                       {[maxW, Math.round(maxW/2), 0].map(v => {
                         const y = yOf(v);
                         return (
                           <g key={v}>
-                            <line x1={padL - 2} y1={y} x2={padL} y2={y} stroke="#3f3f46" strokeWidth={0.5}/>
-                            <text x={padL - 4} y={y + 1.5} textAnchor="end" fontSize={4} fill="#52525b">{v}</text>
+                            <line x1={padL - 2} y1={y} x2={padL} y2={y} stroke="var(--bdr2)" strokeWidth={0.5}/>
+                            <text x={padL - 4} y={y + 1.5} textAnchor="end" fontSize={4} fill="var(--tx4)">{v}</text>
                           </g>
                         );
                       })}
-                      <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="#3f3f46" strokeWidth={0.5}/>
+                      <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="var(--bdr2)" strokeWidth={0.5}/>
                       {milestones.map(({ label, color, bx }) => (
                         <g key={label}>
                           <line x1={bx} y1={padT} x2={bx} y2={H - padB} stroke={color} strokeWidth={0.8} strokeDasharray="2,1.5" opacity={0.6}/>
@@ -1608,7 +1608,7 @@ function GitHubPane() {
                                 <title>{`${d.toLocaleDateString("es-ES",{day:"2-digit",month:"short"})}: ${total} commits`}</title>
                               </rect>
                             )}
-                            {lbls[i] && <text x={bx + barW/2} y={H - 2} textAnchor="middle" fontSize={4.5} fill="#52525b">{lbls[i]}</text>}
+                            {lbls[i] && <text x={bx + barW/2} y={H - 2} textAnchor="middle" fontSize={4.5} fill="var(--tx4)">{lbls[i]}</text>}
                           </g>
                         );
                       })}
@@ -1616,8 +1616,8 @@ function GitHubPane() {
                         const ly = yOf(avgW);
                         return (
                           <g>
-                            <line x1={padL} y1={ly} x2={W - 2} y2={ly} stroke="#94a3b8" strokeWidth={0.7} strokeDasharray="3,2" opacity={0.5}/>
-                            <text x={W - 3} y={ly - 2} textAnchor="end" fontSize={4} fill="#94a3b8" opacity={0.7}>ø {Math.round(avgW)}</text>
+                            <line x1={padL} y1={ly} x2={W - 2} y2={ly} stroke="var(--tx2)" strokeWidth={0.7} strokeDasharray="3,2" opacity={0.5}/>
+                            <text x={W - 3} y={ly - 2} textAnchor="end" fontSize={4} fill="var(--tx2)" opacity={0.7}>ø {Math.round(avgW)}</text>
                           </g>
                         );
                       })()}
@@ -1626,7 +1626,7 @@ function GitHubPane() {
                 );
               })()}
               {/* Commits bar chart */}
-              <div style={{ background:"#111113", border:"1px solid #818cf820", borderRadius:10, padding:"12px 12px 8px" }}>
+              <div style={{ background:"var(--bg2)", border:"1px solid #818cf820", borderRadius:10, padding:"12px 12px 8px" }}>
                 <div style={{ color:"#818cf8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>💻 Commits por persona</div>
                 <HBar sorted={byCommits} getValue={ms => ms.commits} getLabel={ms => ms.commits} maxVal={maxCommits} color="#818cf8" showMax
                   avgVal={memberStats.filter(ms => ms.commits > 0).length > 0 ? Math.round(totalCommits / memberStats.filter(ms => ms.commits > 0).length) : undefined} />
@@ -1671,7 +1671,7 @@ function GitHubPane() {
                     `Todo el equipo tiene commits y nadie está por debajo del 40% de la media. Buen ritmo de trabajo.`));
                 if (!tips.length) return null;
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
+                  <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px" }}>
                     <div style={{ color:"#818cf8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>💡 Recomendaciones — Persona</div>
                     <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
                       {tips.map(({ sev, icon, title, msg }) => (
@@ -1679,7 +1679,7 @@ function GitHubPane() {
                           <span style={{ fontSize:12, flexShrink:0, lineHeight:1.5 }}>{icon}</span>
                           <div>
                             <div style={{ color:SC[sev], fontWeight:700, fontSize:9.5, marginBottom:2 }}>{title}</div>
-                            <div style={{ color:"#94a3b8", fontSize:9, lineHeight:1.55 }}>{msg}</div>
+                            <div style={{ color:"var(--tx2)", fontSize:9, lineHeight:1.55 }}>{msg}</div>
                           </div>
                         </div>
                       ))}
@@ -1713,13 +1713,13 @@ function GitHubPane() {
                     {[
                       { label:"🥇 Equipo líder",   name:`Equipo ${top?.team}`,      val:`${top?.commits}`,                   color: TC[top?.team] },
                       { label:"🔻 Equipo menor",   name:`Equipo ${bot?.team}`,      val:`${bot?.commits}`,                   color:"#f43f5e" },
-                      { label:"📊 Media / equipo", name: null,                       val:`${avg}`,                            color:"#94a3b8" },
+                      { label:"📊 Media / equipo", name: null,                       val:`${avg}`,                            color:"var(--tx2)" },
                       { label:"🎯 Más regular",    name:`Equipo ${mostReg?.team}`,  val:`${mostReg?.avg.toFixed(1)} c/sem`,  color:"#22c55e" },
                       { label:"📉 Menos regular",  name:`Equipo ${leastReg?.team}`, val:`${leastReg?.avg.toFixed(1)} c/sem`, color:"#f97316" },
                     ].map(({ label, name, val, color }) => (
-                      <div key={label} style={{ background:"#111113", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
-                        <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
-                        {name && <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
+                      <div key={label} style={{ background:"var(--bg2)", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
+                        <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
+                        {name && <div style={{ color:"var(--tx0)", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
                         <div style={{ color, fontSize:14, fontWeight:800 }}>{val}</div>
                       </div>
                     ))}
@@ -1777,19 +1777,19 @@ function GitHubPane() {
                   return { label: s.label.replace("Sprint ","S"), color: s.color, bx: padL + best * colW + colW / 2 };
                 });
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"12px 14px 8px" }}>
-                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📅 Commits por semana — por equipo</div>
+                  <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"12px 14px 8px" }}>
+                    <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📅 Commits por semana — por equipo</div>
                     <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
                       {[maxW, Math.round(maxW/2), 0].map(v => {
                         const y = yOf(v);
                         return (
                           <g key={v}>
-                            <line x1={padL - 2} y1={y} x2={padL} y2={y} stroke="#3f3f46" strokeWidth={0.5}/>
-                            <text x={padL - 4} y={y + 1.5} textAnchor="end" fontSize={4} fill="#52525b">{v}</text>
+                            <line x1={padL - 2} y1={y} x2={padL} y2={y} stroke="var(--bdr2)" strokeWidth={0.5}/>
+                            <text x={padL - 4} y={y + 1.5} textAnchor="end" fontSize={4} fill="var(--tx4)">{v}</text>
                           </g>
                         );
                       })}
-                      <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="#3f3f46" strokeWidth={0.5}/>
+                      <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="var(--bdr2)" strokeWidth={0.5}/>
                       {milestones.map(({ label, color, bx }) => (
                         <g key={label}>
                           <line x1={bx} y1={padT} x2={bx} y2={H - padB} stroke={color} strokeWidth={0.8} strokeDasharray="2,1.5" opacity={0.6}/>
@@ -1811,7 +1811,7 @@ function GitHubPane() {
                         return (
                           <g key={week}>
                             {stacks}
-                            {lbls[i] && <text x={bx + barW/2} y={H - 2} textAnchor="middle" fontSize={4.5} fill="#52525b">{lbls[i]}</text>}
+                            {lbls[i] && <text x={bx + barW/2} y={H - 2} textAnchor="middle" fontSize={4.5} fill="var(--tx4)">{lbls[i]}</text>}
                           </g>
                         );
                       })}
@@ -1819,15 +1819,15 @@ function GitHubPane() {
                         const ly = yOf(avgW);
                         return (
                           <g>
-                            <line x1={padL} y1={ly} x2={W - 2} y2={ly} stroke="#94a3b8" strokeWidth={0.7} strokeDasharray="3,2" opacity={0.5}/>
-                            <text x={W - 3} y={ly - 2} textAnchor="end" fontSize={4} fill="#94a3b8" opacity={0.7}>ø {Math.round(avgW)}</text>
+                            <line x1={padL} y1={ly} x2={W - 2} y2={ly} stroke="var(--tx2)" strokeWidth={0.7} strokeDasharray="3,2" opacity={0.5}/>
+                            <text x={W - 3} y={ly - 2} textAnchor="end" fontSize={4} fill="var(--tx2)" opacity={0.7}>ø {Math.round(avgW)}</text>
                           </g>
                         );
                       })()}
                     </svg>
                     <div style={{ display:"flex", gap:12, marginTop:4, flexWrap:"wrap" }}>
                       {Object.entries(TC).map(([t, c]) => (
-                        <span key={t} style={{ display:"flex", alignItems:"center", gap:3, fontSize:8.5, color:"#94a3b8" }}>
+                        <span key={t} style={{ display:"flex", alignItems:"center", gap:3, fontSize:8.5, color:"var(--tx2)" }}>
                           <span style={{ width:8, height:8, background:c, display:"inline-block", borderRadius:1 }}/>Eq.{t}
                         </span>
                       ))}
@@ -1836,18 +1836,18 @@ function GitHubPane() {
                 );
               })()}
               {/* Team comparison bar */}
-              <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
-                <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:12 }}>📊 Comparativa — Commits</div>
+              <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px" }}>
+                <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:12 }}>📊 Comparativa — Commits</div>
                 {teamTotals.map(({ team, color, commits }) => (
                   <div key={team} style={{ marginBottom:12 }}>
                     <div style={{ marginBottom:4 }}>
                       <span style={{ background:`${color}20`, color, fontWeight:800, fontSize:9, textTransform:"uppercase", letterSpacing:2, padding:"2px 8px", borderRadius:4 }}>Equipo {team}</span>
                     </div>
                     <div style={{ display:"flex", alignItems:"center", gap:5 }}>
-                      <span style={{ color:"#52525b", fontSize:7.5, width:38, flexShrink:0 }}>Commits</span>
-                      <div style={{ flex:1, height:5, background:"#27272a", borderRadius:3, overflow:"hidden", position:"relative" }}>
+                      <span style={{ color:"var(--tx4)", fontSize:7.5, width:38, flexShrink:0 }}>Commits</span>
+                      <div style={{ flex:1, height:5, background:"var(--bdr)", borderRadius:3, overflow:"hidden", position:"relative" }}>
                         <div style={{ height:"100%", width:`${maxTC>0?commits/maxTC*100:0}%`, background:"#818cf8", borderRadius:3, opacity:0.9 }}/>
-                        {maxTC > 0 && <div style={{ position:"absolute", top:0, bottom:0, left:`${totalCommits/4/maxTC*100}%`, width:1, background:"#94a3b8", opacity:0.55 }}/>}
+                        {maxTC > 0 && <div style={{ position:"absolute", top:0, bottom:0, left:`${totalCommits/4/maxTC*100}%`, width:1, background:"var(--tx2)", opacity:0.55 }}/>}
                       </div>
                       <span style={{ color:"#818cf8", fontSize:8.5, fontWeight:700, width:30, textAlign:"right", flexShrink:0 }}>{commits}</span>
                     </div>
@@ -1896,15 +1896,15 @@ function GitHubPane() {
                     `Los 4 equipos tienen commits registrados y ninguno está muy por debajo de la media. Buen equilibrio de trabajo.`));
                 if (!tips.length) return null;
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
-                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>💡 Recomendaciones — Equipo</div>
+                  <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px" }}>
+                    <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>💡 Recomendaciones — Equipo</div>
                     <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
                       {tips.map(({ sev, icon, title, msg }) => (
                         <div key={title} style={{ background:SB2[sev], borderLeft:`3px solid ${SC2[sev]}`, borderRadius:6, padding:"8px 12px", display:"flex", gap:9, alignItems:"flex-start" }}>
                           <span style={{ fontSize:12, flexShrink:0, lineHeight:1.5 }}>{icon}</span>
                           <div>
                             <div style={{ color:SC2[sev], fontWeight:700, fontSize:9.5, marginBottom:2 }}>{title}</div>
-                            <div style={{ color:"#94a3b8", fontSize:9, lineHeight:1.55 }}>{msg}</div>
+                            <div style={{ color:"var(--tx2)", fontSize:9, lineHeight:1.55 }}>{msg}</div>
                           </div>
                         </div>
                       ))}
@@ -1927,13 +1927,13 @@ function GitHubPane() {
                     {[
                       { label:"🥇 Más PRs",         name: topPR?.m.name.split(" ").slice(0,2).join(" "),   val:`${topPR?.pr.merged??0}`,                         color:"#34d399" },
                       { label:"⚡ Merge más rápido", name: byMerge[0]?.m.name.split(" ").slice(0,2).join(" "), val: byMerge[0] ? `${byMerge[0].amt}d`:"—",          color:"#fbbf24" },
-                      { label:"📊 Media / persona",  name: null,                                             val:`${avgMerged} PRs`,                               color:"#94a3b8" },
+                      { label:"📊 Media / persona",  name: null,                                             val:`${avgMerged} PRs`,                               color:"var(--tx2)" },
                       ...(topEff ? [{ label:"🎯 Mayor tasa merge", name: topEff.m.name.split(" ").slice(0,2).join(" "), val:`${topEff.prEfficiency}%`, color:"#22c55e" }] : []),
                       ...(byPRSize[0] ? [{ label:"📦 PRs más grandes", name: byPRSize[0].m.name.split(" ").slice(0,2).join(" "), val:`${byPRSize[0].avgPRSize>999?(byPRSize[0].avgPRSize/1000).toFixed(1)+"k":byPRSize[0].avgPRSize} l/PR`, color:"#f97316" }] : []),
                     ].map(({ label, name, val, color }) => (
-                      <div key={label} style={{ background:"#111113", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
-                        <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
-                        {name && <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
+                      <div key={label} style={{ background:"var(--bg2)", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
+                        <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
+                        {name && <div style={{ color:"var(--tx0)", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
                         <div style={{ color, fontSize:14, fontWeight:800 }}>{val}</div>
                       </div>
                     ))}
@@ -1976,19 +1976,19 @@ function GitHubPane() {
                   return { label: s.label.replace("Sprint ","S"), color: s.color, bx: padL + best * colW + colW / 2 };
                 });
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #34d39920", borderRadius:10, padding:"12px 14px 8px" }}>
+                  <div style={{ background:"var(--bg2)", border:"1px solid #34d39920", borderRadius:10, padding:"12px 14px 8px" }}>
                     <div style={{ color:"#34d399", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📅 PRs por semana</div>
                     <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
                       {[maxW, Math.round(maxW/2), 0].map(v => {
                         const y = yOf(v);
                         return (
                           <g key={v}>
-                            <line x1={padL - 2} y1={y} x2={padL} y2={y} stroke="#3f3f46" strokeWidth={0.5}/>
-                            <text x={padL - 4} y={y + 1.5} textAnchor="end" fontSize={4} fill="#52525b">{v}</text>
+                            <line x1={padL - 2} y1={y} x2={padL} y2={y} stroke="var(--bdr2)" strokeWidth={0.5}/>
+                            <text x={padL - 4} y={y + 1.5} textAnchor="end" fontSize={4} fill="var(--tx4)">{v}</text>
                           </g>
                         );
                       })}
-                      <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="#3f3f46" strokeWidth={0.5}/>
+                      <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="var(--bdr2)" strokeWidth={0.5}/>
                       {milestones.map(({ label, color, bx }) => (
                         <g key={label}>
                           <line x1={bx} y1={padT} x2={bx} y2={H - padB} stroke={color} strokeWidth={0.8} strokeDasharray="2,1.5" opacity={0.6}/>
@@ -2006,7 +2006,7 @@ function GitHubPane() {
                                 <title>{`${d.toLocaleDateString("es-ES",{day:"2-digit",month:"short"})}: ${total} PRs`}</title>
                               </rect>
                             )}
-                            {lbls[i] && <text x={bx + barW/2} y={H - 2} textAnchor="middle" fontSize={4.5} fill="#52525b">{lbls[i]}</text>}
+                            {lbls[i] && <text x={bx + barW/2} y={H - 2} textAnchor="middle" fontSize={4.5} fill="var(--tx4)">{lbls[i]}</text>}
                           </g>
                         );
                       })}
@@ -2014,8 +2014,8 @@ function GitHubPane() {
                         const ly = yOf(avgW);
                         return (
                           <g>
-                            <line x1={padL} y1={ly} x2={W - 2} y2={ly} stroke="#94a3b8" strokeWidth={0.7} strokeDasharray="3,2" opacity={0.5}/>
-                            <text x={W - 3} y={ly - 2} textAnchor="end" fontSize={4} fill="#94a3b8" opacity={0.7}>ø {Math.round(avgW)}</text>
+                            <line x1={padL} y1={ly} x2={W - 2} y2={ly} stroke="var(--tx2)" strokeWidth={0.7} strokeDasharray="3,2" opacity={0.5}/>
+                            <text x={W - 3} y={ly - 2} textAnchor="end" fontSize={4} fill="var(--tx2)" opacity={0.7}>ø {Math.round(avgW)}</text>
                           </g>
                         );
                       })()}
@@ -2025,12 +2025,12 @@ function GitHubPane() {
               })()}
               {/* Bar charts */}
               <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:10 }}>
-                <div style={{ background:"#111113", border:"1px solid #34d39920", borderRadius:10, padding:"12px 12px 8px" }}>
+                <div style={{ background:"var(--bg2)", border:"1px solid #34d39920", borderRadius:10, padding:"12px 12px 8px" }}>
                   <div style={{ color:"#34d399", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>🔀 PRs mergeadas</div>
                   <HBar sorted={byPRs} getValue={ms=>ms.pr.merged} getLabel={ms=>`${ms.pr.merged}/${ms.pr.total}`} maxVal={maxPRs} color="#34d399" showMax
                     avgVal={memberStats.filter(ms=>ms.pr.merged>0).length>0 ? totalPRs/memberStats.filter(ms=>ms.pr.merged>0).length : undefined} />
                 </div>
-                <div style={{ background:"#111113", border:"1px solid #22c55e20", borderRadius:10, padding:"12px 12px 8px" }}>
+                <div style={{ background:"var(--bg2)", border:"1px solid #22c55e20", borderRadius:10, padding:"12px 12px 8px" }}>
                   <div style={{ color:"#22c55e", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>🎯 Tasa de merge (%)</div>
                   <HBar sorted={[...memberStats].filter(ms=>ms.prEfficiency!==null).sort((a,b)=>b.prEfficiency-a.prEfficiency)}
                     getValue={ms=>ms.prEfficiency??0} getLabel={ms=>`${ms.prEfficiency}%`} maxVal={100} color="#22c55e" showMax />
@@ -2038,14 +2038,14 @@ function GitHubPane() {
               </div>
               <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:10 }}>
                 {byMerge.length > 0 && (
-                  <div style={{ background:"#111113", border:"1px solid #fbbf2420", borderRadius:10, padding:"12px 12px 8px" }}>
+                  <div style={{ background:"var(--bg2)", border:"1px solid #fbbf2420", borderRadius:10, padding:"12px 12px 8px" }}>
                     <div style={{ color:"#fbbf24", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>⚡ Días hasta merge (↓ mejor)</div>
                     <HBar sorted={byMerge} getValue={ms=>ms.amt??0} getLabel={ms=>`${ms.amt}d`}
                       maxVal={Math.max(...byMerge.map(ms=>ms.amt),1)} color="#fbbf24" showMax />
                   </div>
                 )}
                 {byPRSize.length > 0 && (
-                  <div style={{ background:"#111113", border:"1px solid #f9731620", borderRadius:10, padding:"12px 12px 8px" }}>
+                  <div style={{ background:"var(--bg2)", border:"1px solid #f9731620", borderRadius:10, padding:"12px 12px 8px" }}>
                     <div style={{ color:"#f97316", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📦 Tamaño medio PR (líneas)</div>
                     <HBar sorted={byPRSize} getValue={ms=>ms.avgPRSize??0}
                       getLabel={ms=>ms.avgPRSize>999?`${(ms.avgPRSize/1000).toFixed(1)}k`:`${ms.avgPRSize}`}
@@ -2082,7 +2082,7 @@ function GitHubPane() {
                     `Todo el equipo tiene PRs y las tasas de merge son aceptables. Buen flujo de integración.`));
                 if (!tips.length) return null;
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
+                  <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px" }}>
                     <div style={{ color:"#34d399", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>💡 Recomendaciones — PRs</div>
                     <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
                       {tips.map(({ sev, icon, title, msg }) => (
@@ -2090,7 +2090,7 @@ function GitHubPane() {
                           <span style={{ fontSize:12, flexShrink:0, lineHeight:1.5 }}>{icon}</span>
                           <div>
                             <div style={{ color:SCol[sev], fontWeight:700, fontSize:9.5, marginBottom:2 }}>{title}</div>
-                            <div style={{ color:"#94a3b8", fontSize:9, lineHeight:1.55 }}>{msg}</div>
+                            <div style={{ color:"var(--tx2)", fontSize:9, lineHeight:1.55 }}>{msg}</div>
                           </div>
                         </div>
                       ))}
@@ -2111,11 +2111,11 @@ function GitHubPane() {
                     {[
                       { label:"🥇 Más PRs",   name:`Equipo ${topT?.team}`, val:`${topT?.prs}`,  color: TC[topT?.team] },
                       { label:"🔻 Menos PRs", name:`Equipo ${botT?.team}`, val:`${botT?.prs}`,  color:"#f43f5e" },
-                      { label:"📊 Total PRs", name: null,                  val:`${totalPRs}`,   color:"#94a3b8" },
+                      { label:"📊 Total PRs", name: null,                  val:`${totalPRs}`,   color:"var(--tx2)" },
                     ].map(({ label, name, val, color }) => (
-                      <div key={label} style={{ background:"#111113", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
-                        <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
-                        {name && <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
+                      <div key={label} style={{ background:"var(--bg2)", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
+                        <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
+                        {name && <div style={{ color:"var(--tx0)", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
                         <div style={{ color, fontSize:14, fontWeight:800 }}>{val}</div>
                       </div>
                     ))}
@@ -2172,19 +2172,19 @@ function GitHubPane() {
                   return { label: s.label.replace("Sprint ","S"), color: s.color, bx: padL + best * colW + colW / 2 };
                 });
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"12px 14px 8px" }}>
-                    <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📅 PRs por semana — por equipo</div>
+                  <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"12px 14px 8px" }}>
+                    <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📅 PRs por semana — por equipo</div>
                     <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
                       {[maxW, Math.round(maxW/2), 0].map(v => {
                         const y = yOf(v);
                         return (
                           <g key={v}>
-                            <line x1={padL - 2} y1={y} x2={padL} y2={y} stroke="#3f3f46" strokeWidth={0.5}/>
-                            <text x={padL - 4} y={y + 1.5} textAnchor="end" fontSize={4} fill="#52525b">{v}</text>
+                            <line x1={padL - 2} y1={y} x2={padL} y2={y} stroke="var(--bdr2)" strokeWidth={0.5}/>
+                            <text x={padL - 4} y={y + 1.5} textAnchor="end" fontSize={4} fill="var(--tx4)">{v}</text>
                           </g>
                         );
                       })}
-                      <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="#3f3f46" strokeWidth={0.5}/>
+                      <line x1={padL} y1={padT} x2={padL} y2={H - padB} stroke="var(--bdr2)" strokeWidth={0.5}/>
                       {milestones.map(({ label, color, bx }) => (
                         <g key={label}>
                           <line x1={bx} y1={padT} x2={bx} y2={H - padB} stroke={color} strokeWidth={0.8} strokeDasharray="2,1.5" opacity={0.6}/>
@@ -2206,7 +2206,7 @@ function GitHubPane() {
                         return (
                           <g key={week}>
                             {stacks}
-                            {lbls[i] && <text x={bx + barW/2} y={H - 2} textAnchor="middle" fontSize={4.5} fill="#52525b">{lbls[i]}</text>}
+                            {lbls[i] && <text x={bx + barW/2} y={H - 2} textAnchor="middle" fontSize={4.5} fill="var(--tx4)">{lbls[i]}</text>}
                           </g>
                         );
                       })}
@@ -2214,15 +2214,15 @@ function GitHubPane() {
                         const ly = yOf(avgW);
                         return (
                           <g>
-                            <line x1={padL} y1={ly} x2={W - 2} y2={ly} stroke="#94a3b8" strokeWidth={0.7} strokeDasharray="3,2" opacity={0.5}/>
-                            <text x={W - 3} y={ly - 2} textAnchor="end" fontSize={4} fill="#94a3b8" opacity={0.7}>ø {Math.round(avgW)}</text>
+                            <line x1={padL} y1={ly} x2={W - 2} y2={ly} stroke="var(--tx2)" strokeWidth={0.7} strokeDasharray="3,2" opacity={0.5}/>
+                            <text x={W - 3} y={ly - 2} textAnchor="end" fontSize={4} fill="var(--tx2)" opacity={0.7}>ø {Math.round(avgW)}</text>
                           </g>
                         );
                       })()}
                     </svg>
                     <div style={{ display:"flex", gap:12, marginTop:4, flexWrap:"wrap" }}>
                       {Object.entries(TC).map(([t, c]) => (
-                        <span key={t} style={{ display:"flex", alignItems:"center", gap:3, fontSize:8.5, color:"#94a3b8" }}>
+                        <span key={t} style={{ display:"flex", alignItems:"center", gap:3, fontSize:8.5, color:"var(--tx2)" }}>
                           <span style={{ width:8, height:8, background:c, display:"inline-block", borderRadius:1 }}/>Eq.{t}
                         </span>
                       ))}
@@ -2230,8 +2230,8 @@ function GitHubPane() {
                   </div>
                 );
               })()}
-              <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
-                <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:12 }}>📊 Comparativa — PRs por equipo</div>
+              <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px" }}>
+                <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:12 }}>📊 Comparativa — PRs por equipo</div>
                 {teamTotals.map(({ team, color, prs, members, active }) => {
                   const teamEff = memberStats.filter(ms=>ms.m.team===team && ms.prEfficiency!==null);
                   const avgEff  = teamEff.length ? Math.round(teamEff.reduce((s,ms)=>s+(ms.prEfficiency??0),0)/teamEff.length) : null;
@@ -2239,13 +2239,13 @@ function GitHubPane() {
                     <div key={team} style={{ marginBottom:12 }}>
                       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
                         <span style={{ background:`${color}20`, color, fontWeight:800, fontSize:9, textTransform:"uppercase", letterSpacing:2, padding:"2px 8px", borderRadius:4 }}>Equipo {team}</span>
-                        <span style={{ color:"#52525b", fontSize:8.5 }}>{active}/{members} activos{avgEff!==null?` · ${avgEff}% merge rate`:""}</span>
+                        <span style={{ color:"var(--tx4)", fontSize:8.5 }}>{active}/{members} activos{avgEff!==null?` · ${avgEff}% merge rate`:""}</span>
                       </div>
                       <div style={{ display:"flex", alignItems:"center", gap:5 }}>
-                        <span style={{ color:"#52525b", fontSize:7.5, width:38, flexShrink:0 }}>PRs</span>
-                        <div style={{ flex:1, height:5, background:"#27272a", borderRadius:3, overflow:"hidden", position:"relative" }}>
+                        <span style={{ color:"var(--tx4)", fontSize:7.5, width:38, flexShrink:0 }}>PRs</span>
+                        <div style={{ flex:1, height:5, background:"var(--bdr)", borderRadius:3, overflow:"hidden", position:"relative" }}>
                           <div style={{ height:"100%", width:`${maxTPR>0?prs/maxTPR*100:0}%`, background:"#34d399", borderRadius:3, opacity:0.9 }}/>
-                          {maxTPR>0 && <div style={{ position:"absolute", top:0, bottom:0, left:`${totalPRs/4/maxTPR*100}%`, width:1, background:"#94a3b8", opacity:0.5 }}/>}
+                          {maxTPR>0 && <div style={{ position:"absolute", top:0, bottom:0, left:`${totalPRs/4/maxTPR*100}%`, width:1, background:"var(--tx2)", opacity:0.5 }}/>}
                         </div>
                         <span style={{ color:"#34d399", fontSize:8.5, fontWeight:700, width:30, textAlign:"right", flexShrink:0 }}>{prs}</span>
                       </div>
@@ -2271,13 +2271,13 @@ function GitHubPane() {
                     {[
                       { label:"🥇 Más añadido",    name: topAdd?.m.name.split(" ").slice(0,2).join(" "),   val:`+${topAdd?.lns.added>999?(topAdd.lns.added/1000).toFixed(1)+"k":topAdd?.lns.added}`,    color:"#38bdf8" },
                       { label:"🗑️ Más borrado",    name: topDel?.m.name.split(" ").slice(0,2).join(" "),   val:`-${topDel?.lns.deleted>999?(topDel.lns.deleted/1000).toFixed(1)+"k":topDel?.lns.deleted}`, color:"#f43f5e" },
-                      { label:"📊 Media / persona", name: null,                                              val: avgAdded>999?`${(avgAdded/1000).toFixed(1)}k l`:`${avgAdded} l`,                          color:"#94a3b8" },
+                      { label:"📊 Media / persona", name: null,                                              val: avgAdded>999?`${(avgAdded/1000).toFixed(1)}k l`:`${avgAdded} l`,                          color:"var(--tx2)" },
                       { label:"💥 Mayor impacto",   name: topImp?.m.name.split(" ").slice(0,2).join(" "),   val:`${topImp?.codeImpact>999?(topImp.codeImpact/1000).toFixed(1)+"k":topImp?.codeImpact} total`, color:"#a855f7" },
                       ...(loChurn ? [{ label:"⚖️ Menor churn", name: loChurn.m.name.split(" ").slice(0,2).join(" "), val:`${loChurn.codeChurn}% borrado`, color:"#22c55e" }] : []),
                     ].map(({ label, name, val, color }) => (
-                      <div key={label} style={{ background:"#111113", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
-                        <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
-                        {name && <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
+                      <div key={label} style={{ background:"var(--bg2)", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
+                        <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>{label}</div>
+                        {name && <div style={{ color:"var(--tx0)", fontWeight:700, fontSize:11, marginBottom:2 }}>{name}</div>}
                         <div style={{ color, fontSize:14, fontWeight:800 }}>{val}</div>
                       </div>
                     ))}
@@ -2296,11 +2296,11 @@ function GitHubPane() {
                 const yMid = padT + (H - padT - padB) / 2;
                 let prevM = -1;
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #38bdf820", borderRadius:10, padding:"12px 14px 8px" }}>
+                  <div style={{ background:"var(--bg2)", border:"1px solid #38bdf820", borderRadius:10, padding:"12px 14px 8px" }}>
                     <div style={{ color:"#38bdf8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📈 Evolución semanal — añadidas vs borradas</div>
                     <svg viewBox={`0 0 ${W} ${H}`} style={{ width:"100%", height:"auto" }}>
-                      <line x1={padL} y1={yMid} x2={W-2} y2={yMid} stroke="#3f3f46" strokeWidth={0.5}/>
-                      <text x={padL-3} y={yMid+1.5} textAnchor="end" fontSize={4} fill="#3f3f46">0</text>
+                      <line x1={padL} y1={yMid} x2={W-2} y2={yMid} stroke="var(--bdr2)" strokeWidth={0.5}/>
+                      <text x={padL-3} y={yMid+1.5} textAnchor="end" fontSize={4} fill="var(--bdr2)">0</text>
                       {data.map(([ts, a, d], i) => {
                         const bx  = padL + i * colW + (colW - barW * 2 - 1) / 2;
                         const ah  = (a / maxV) * (yMid - padT);
@@ -2311,36 +2311,36 @@ function GitHubPane() {
                           <g key={ts}>
                             {a > 0 && <rect x={bx} y={yMid-ah} width={barW} height={ah} fill="#38bdf8" opacity={0.75}><title>{`+${a.toLocaleString()} líneas`}</title></rect>}
                             {d < 0 && <rect x={bx+barW+1} y={yMid} width={barW} height={dh} fill="#f43f5e" opacity={0.65}><title>{`${d.toLocaleString()} líneas`}</title></rect>}
-                            {lbl && <text x={bx+barW} y={H-2} textAnchor="middle" fontSize={4.5} fill="#52525b">{lbl}</text>}
+                            {lbl && <text x={bx+barW} y={H-2} textAnchor="middle" fontSize={4.5} fill="var(--tx4)">{lbl}</text>}
                           </g>
                         );
                       })}
                     </svg>
                     <div style={{ display:"flex", gap:12, marginTop:4 }}>
-                      <span style={{ fontSize:8.5, color:"#52525b" }}><span style={{ display:"inline-block", width:8, height:7, background:"#38bdf8", marginRight:3, borderRadius:1 }}/>Añadidas</span>
-                      <span style={{ fontSize:8.5, color:"#52525b" }}><span style={{ display:"inline-block", width:8, height:7, background:"#f43f5e", marginRight:3, borderRadius:1 }}/>Borradas</span>
+                      <span style={{ fontSize:8.5, color:"var(--tx4)" }}><span style={{ display:"inline-block", width:8, height:7, background:"#38bdf8", marginRight:3, borderRadius:1 }}/>Añadidas</span>
+                      <span style={{ fontSize:8.5, color:"var(--tx4)" }}><span style={{ display:"inline-block", width:8, height:7, background:"#f43f5e", marginRight:3, borderRadius:1 }}/>Borradas</span>
                     </div>
                   </div>
                 );
               })()}
               {/* Bar charts */}
               <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:10 }}>
-                <div style={{ background:"#111113", border:"1px solid #38bdf820", borderRadius:10, padding:"12px 12px 8px" }}>
+                <div style={{ background:"var(--bg2)", border:"1px solid #38bdf820", borderRadius:10, padding:"12px 12px 8px" }}>
                   <div style={{ color:"#38bdf8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>📦 Líneas añadidas</div>
                   <HBar sorted={byLines} getValue={ms=>ms.lns.added} getLabel={ms=>ms.lns.added>999?`${(ms.lns.added/1000).toFixed(1)}k`:ms.lns.added}
                     maxVal={maxAdded} color="#38bdf8" showMax
                     avgVal={memberStats.filter(ms=>ms.lns.added>0).length>0?totalAdded/memberStats.filter(ms=>ms.lns.added>0).length:undefined} />
                 </div>
-                <div style={{ background:"#111113", border:"1px solid #f43f5e20", borderRadius:10, padding:"12px 12px 8px" }}>
+                <div style={{ background:"var(--bg2)", border:"1px solid #f43f5e20", borderRadius:10, padding:"12px 12px 8px" }}>
                   <div style={{ color:"#f43f5e", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:8 }}>🗑️ Líneas borradas</div>
                   <HBar sorted={byDeleted} getValue={ms=>ms.lns.deleted} getLabel={ms=>ms.lns.deleted>999?`${(ms.lns.deleted/1000).toFixed(1)}k`:ms.lns.deleted}
                     maxVal={maxDeleted} color="#f43f5e" showMax />
                 </div>
               </div>
               {byChurn.length > 0 && (
-                <div style={{ background:"#111113", border:"1px solid #a855f720", borderRadius:10, padding:"12px 12px 8px" }}>
+                <div style={{ background:"var(--bg2)", border:"1px solid #a855f720", borderRadius:10, padding:"12px 12px 8px" }}>
                   <div style={{ color:"#a855f7", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:4 }}>♻️ Code churn — % líneas borradas (↓ mejor)</div>
-                  <div style={{ color:"#52525b", fontSize:8, marginBottom:8 }}>Bajo churn = código estable. Alto churn = mucho refactor o reescritura.</div>
+                  <div style={{ color:"var(--tx4)", fontSize:8, marginBottom:8 }}>Bajo churn = código estable. Alto churn = mucho refactor o reescritura.</div>
                   <HBar sorted={byChurn} getValue={ms=>ms.codeChurn??0} getLabel={ms=>`${ms.codeChurn}%`} maxVal={100} color="#a855f7" showMax />
                 </div>
               )}
@@ -2369,7 +2369,7 @@ function GitHubPane() {
                     `Todo el equipo tiene líneas de código y no hay casos de churn extremo. El código parece estable.`));
                 if (!tips.length) return null;
                 return (
-                  <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
+                  <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px" }}>
                     <div style={{ color:"#38bdf8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>💡 Recomendaciones — Líneas</div>
                     <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
                       {tips.map(({ sev, icon, title, msg }) => (
@@ -2377,7 +2377,7 @@ function GitHubPane() {
                           <span style={{ fontSize:12, flexShrink:0, lineHeight:1.5 }}>{icon}</span>
                           <div>
                             <div style={{ color:SCol[sev], fontWeight:700, fontSize:9.5, marginBottom:2 }}>{title}</div>
-                            <div style={{ color:"#94a3b8", fontSize:9, lineHeight:1.55 }}>{msg}</div>
+                            <div style={{ color:"var(--tx2)", fontSize:9, lineHeight:1.55 }}>{msg}</div>
                           </div>
                         </div>
                       ))}
@@ -2395,17 +2395,17 @@ function GitHubPane() {
                 return (
                   <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(128px,1fr))", gap:8 }}>
                     {sorted.map(({ team, color, added }) => (
-                      <div key={team} style={{ background:"#111113", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
-                        <div style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>Equipo {team}</div>
+                      <div key={team} style={{ background:"var(--bg2)", border:`1px solid ${color}20`, borderRadius:10, padding:"10px 12px" }}>
+                        <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1.5, marginBottom:3 }}>Equipo {team}</div>
                         <div style={{ color, fontSize:14, fontWeight:800 }}>+{added>999?`${(added/1000).toFixed(1)}k`:added}</div>
-                        <div style={{ color:"#52525b", fontSize:8, marginTop:2 }}>líneas añadidas</div>
+                        <div style={{ color:"var(--tx4)", fontSize:8, marginTop:2 }}>líneas añadidas</div>
                       </div>
                     ))}
                   </div>
                 );
               })()}
-              <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"14px" }}>
-                <div style={{ color:"#94a3b8", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:12 }}>📊 Comparativa — Líneas por equipo</div>
+              <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px" }}>
+                <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:2, marginBottom:12 }}>📊 Comparativa — Líneas por equipo</div>
                 {(() => {
                   const maxDel = Math.max(...teamTotals.map(({ team }) =>
                     memberStats.filter(ms=>ms.m.team===team).reduce((s,ms)=>s+ms.lns.deleted,0)), 1);
@@ -2416,15 +2416,15 @@ function GitHubPane() {
                       <div key={team} style={{ marginBottom:14 }}>
                         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
                           <span style={{ background:`${color}20`, color, fontWeight:800, fontSize:9, textTransform:"uppercase", letterSpacing:2, padding:"2px 8px", borderRadius:4 }}>Equipo {team}</span>
-                          <span style={{ color:"#52525b", fontSize:8.5 }}>{active}/{members} activos · net {net>0?"+":""}{net>999?`${(net/1000).toFixed(1)}k`:net}</span>
+                          <span style={{ color:"var(--tx4)", fontSize:8.5 }}>{active}/{members} activos · net {net>0?"+":""}{net>999?`${(net/1000).toFixed(1)}k`:net}</span>
                         </div>
                         {[
                           { label:"+Líneas", val:added,   max:maxTA,  col:"#38bdf8" },
                           { label:"-Líneas", val:deleted, max:maxDel, col:"#f43f5e" },
                         ].map(({ label, val, max, col }) => (
                           <div key={label} style={{ display:"flex", alignItems:"center", gap:5, marginBottom:3 }}>
-                            <span style={{ color:"#52525b", fontSize:7.5, width:38, flexShrink:0 }}>{label}</span>
-                            <div style={{ flex:1, height:5, background:"#27272a", borderRadius:3, overflow:"hidden" }}>
+                            <span style={{ color:"var(--tx4)", fontSize:7.5, width:38, flexShrink:0 }}>{label}</span>
+                            <div style={{ flex:1, height:5, background:"var(--bdr)", borderRadius:3, overflow:"hidden" }}>
                               <div style={{ height:"100%", width:`${max>0?val/max*100:0}%`, background:col, borderRadius:3, opacity:0.9 }}/>
                             </div>
                             <span style={{ color:col, fontSize:8.5, fontWeight:700, width:36, textAlign:"right", flexShrink:0 }}>{val>999?`${(val/1000).toFixed(1)}k`:val}</span>
@@ -2617,6 +2617,7 @@ function buildReport(entries) {
   });
   const byUser  = {};
   const byEmail = {}; // keyed by lowercase email → { name, total_h, dp_h, s1_h }
+  const rawEntriesByUser = {}; // keyed by user name → [{taskId, hours, date, project}]
   const dailyHours = {};
   const dailyHoursBySprint = { 1:{}, 2:{}, 3:{} };
   const dailyHoursByProject = {};
@@ -2638,6 +2639,8 @@ function buildReport(entries) {
       byUser[user] = byUser[user] || { total_h: 0, byTask: {} };
       byUser[user].total_h += hours;
       if (taskId) byUser[user].byTask[taskId] = (byUser[user].byTask[taskId] || 0) + hours;
+      rawEntriesByUser[user] = rawEntriesByUser[user] || [];
+      rawEntriesByUser[user].push({ taskId, hours, date: nd || date, project });
     }
     if (email) {
       byEmail[email] = byEmail[email] || { name: user, total_h: 0, tagged_h: 0, dp_h: 0, s1_h: 0, s1_tagged_h: 0, s2_h: 0, s2_tagged_h: 0, s3_h: 0, s3_tagged_h: 0 };
@@ -2651,7 +2654,7 @@ function buildReport(entries) {
     if (nd) dailyHours[nd] = (dailyHours[nd] || 0) + hours;
   });
 
-  return { byTask, byUser, byEmail, dailyHours, dailyHoursBySprint, dailyHoursByProject };
+  return { byTask, byUser, byEmail, rawEntriesByUser, dailyHours, dailyHoursBySprint, dailyHoursByProject };
 }
 
 // Pre-load Clockify data bundled at build time (data/clockify-entries.json)
@@ -2671,10 +2674,10 @@ const DEFAULT_CLOCKIFY = (() => {
 
 function InfStatCard({ label, value, sub, color }) {
   return (
-    <div style={{ background:"#111113", border:`1px solid ${color}30`, borderRadius:10, padding:"14px 18px", flex:"1 1 150px", minWidth:130 }}>
-      <div style={{ color:"#52525b", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>{label}</div>
+    <div style={{ background:"var(--bg2)", border:`1px solid ${color}30`, borderRadius:10, padding:"14px 18px", flex:"1 1 150px", minWidth:130 }}>
+      <div style={{ color:"var(--tx4)", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>{label}</div>
       <div style={{ color, fontSize:24, fontWeight:800, lineHeight:1.1 }}>{value}</div>
-      {sub && <div style={{ color:"#71717a", fontSize:10, marginTop:4 }}>{sub}</div>}
+      {sub && <div style={{ color:"var(--tx3)", fontSize:10, marginTop:4 }}>{sub}</div>}
     </div>
   );
 }
@@ -3025,27 +3028,27 @@ function ExportMdModal({ report, sprint, onClose }) {
   return (
     <div style={{ position:"fixed", inset:0, background:"#000000bb", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center" }}
          onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ background:"#18181b", border:"1px solid #3f3f46", borderRadius:12, padding:24, width:700, maxWidth:"95vw", maxHeight:"90vh", display:"flex", flexDirection:"column", gap:14 }}>
+      <div style={{ background:"var(--bg3)", border:"1px solid var(--bdr2)", borderRadius:12, padding:24, width:700, maxWidth:"95vw", maxHeight:"90vh", display:"flex", flexDirection:"column", gap:14 }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-          <div style={{ fontWeight:700, fontSize:14, color:"#f1f5f9" }}>📄 Exportar Markdown con datos reales</div>
-          <button onClick={onClose} style={{ background:"none", border:"none", color:"#71717a", cursor:"pointer", fontSize:20, lineHeight:1 }}>×</button>
+          <div style={{ fontWeight:700, fontSize:14, color:"var(--tx0)" }}>📄 Exportar Markdown con datos reales</div>
+          <button onClick={onClose} style={{ background:"none", border:"none", color:"var(--tx3)", cursor:"pointer", fontSize:20, lineHeight:1 }}>×</button>
         </div>
         <div style={{ display:"flex", gap:6 }}>
           {docs.map(d => (
             <button key={d.id} onClick={() => setDocType(d.id)}
               style={{ padding:"5px 12px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer",
                 background: docType===d.id ? "#6ee7b720" : "transparent",
-                border:     docType===d.id ? "1px solid #6ee7b745" : "1px solid #27272a",
-                color:      docType===d.id ? "#6ee7b7" : "#71717a" }}>
+                border:     docType===d.id ? "1px solid #6ee7b745" : "1px solid var(--bdr)",
+                color:      docType===d.id ? "#6ee7b7" : "var(--tx3)" }}>
               {d.label}
             </button>
           ))}
         </div>
-        <div style={{ fontSize:10, color:"#52525b" }}>
-          Archivo: <code style={{ background:"#09090b", padding:"1px 5px", borderRadius:3, color:"#818cf8" }}>{active.file}</code>
+        <div style={{ fontSize:10, color:"var(--tx4)" }}>
+          Archivo: <code style={{ background:"var(--bg0)", padding:"1px 5px", borderRadius:3, color:"#818cf8" }}>{active.file}</code>
           {' — '}Descarga la sección generada y reemplázala en tu repositorio, o cópiala directamente.
         </div>
-        <pre style={{ flex:1, overflowY:"auto", background:"#09090b", border:"1px solid #27272a", borderRadius:8, padding:14, fontSize:11, color:"#e2e8f0", margin:0, whiteSpace:"pre-wrap", fontFamily:"'Fira Code','Consolas','Courier New',monospace", lineHeight:1.5, maxHeight:"45vh" }}>
+        <pre style={{ flex:1, overflowY:"auto", background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:8, padding:14, fontSize:11, color:"var(--tx0)", margin:0, whiteSpace:"pre-wrap", fontFamily:"'Fira Code','Consolas','Courier New',monospace", lineHeight:1.5, maxHeight:"45vh" }}>
           {content}
         </pre>
         <div style={{ display:"flex", gap:8 }}>
@@ -3104,6 +3107,7 @@ function InformePane() {
   const [view,     setView]     = useState("equipo"); // open on team tab by default
   const [sprint,   setSprint]   = useState(0);
   const [showExport, setShowExport] = useState(false);
+  const [selectedPerson, setSelectedPerson] = useState(null); // login string, drives persona tab
 
   const sprintC = { 1:"#818cf8", 2:"#34d399", 3:"#fbbf24" };
 
@@ -3181,10 +3185,10 @@ function InformePane() {
       <div style={{ padding:"32px 20px", textAlign:"center" }}>
         <div style={{ fontSize:28, marginBottom:10 }}>✓</div>
         <div style={{ color:"#22c55e", fontWeight:700, fontSize:14, marginBottom:6 }}>Sprint 0 — Devising a Project completado</div>
-        <div style={{ color:"#71717a", fontSize:12, marginBottom:10 }}>
+        <div style={{ color:"var(--tx3)", fontSize:12, marginBottom:10 }}>
           El Sprint 0 (DP) registra horas por proyecto "dp" en Clockify,<br/>no por tareas individuales del backlog.
         </div>
-        <div style={{ color:"#52525b", fontSize:11 }}>
+        <div style={{ color:"var(--tx4)", fontSize:11 }}>
           Consulta la pestaña <span style={{ color:"#6ee7b7", fontWeight:700 }}>Equipo</span> para ver el desglose de horas por persona.
         </div>
       </div>
@@ -3243,8 +3247,8 @@ function InformePane() {
       const tendencia   = ratio <= 1 ? "sobreestima" : "infraestima";
 
       return (
-        <div style={{ background:"#0c0c10", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px" }}>
-          <div style={{ color:"#52525b", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:10 }}>
+        <div style={{ background:"var(--bg1)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px 16px" }}>
+          <div style={{ color:"var(--tx4)", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:10 }}>
             📏 Calidad de estimaciones — {n} tarea{n !== 1 ? "s" : ""} evaluadas (sin advertencias)
           </div>
           <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
@@ -3277,14 +3281,14 @@ function InformePane() {
       );
     })();
 
-    const thS = { padding:"8px 10px", textAlign:"left", color:"#71717a", fontWeight:700, whiteSpace:"nowrap", borderBottom:"1px solid #27272a" };
+    const thS = { padding:"8px 10px", textAlign:"left", color:"var(--tx3)", fontWeight:700, whiteSpace:"nowrap", borderBottom:"1px solid var(--bdr)" };
     return (
       <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
         {metricsBlock}
         <div style={{ overflowX:"auto" }}>
           <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
             <thead>
-              <tr style={{ background:"#18181b" }}>
+              <tr style={{ background:"var(--bg3)" }}>
                 <th style={thS}>ID</th>
                 <th style={thS}>Sp</th>
                 <th style={thS}>Módulo</th>
@@ -3304,43 +3308,43 @@ function InformePane() {
               {tasksWithWarns.map(({ tid, t, warns }, i) => {
                 const pct  = t.estimated_h ? t.real_h / t.estimated_h * 100 : 0;
                 const diff = t.real_h - t.estimated_h;
-                const sc   = sprintC[t.sprint] || "#52525b";
+                const sc   = sprintC[t.sprint] || "var(--tx4)";
                 return (
-                  <tr key={tid} style={{ background:i%2===0?"#09090b":"#111113" }}>
+                  <tr key={tid} style={{ background:i%2===0?"var(--bg0)":"var(--bg2)" }}>
                     <td style={{ padding:"7px 10px", color:sc, fontWeight:700, whiteSpace:"nowrap" }}>{tid}</td>
                     <td style={{ padding:"7px 10px", textAlign:"center" }}>
                       <span style={{ background:`${sc}20`, color:sc, padding:"2px 6px", borderRadius:4, fontSize:10, fontWeight:700 }}>S{t.sprint}</span>
                     </td>
-                    <td style={{ padding:"7px 10px", color:"#94a3b8", whiteSpace:"nowrap", maxWidth:120, overflow:"hidden", textOverflow:"ellipsis" }}>{t.area}</td>
-                    <td style={{ padding:"7px 10px", color:"#e2e8f0", maxWidth:220, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }} title={t.title}>{t.title}</td>
+                    <td style={{ padding:"7px 10px", color:"var(--tx2)", whiteSpace:"nowrap", maxWidth:120, overflow:"hidden", textOverflow:"ellipsis" }}>{t.area}</td>
+                    <td style={{ padding:"7px 10px", color:"var(--tx0)", maxWidth:220, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }} title={t.title}>{t.title}</td>
                     <td style={{ padding:"7px 10px" }}>
                       <div style={{ display:"flex", gap:2, alignItems:"center" }}>
                         {(t.assignees||[]).map(a => (
                           <img key={a.login} src={a.avatarUrl} title={a.login}
-                            style={{ width:18, height:18, borderRadius:"50%", border:"1px solid #3f3f46", flexShrink:0 }} />
+                            style={{ width:18, height:18, borderRadius:"50%", border:"1px solid var(--bdr2)", flexShrink:0 }} />
                         ))}
                       </div>
                     </td>
                     <td style={{ padding:"7px 10px", whiteSpace:"nowrap" }}>
                       {t.equipo
-                        ? <span style={{ background:"#ffffff08", border:"1px solid #3f3f46", borderRadius:4, padding:"1px 7px", color:"#94a3b8", fontSize:10 }}>{t.equipo}</span>
+                        ? <span style={{ background:"#ffffff08", border:"1px solid var(--bdr2)", borderRadius:4, padding:"1px 7px", color:"var(--tx2)", fontSize:10 }}>{t.equipo}</span>
                         : null}
                     </td>
-                    <td style={{ padding:"7px 10px", textAlign:"center", color:"#71717a" }}>{t.size}</td>
-                    <td style={{ padding:"7px 10px", textAlign:"right", color:"#71717a" }}>
+                    <td style={{ padding:"7px 10px", textAlign:"center", color:"var(--tx3)" }}>{t.size}</td>
+                    <td style={{ padding:"7px 10px", textAlign:"right", color:"var(--tx3)" }}>
                       {t.area === "Asistencia" && t.size && EQUIPO_LOGINS[t.equipo] ? (
                         <span title={`${SIZE_H_INF[t.size]}h × ${EQUIPO_LOGINS[t.equipo].length} miembros`} style={{ cursor:"help" }}>
                           {t.estimated_h}h
                         </span>
                       ) : `${t.estimated_h}h`}
                     </td>
-                    <td style={{ padding:"7px 10px", textAlign:"right", color:t.real_h>0?"#e2e8f0":"#3f3f46" }}>{t.real_h.toFixed(1)}h</td>
-                    <td style={{ padding:"7px 10px", textAlign:"right", color:diff>0?"#ef4444":diff<0?"#22c55e":"#52525b", fontWeight:Math.abs(diff)>0?700:400 }}>{diff>0?"+":""}{diff.toFixed(1)}h</td>
+                    <td style={{ padding:"7px 10px", textAlign:"right", color:t.real_h>0?"var(--tx0)":"var(--bdr2)" }}>{t.real_h.toFixed(1)}h</td>
+                    <td style={{ padding:"7px 10px", textAlign:"right", color:diff>0?"#ef4444":diff<0?"#22c55e":"var(--tx4)", fontWeight:Math.abs(diff)>0?700:400 }}>{diff>0?"+":""}{diff.toFixed(1)}h</td>
                     <td style={{ padding:"7px 10px", minWidth:80 }}>
-                      <div style={{ background:"#27272a", borderRadius:4, height:6, overflow:"hidden" }}>
+                      <div style={{ background:"var(--bdr)", borderRadius:4, height:6, overflow:"hidden" }}>
                         <div style={{ height:"100%", width:`${Math.min(pct,100)}%`, background:pct>=100?"#ef4444":pct>=80?"#f59e0b":"#22c55e" }} />
                       </div>
-                      <div style={{ color:"#71717a", fontSize:10, textAlign:"right", marginTop:2 }}>{pct.toFixed(0)}%</div>
+                      <div style={{ color:"var(--tx3)", fontSize:10, textAlign:"right", marginTop:2 }}>{pct.toFixed(0)}%</div>
                     </td>
                     <td style={{ padding:"7px 8px", textAlign:"center", fontSize:15 }} title={t.status||"Backlog"}>
                       {STATUS_EMOJI[t.status] || "⬛"}
@@ -3487,8 +3491,8 @@ function InformePane() {
     }
 
     const globalMetrics = sprint !== -1 && withTasks.length > 0 ? (
-      <div style={{ background:"#0c0c10", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px", marginBottom:4 }}>
-        <div style={{ color:"#94a3b8", fontWeight:700, fontSize:10, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>
+      <div style={{ background:"var(--bg1)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px 16px", marginBottom:4 }}>
+        <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:10, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>
           📊 Métricas globales — {withTasks.length} personas con tareas asignadas
         </div>
         <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
@@ -3520,7 +3524,7 @@ function InformePane() {
             <InfStatCard label="Correlación tareas↔horas"
               value={correlation.toFixed(2)}
               sub="Pearson: 1=perfecta, 0=sin relación"
-              color={Math.abs(correlation)>=0.7?"#22c55e":Math.abs(correlation)>=0.4?"#f59e0b":"#94a3b8"} />
+              color={Math.abs(correlation)>=0.7?"#22c55e":Math.abs(correlation)>=0.4?"#f59e0b":"var(--tx2)"} />
           )}
           {cvMemberEstH !== null && (
             <InfStatCard label="Desbalance de carga"
@@ -3545,16 +3549,16 @@ function InformePane() {
               {/* Team header */}
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
                 <span style={{ background:`${tc}20`, color:tc, fontWeight:800, fontSize:10, textTransform:"uppercase", letterSpacing:2, padding:"3px 10px", borderRadius:5, flexShrink:0 }}>Equipo {team}</span>
-                <div style={{ flex:1, height:1, background:"#27272a" }}/>
+                <div style={{ flex:1, height:1, background:"var(--bdr)" }}/>
               </div>
               <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                 {rows.map(({ member, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento, score }) => {
-                  const hoursColor      = pctHours===null?"#3f3f46":pctHours>=100?"#ef4444":pctHours>=75?"#f59e0b":"#22c55e";
-                  const tasksColor      = pctTasks===null?"#3f3f46":pctTasks===100?"#22c55e":pctTasks>=50?"#f59e0b":"#94a3b8";
-                  const taggedColor     = pctTagged===null?"#3f3f46":pctTagged>=60?"#22c55e":pctTagged>=25?"#f59e0b":"#ef4444";
-                  const rendColor       = rendimiento===null?"#3f3f46":rendimiento>=100?"#22c55e":rendimiento>=50?"#f59e0b":"#ef4444";
+                  const hoursColor      = pctHours===null?"var(--bdr2)":pctHours>=100?"#ef4444":pctHours>=75?"#f59e0b":"#22c55e";
+                  const tasksColor      = pctTasks===null?"var(--bdr2)":pctTasks===100?"#22c55e":pctTasks>=50?"#f59e0b":"var(--tx2)";
+                  const taggedColor     = pctTagged===null?"var(--bdr2)":pctTagged>=60?"#22c55e":pctTagged>=25?"#f59e0b":"#ef4444";
+                  const rendColor       = rendimiento===null?"var(--bdr2)":rendimiento>=100?"#22c55e":rendimiento>=50?"#f59e0b":"#ef4444";
                   return (
-                    <div key={member.login} style={{ background:"#111113", border:"1px solid #27272a", borderRadius:10, padding:"12px 16px" }}>
+                    <div key={member.login} style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:10, padding:"12px 16px" }}>
                       {/* Header: avatar + name + hours */}
                       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:10, minWidth:0 }}>
@@ -3565,11 +3569,15 @@ function InformePane() {
                           />
                           <div style={{ minWidth:0 }}>
                             <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                              <span style={{ color:"#e2e8f0", fontWeight:700, fontSize:13, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{member.name}</span>
+                              <span
+                                onClick={() => { setSelectedPerson(member.login); setView("persona"); }}
+                                style={{ color:"var(--tx0)", fontWeight:700, fontSize:13, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", cursor:"pointer", textDecoration:"underline dotted", textUnderlineOffset:3 }}
+                                title="Ver detalle de persona"
+                              >{member.name}</span>
                               {avgMemberEstH !== null && estimatedH > 0 && (() => {
                                 const delta    = estimatedH - avgMemberEstH;
                                 const deltaPct = delta / avgMemberEstH * 100;
-                                const col = Math.abs(deltaPct) <= 20 ? "#52525b" : delta > 0 ? "#f59e0b" : "#818cf8";
+                                const col = Math.abs(deltaPct) <= 20 ? "var(--tx4)" : delta > 0 ? "#f59e0b" : "#818cf8";
                                 return (
                                   <span title={`${estimatedH.toFixed(0)}h estimadas vs media ${avgMemberEstH.toFixed(0)}h`}
                                     style={{ fontSize:9, fontWeight:700, background:`${col}18`, color:col, padding:"1px 5px", borderRadius:3, flexShrink:0 }}>
@@ -3578,13 +3586,13 @@ function InformePane() {
                                 );
                               })()}
                             </div>
-                            <div style={{ color:"#52525b", fontSize:10 }}>@{member.login} · {member.role}{member.coord?" · Coord":""} · {totalTasks} tarea{totalTasks!==1?"s":""} asignada{totalTasks!==1?"s":""}</div>
+                            <div style={{ color:"var(--tx4)", fontSize:10 }}>@{member.login} · {member.role}{member.coord?" · Coord":""} · {totalTasks} tarea{totalTasks!==1?"s":""} asignada{totalTasks!==1?"s":""}</div>
                           </div>
                         </div>
                         <div style={{ textAlign:"right", flexShrink:0, lineHeight:1.6 }}>
-                          <div style={{ color:"#e2e8f0", fontWeight:800, fontSize:15 }}>{totalH.toFixed(1)}h</div>
+                          <div style={{ color:"var(--tx0)", fontWeight:800, fontSize:15 }}>{totalH.toFixed(1)}h</div>
                           <div style={{ display:"flex", alignItems:"center", gap:5, justifyContent:"flex-end" }}>
-                            <span style={{ fontSize:10, color: taggedH>0?"#22c55e":"#3f3f46" }}>{taggedH.toFixed(1)}h etiq.</span>
+                            <span style={{ fontSize:10, color: taggedH>0?"#22c55e":"var(--bdr2)" }}>{taggedH.toFixed(1)}h etiq.</span>
                             {pctTagged !== null && (
                               <span style={{ fontSize:9, fontWeight:700, background:`${taggedColor}20`, color:taggedColor, padding:"1px 5px", borderRadius:3 }}>
                                 {pctTagged.toFixed(0)}%
@@ -3599,7 +3607,7 @@ function InformePane() {
                               {score !== null && (() => {
                                 const sc = score;
                                 const sc100 = sc >= 95 && sc <= 105;
-                                const scColor = sc100 ? "#52525b" : sc > 100 ? "#22c55e" : "#ef4444";
+                                const scColor = sc100 ? "var(--tx4)" : sc > 100 ? "#22c55e" : "#ef4444";
                                 return (
                                   <span title={`Score relativo: rendimiento / media del grupo × 100. Media = 100%`}
                                     style={{ fontSize:9, fontWeight:800, background:`${scColor}20`, color:scColor, padding:"1px 6px", borderRadius:4, border:`1px solid ${scColor}40` }}>
@@ -3616,23 +3624,23 @@ function InformePane() {
                         <div style={{ display:"flex", gap:14, marginTop:10 }}>
                           <div style={{ flex:1 }}>
                             <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-                              <span style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Tareas done</span>
+                              <span style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Tareas done</span>
                               <span style={{ color:tasksColor, fontSize:9, fontWeight:700 }}>
                                 {pctTasks!==null ? `${doneCount}/${totalTasks} · ${pctTasks.toFixed(0)}%` : "—"}
                               </span>
                             </div>
-                            <div style={{ height:4, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                            <div style={{ height:4, background:"var(--bdr)", borderRadius:2, overflow:"hidden" }}>
                               <div style={{ height:"100%", width:`${Math.min(pctTasks||0,100)}%`, background:tasksColor, borderRadius:2 }}/>
                             </div>
                           </div>
                           <div style={{ flex:1 }}>
                             <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-                              <span style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Horas consumidas</span>
+                              <span style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Horas consumidas</span>
                               <span style={{ color:hoursColor, fontSize:9, fontWeight:700 }}>
                                 {pctHours!==null ? `${totalH.toFixed(1)}/${estimatedH.toFixed(0)}h · ${pctHours.toFixed(0)}%` : "—"}
                               </span>
                             </div>
-                            <div style={{ height:4, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                            <div style={{ height:4, background:"var(--bdr)", borderRadius:2, overflow:"hidden" }}>
                               <div style={{ height:"100%", width:`${Math.min(pctHours||0,100)}%`, background:hoursColor, borderRadius:2 }}/>
                             </div>
                           </div>
@@ -3643,12 +3651,12 @@ function InformePane() {
                         <div style={{ display:"flex", gap:5, marginTop:8, flexWrap:"wrap" }}>
                           {STATUSES.map(st => {
                             const count = statusCounts[st] || 0;
-                            const meta  = STATUS_META[st] || { bg:"#27272a", text:"#71717a" };
+                            const meta  = STATUS_META[st] || { bg:"var(--bdr)", text:"var(--tx3)" };
                             return (
                               <span key={st} style={{
-                                background: count>0 ? meta.bg : "#18181b",
-                                color:      count>0 ? meta.text : "#3f3f46",
-                                border:    `1px solid ${count>0 ? meta.bg+"aa" : "#27272a"}`,
+                                background: count>0 ? meta.bg : "var(--bg3)",
+                                color:      count>0 ? meta.text : "var(--bdr2)",
+                                border:    `1px solid ${count>0 ? meta.bg+"aa" : "var(--bdr)"}`,
                                 padding:"3px 9px", borderRadius:5, fontSize:10, fontWeight:count>0?700:400,
                               }}>
                                 {count} {st}
@@ -3672,7 +3680,7 @@ function InformePane() {
     if (sprint === -1) return (
       <div style={{ background:"#22c55e10", border:"1px solid #22c55e30", borderRadius:10, padding:24, textAlign:"center" }}>
         <div style={{ color:"#22c55e", fontWeight:700, fontSize:15, marginBottom:6 }}>✓ S0 — Devising a Project completado</div>
-        <div style={{ color:"#71717a", fontSize:12 }}>757h registradas · sprint finalizado</div>
+        <div style={{ color:"var(--tx3)", fontSize:12 }}>757h registradas · sprint finalizado</div>
       </div>
     );
 
@@ -3692,7 +3700,7 @@ function InformePane() {
       return merged;
     })();
     const days = Object.keys(dailyH).sort();
-    if (!days.length) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>Sin entradas de tiempo registradas para este sprint.</div>;
+    if (!days.length) return <div style={{ color:"var(--tx4)", padding:20, textAlign:"center" }}>Sin entradas de tiempo registradas para este sprint.</div>;
 
     // Build points: prepend sprint-start anchor at totalEst so both lines share origin
     let rem = totalEst;
@@ -3774,25 +3782,25 @@ function InformePane() {
     return (
       <div>
         <div style={{ display:"flex", alignItems:"baseline", gap:10, marginBottom:10, flexWrap:"wrap" }}>
-          <span style={{ color:"#71717a", fontSize:11 }}>Burndown — horas restantes de {totalEst}h estimadas</span>
+          <span style={{ color:"var(--tx3)", fontSize:11 }}>Burndown — horas restantes de {totalEst}h estimadas</span>
           {sprintInfo && <span style={{ background:`${sprintColor}20`, color:sprintColor, fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:4 }}>{sprintInfo.label} · {sprintInfo.date}</span>}
-          <span style={{ color:"#52525b", fontSize:10 }}>La línea baja al registrar horas en Clockify</span>
+          <span style={{ color:"var(--tx4)", fontSize:10 }}>La línea baja al registrar horas en Clockify</span>
         </div>
-        <div style={{ background:"#0c0c10", borderRadius:10, padding:16, overflowX:"auto" }}>
+        <div style={{ background:"var(--bg1)", borderRadius:10, padding:16, overflowX:"auto" }}>
           <svg viewBox={`0 0 ${svgW} ${svgH}`} style={{ width:"100%", maxWidth:svgW }}>
             {yTicks.map(({y, label, major}) => (
               <g key={label}>
-                <line x1={pad.l} y1={y} x2={pad.l+cW} y2={y} stroke={major?"#27272a":"#1c1c1e"} strokeWidth={major?1:0.5} />
-                <text x={pad.l-6} y={y+3.5} fill={major?"#71717a":"#3f3f46"} fontSize="9" textAnchor="end">{label}</text>
+                <line x1={pad.l} y1={y} x2={pad.l+cW} y2={y} stroke={major?"var(--bdr)":"#1c1c1e"} strokeWidth={major?1:0.5} />
+                <text x={pad.l-6} y={y+3.5} fill={major?"var(--tx3)":"var(--bdr2)"} fontSize="9" textAnchor="end">{label}</text>
               </g>
             ))}
             {/* Sprint-end vertical marker */}
             {sprintEndX !== null && (
               <line x1={sprintEndX} y1={pad.t} x2={sprintEndX} y2={pad.t+cH}
-                stroke="#52525b" strokeWidth={1} strokeDasharray="3,3" opacity={0.7} />
+                stroke="var(--tx4)" strokeWidth={1} strokeDasharray="3,3" opacity={0.7} />
             )}
             {/* Ideal line */}
-            <line x1={pad.l} y1={pad.t} x2={idealX2} y2={pad.t+cH} stroke="#52525b" strokeWidth={1.5} strokeDasharray="6,4" />
+            <line x1={pad.l} y1={pad.t} x2={idealX2} y2={pad.t+cH} stroke="var(--tx4)" strokeWidth={1.5} strokeDasharray="6,4" />
             {/* Real burndown */}
             <path d={pathA} fill="none" stroke={sprintColor} strokeWidth={2.5} />
             {points.map((p,i)=>(
@@ -3805,11 +3813,11 @@ function InformePane() {
             )}
             {/* Sprint-end label */}
             {sprintEndX !== null && (
-              <text x={sprintEndX+3} y={pad.t+9} fill="#52525b" fontSize="8">{sprintInfo.end.slice(5)}</text>
+              <text x={sprintEndX+3} y={pad.t+9} fill="var(--tx4)" fontSize="8">{sprintInfo.end.slice(5)}</text>
             )}
             {/* X-axis date labels */}
             {points.map((p,i)=> i%step===0 && (
-              <text key={i} x={pad.l+i*xS} y={svgH-pad.b+14} fill="#52525b" fontSize="9" textAnchor="middle">
+              <text key={i} x={pad.l+i*xS} y={svgH-pad.b+14} fill="var(--tx4)" fontSize="9" textAnchor="middle">
                 {p.day.slice(5)}
               </text>
             ))}
@@ -3817,17 +3825,17 @@ function InformePane() {
         </div>
         {/* Legend + estimates */}
         <div style={{ display:"flex", gap:16, marginTop:8, alignItems:"center", flexWrap:"wrap" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:5 }}><div style={{ width:18, height:2, borderTop:"2px dashed #3f3f46" }}/><span style={{ color:"#52525b", fontSize:11 }}>Ideal</span></div>
-          <div style={{ display:"flex", alignItems:"center", gap:5 }}><div style={{ width:18, height:2, background:sprintColor }}/><span style={{ color:"#52525b", fontSize:11 }}>Real</span></div>
-          {projLine && <div style={{ display:"flex", alignItems:"center", gap:5 }}><div style={{ width:18, height:2, borderTop:`2px dashed ${sprintColor}70` }}/><span style={{ color:"#52525b", fontSize:11 }}>Proyección</span></div>}
+          <div style={{ display:"flex", alignItems:"center", gap:5 }}><div style={{ width:18, height:2, borderTop:"2px dashed var(--bdr2)" }}/><span style={{ color:"var(--tx4)", fontSize:11 }}>Ideal</span></div>
+          <div style={{ display:"flex", alignItems:"center", gap:5 }}><div style={{ width:18, height:2, background:sprintColor }}/><span style={{ color:"var(--tx4)", fontSize:11 }}>Real</span></div>
+          {projLine && <div style={{ display:"flex", alignItems:"center", gap:5 }}><div style={{ width:18, height:2, borderTop:`2px dashed ${sprintColor}70` }}/><span style={{ color:"var(--tx4)", fontSize:11 }}>Proyección</span></div>}
           {totalEst > 0 && remaining > 0 && <span style={{ color:"#f59e0b", fontSize:10 }}>⚠ Pendiente: {remaining.toFixed(0)}h ({(remaining/totalEst*100).toFixed(0)}%)</span>}
           {totalEst > 0 && remaining <= 0 && <span style={{ color:"#22c55e", fontSize:10 }}>✓ Sprint completado</span>}
         </div>
         {/* Completion estimate banner */}
         {estimatedDateStr && remaining > 0 && (
-          <div style={{ marginTop:10, display:"flex", alignItems:"center", gap:10, background: isOnTrack===null?"#18181b":isOnTrack?"#22c55e12":"#ef444412", border:`1px solid ${isOnTrack===null?"#27272a":isOnTrack?"#22c55e30":"#ef444430"}`, borderRadius:8, padding:"8px 14px", flexWrap:"wrap" }}>
-            <span style={{ fontSize:11, color:"#94a3b8" }}>📅 Estimación de cierre (ritmo actual):</span>
-            <span style={{ fontSize:13, fontWeight:800, color: isOnTrack===null?"#e2e8f0":isOnTrack?"#22c55e":"#ef4444" }}>
+          <div style={{ marginTop:10, display:"flex", alignItems:"center", gap:10, background: isOnTrack===null?"var(--bg3)":isOnTrack?"#22c55e12":"#ef444412", border:`1px solid ${isOnTrack===null?"var(--bdr)":isOnTrack?"#22c55e30":"#ef444430"}`, borderRadius:8, padding:"8px 14px", flexWrap:"wrap" }}>
+            <span style={{ fontSize:11, color:"var(--tx2)" }}>📅 Estimación de cierre (ritmo actual):</span>
+            <span style={{ fontSize:13, fontWeight:800, color: isOnTrack===null?"var(--tx0)":isOnTrack?"#22c55e":"#ef4444" }}>
               {fmtDate(estimatedDateStr)}
             </span>
             {sprintInfo && daysDiff !== null && (
@@ -3838,7 +3846,7 @@ function InformePane() {
                 }
               </span>
             )}
-            <span style={{ fontSize:10, color:"#52525b", marginLeft:"auto" }}>
+            <span style={{ fontSize:10, color:"var(--tx4)", marginLeft:"auto" }}>
               ritmo: {avgDailyBurn.toFixed(1)}h/día
             </span>
           </div>
@@ -3851,37 +3859,37 @@ function InformePane() {
     const alerts = filtered(report)
       .filter(([,t])=>t.estimated_h>0 && t.real_h>0 && t.real_h/t.estimated_h>=0.8)
       .sort((a,b)=>b[1].real_h/b[1].estimated_h - a[1].real_h/a[1].estimated_h);
-    if (!alerts.length) return <div style={{ background:"#111113", borderRadius:10, padding:24, textAlign:"center", color:"#22c55e", fontWeight:700 }}>✅ No hay tareas en riesgo ni excedidas</div>;
+    if (!alerts.length) return <div style={{ background:"var(--bg2)", borderRadius:10, padding:24, textAlign:"center", color:"#22c55e", fontWeight:700 }}>✅ No hay tareas en riesgo ni excedidas</div>;
     return (
       <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
         {alerts.map(([tid,t])=>{
           const pct=t.real_h/t.estimated_h*100, isExc=pct>=100;
           const bg=isExc?"#ef444415":"#f59e0b12", border=isExc?"#ef444435":"#f59e0b35", color=isExc?"#ef4444":"#f59e0b";
-          const sc=sprintC[t.sprint]||"#52525b";
+          const sc=sprintC[t.sprint]||"var(--tx4)";
           return (
             <div key={tid} style={{ background:bg, border:`1px solid ${border}`, borderRadius:10, padding:"12px 16px" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
                 <div style={{ flex:1 }}>
                   <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:4 }}>
                     <span style={{ color:sc, fontWeight:800, fontSize:12 }}>{tid}</span>
-                    <span style={{ color:"#52525b", fontSize:11 }}>{t.area}</span>
+                    <span style={{ color:"var(--tx4)", fontSize:11 }}>{t.area}</span>
                   </div>
-                  <div style={{ color:"#e2e8f0", fontSize:12, marginBottom:8 }}>{t.title}</div>
-                  <div style={{ height:8, background:"#27272a", borderRadius:4, overflow:"hidden", maxWidth:300 }}>
+                  <div style={{ color:"var(--tx0)", fontSize:12, marginBottom:8 }}>{t.title}</div>
+                  <div style={{ height:8, background:"var(--bdr)", borderRadius:4, overflow:"hidden", maxWidth:300 }}>
                     <div style={{ height:"100%", width:`${Math.min(pct,100)}%`, background:color }} />
                   </div>
                   {Object.keys(t.byUser).length>0 && (
                     <div style={{ marginTop:8, display:"flex", gap:6, flexWrap:"wrap" }}>
                       {Object.entries(t.byUser).map(([u,h])=>(
-                        <span key={u} style={{ background:"#18181b", color:"#94a3b8", padding:"2px 8px", borderRadius:4, fontSize:10 }}>{u}: {h.toFixed(1)}h</span>
+                        <span key={u} style={{ background:"var(--bg3)", color:"var(--tx2)", padding:"2px 8px", borderRadius:4, fontSize:10 }}>{u}: {h.toFixed(1)}h</span>
                       ))}
                     </div>
                   )}
                 </div>
                 <div style={{ textAlign:"right", minWidth:110 }}>
                   <div style={{ color, fontWeight:800, fontSize:22 }}>{pct.toFixed(0)}%</div>
-                  <div style={{ color:"#71717a", fontSize:11 }}>{t.real_h.toFixed(1)}h / {t.estimated_h}h</div>
-                  <div style={{ color:"#52525b", fontSize:10, marginTop:4 }}>{isExc?"⛔ Excedida":"⚠️ En riesgo"}</div>
+                  <div style={{ color:"var(--tx3)", fontSize:11 }}>{t.real_h.toFixed(1)}h / {t.estimated_h}h</div>
+                  <div style={{ color:"var(--tx4)", fontSize:10, marginTop:4 }}>{isExc?"⛔ Excedida":"⚠️ En riesgo"}</div>
                 </div>
               </div>
             </div>
@@ -4029,8 +4037,8 @@ function InformePane() {
       : null;
 
     const globalMetrics = sprint !== -1 && withTasks.length > 0 ? (
-      <div style={{ background:"#0c0c10", border:"1px solid #27272a", borderRadius:10, padding:"14px 16px", marginBottom:4 }}>
-        <div style={{ color:"#94a3b8", fontWeight:700, fontSize:10, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>
+      <div style={{ background:"var(--bg1)", border:"1px solid var(--bdr)", borderRadius:10, padding:"14px 16px", marginBottom:4 }}>
+        <div style={{ color:"var(--tx2)", fontWeight:700, fontSize:10, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>
           📊 Comparativa de equipos — {withTasks.length} equipos con tareas
         </div>
         <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
@@ -4073,23 +4081,23 @@ function InformePane() {
         {globalMetrics}
         {teamStatsScored.map(({ team, members, statusCounts, totalTasks, doneCount, estimatedH, doneEstimatedH, totalH, taggedH, pctTasks, pctHours, pctTagged, rendimiento, score, memberEstHArr, avgMemberEstH, intraCV }) => {
           const tc         = TEAM_COLOR[team];
-          const hoursColor = pctHours===null?"#3f3f46":pctHours>=100?"#ef4444":pctHours>=75?"#f59e0b":"#22c55e";
-          const tasksColor = pctTasks===null?"#3f3f46":pctTasks===100?"#22c55e":pctTasks>=50?"#f59e0b":"#94a3b8";
-          const taggedColor= pctTagged===null?"#3f3f46":pctTagged>=60?"#22c55e":pctTagged>=25?"#f59e0b":"#ef4444";
-          const rendColor  = rendimiento===null?"#3f3f46":rendimiento>=100?"#22c55e":rendimiento>=50?"#f59e0b":"#ef4444";
+          const hoursColor = pctHours===null?"var(--bdr2)":pctHours>=100?"#ef4444":pctHours>=75?"#f59e0b":"#22c55e";
+          const tasksColor = pctTasks===null?"var(--bdr2)":pctTasks===100?"#22c55e":pctTasks>=50?"#f59e0b":"var(--tx2)";
+          const taggedColor= pctTagged===null?"var(--bdr2)":pctTagged>=60?"#22c55e":pctTagged>=25?"#f59e0b":"#ef4444";
+          const rendColor  = rendimiento===null?"var(--bdr2)":rendimiento>=100?"#22c55e":rendimiento>=50?"#f59e0b":"#ef4444";
           // Inter-team deviation badge
           const interDelta    = avgTeamEstH ? estimatedH - avgTeamEstH : null;
           const interDeltaPct = avgTeamEstH ? interDelta / avgTeamEstH * 100 : null;
-          const interColor    = interDeltaPct===null?"#52525b":Math.abs(interDeltaPct)<=15?"#52525b":interDeltaPct>0?"#f59e0b":"#818cf8";
+          const interColor    = interDeltaPct===null?"var(--tx4)":Math.abs(interDeltaPct)<=15?"var(--tx4)":interDeltaPct>0?"#f59e0b":"#818cf8";
           // Intra-team color
-          const intraColor = intraCV===null?"#3f3f46":intraCV<=25?"#22c55e":intraCV<=50?"#f59e0b":"#ef4444";
+          const intraColor = intraCV===null?"var(--bdr2)":intraCV<=25?"#22c55e":intraCV<=50?"#f59e0b":"#ef4444";
           return (
-            <div key={team} style={{ background:"#111113", border:`1px solid ${tc}30`, borderRadius:12, padding:"14px 16px" }}>
+            <div key={team} style={{ background:"var(--bg2)", border:`1px solid ${tc}30`, borderRadius:12, padding:"14px 16px" }}>
               {/* Team header + aggregated hours */}
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, marginBottom:10 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
                   <span style={{ background:`${tc}20`, color:tc, fontWeight:800, fontSize:13, textTransform:"uppercase", letterSpacing:2, padding:"4px 12px", borderRadius:6 }}>Equipo {team}</span>
-                  <span style={{ color:"#52525b", fontSize:11 }}>{members.length} miembros · {totalTasks} tarea{totalTasks!==1?"s":""}</span>
+                  <span style={{ color:"var(--tx4)", fontSize:11 }}>{members.length} miembros · {totalTasks} tarea{totalTasks!==1?"s":""}</span>
                   {interDeltaPct !== null && (
                     <span title={`${estimatedH.toFixed(0)}h est. vs media inter-equipos ${avgTeamEstH.toFixed(0)}h`}
                       style={{ fontSize:9, fontWeight:700, background:`${interColor}18`, color:interColor, padding:"2px 6px", borderRadius:4 }}>
@@ -4104,9 +4112,9 @@ function InformePane() {
                   )}
                 </div>
                 <div style={{ textAlign:"right", flexShrink:0, lineHeight:1.6 }}>
-                  <div style={{ color:"#e2e8f0", fontWeight:800, fontSize:16 }}>{totalH.toFixed(1)}h</div>
+                  <div style={{ color:"var(--tx0)", fontWeight:800, fontSize:16 }}>{totalH.toFixed(1)}h</div>
                   <div style={{ display:"flex", alignItems:"center", gap:5, justifyContent:"flex-end" }}>
-                    <span style={{ fontSize:10, color: taggedH>0?"#22c55e":"#3f3f46" }}>{taggedH.toFixed(1)}h etiq.</span>
+                    <span style={{ fontSize:10, color: taggedH>0?"#22c55e":"var(--bdr2)" }}>{taggedH.toFixed(1)}h etiq.</span>
                     {pctTagged !== null && (
                       <span style={{ fontSize:9, fontWeight:700, background:`${taggedColor}20`, color:taggedColor, padding:"1px 5px", borderRadius:3 }}>
                         {pctTagged.toFixed(0)}%
@@ -4121,7 +4129,7 @@ function InformePane() {
                       {score !== null && (() => {
                         const sc = score;
                         const sc100 = sc >= 95 && sc <= 105;
-                        const scColor = sc100 ? "#52525b" : sc > 100 ? "#22c55e" : "#ef4444";
+                        const scColor = sc100 ? "var(--tx4)" : sc > 100 ? "#22c55e" : "#ef4444";
                         return (
                           <span title="Score relativo: rendimiento / media de equipos × 100. Media = 100%"
                             style={{ fontSize:9, fontWeight:800, background:`${scColor}20`, color:scColor, padding:"1px 6px", borderRadius:4, border:`1px solid ${scColor}40` }}>
@@ -4137,13 +4145,13 @@ function InformePane() {
               {/* Member avatars row */}
               <div style={{ display:"flex", gap:5, marginBottom:10, flexWrap:"wrap" }}>
                 {members.sort((a,b) => a.name.localeCompare(b.name)).map(m => (
-                  <div key={m.login} style={{ display:"flex", alignItems:"center", gap:5, background:"#18181b", borderRadius:6, padding:"3px 8px 3px 3px" }}>
+                  <div key={m.login} style={{ display:"flex", alignItems:"center", gap:5, background:"var(--bg3)", borderRadius:6, padding:"3px 8px 3px 3px" }}>
                     <img
                       src={`https://github.com/${m.login}.png?size=24`}
                       alt={m.name}
                       style={{ width:22, height:22, borderRadius:"50%", border:`1.5px solid ${tc}50`, flexShrink:0 }}
                     />
-                    <span style={{ color:"#94a3b8", fontSize:10, whiteSpace:"nowrap" }}>{m.name.split(" ")[0]}</span>
+                    <span style={{ color:"var(--tx2)", fontSize:10, whiteSpace:"nowrap" }}>{m.name.split(" ")[0]}</span>
                     {m.coord && <span style={{ fontSize:7, background:"#818cf820", color:"#818cf8", padding:"0 3px", borderRadius:2, fontWeight:700 }}>C</span>}
                   </div>
                 ))}
@@ -4154,23 +4162,23 @@ function InformePane() {
                 <div style={{ display:"flex", gap:14, marginBottom:10 }}>
                   <div style={{ flex:1 }}>
                     <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-                      <span style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Tareas done</span>
+                      <span style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Tareas done</span>
                       <span style={{ color:tasksColor, fontSize:9, fontWeight:700 }}>
                         {pctTasks!==null ? `${doneCount}/${totalTasks} · ${pctTasks.toFixed(0)}%` : "—"}
                       </span>
                     </div>
-                    <div style={{ height:5, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                    <div style={{ height:5, background:"var(--bdr)", borderRadius:2, overflow:"hidden" }}>
                       <div style={{ height:"100%", width:`${Math.min(pctTasks||0,100)}%`, background:tasksColor, borderRadius:2 }}/>
                     </div>
                   </div>
                   <div style={{ flex:1 }}>
                     <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-                      <span style={{ color:"#52525b", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Horas consumidas</span>
+                      <span style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>Horas consumidas</span>
                       <span style={{ color:hoursColor, fontSize:9, fontWeight:700 }}>
                         {pctHours!==null ? `${totalH.toFixed(1)}/${estimatedH.toFixed(0)}h · ${pctHours.toFixed(0)}%` : "—"}
                       </span>
                     </div>
-                    <div style={{ height:5, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                    <div style={{ height:5, background:"var(--bdr)", borderRadius:2, overflow:"hidden" }}>
                       <div style={{ height:"100%", width:`${Math.min(pctHours||0,100)}%`, background:hoursColor, borderRadius:2 }}/>
                     </div>
                   </div>
@@ -4182,12 +4190,12 @@ function InformePane() {
                 <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
                   {STATUSES.map(st => {
                     const count = statusCounts[st] || 0;
-                    const meta  = STATUS_META[st] || { bg:"#27272a", text:"#71717a" };
+                    const meta  = STATUS_META[st] || { bg:"var(--bdr)", text:"var(--tx3)" };
                     return (
                       <span key={st} style={{
-                        background: count>0 ? meta.bg : "#18181b",
-                        color:      count>0 ? meta.text : "#3f3f46",
-                        border:    `1px solid ${count>0 ? meta.bg+"aa" : "#27272a"}`,
+                        background: count>0 ? meta.bg : "var(--bg3)",
+                        color:      count>0 ? meta.text : "var(--bdr2)",
+                        border:    `1px solid ${count>0 ? meta.bg+"aa" : "var(--bdr)"}`,
                         padding:"3px 9px", borderRadius:5, fontSize:10, fontWeight:count>0?700:400,
                       }}>
                         {count} {st}
@@ -4239,8 +4247,8 @@ function InformePane() {
           ))}
         </div>
         {/* Bar chart */}
-        <div style={{ background:"#0c0c10", borderRadius:10, padding:16, overflowX:"auto" }}>
-          <div style={{ color:"#71717a", fontSize:10, marginBottom:8, textTransform:"uppercase", letterSpacing:1 }}>
+        <div style={{ background:"var(--bg1)", borderRadius:10, padding:16, overflowX:"auto" }}>
+          <div style={{ color:"var(--tx3)", fontSize:10, marginBottom:8, textTransform:"uppercase", letterSpacing:1 }}>
             Velocidad por sprint — h estimadas entregadas (Done) vs h Clockify invertidas
           </div>
           <svg viewBox={`0 0 ${svgW} ${svgH}`} style={{ width:"100%", maxWidth:svgW }}>
@@ -4249,8 +4257,8 @@ function InformePane() {
               const maj = f===0||f===1;
               return (
                 <g key={f}>
-                  <line x1={pad.l} y1={y} x2={pad.l+cW} y2={y} stroke={maj?"#27272a":"#1c1c1e"} strokeWidth={maj?1:0.5} />
-                  <text x={pad.l-6} y={y+3.5} fill={maj?"#71717a":"#3f3f46"} fontSize="9" textAnchor="end">{Math.round(maxH*f)}h</text>
+                  <line x1={pad.l} y1={y} x2={pad.l+cW} y2={y} stroke={maj?"var(--bdr)":"#1c1c1e"} strokeWidth={maj?1:0.5} />
+                  <text x={pad.l-6} y={y+3.5} fill={maj?"var(--tx3)":"var(--bdr2)"} fontSize="9" textAnchor="end">{Math.round(maxH*f)}h</text>
                 </g>
               );
             })}
@@ -4268,7 +4276,7 @@ function InformePane() {
                   {h2>12 && <text x={cx-barW*0.65} y={pad.t+cH-h2-4} fill={d.color} fontSize="8" textAnchor="middle" fontWeight="700">{d.doneEstH.toFixed(0)}</text>}
                   {h3>12 && <text x={cx+barW*0.65} y={pad.t+cH-h3-4} fill={d.color+"aa"} fontSize="8" textAnchor="middle">{d.clockifyH.toFixed(0)}</text>}
                   <text x={cx} y={svgH-pad.b+14} fill={d.color} fontSize="9" textAnchor="middle" fontWeight="700">{d.label}</text>
-                  <text x={cx} y={svgH-pad.b+24} fill="#52525b" fontSize="8" textAnchor="middle">{d.doneCount}/{d.totalCount} Done</text>
+                  <text x={cx} y={svgH-pad.b+24} fill="var(--tx4)" fontSize="8" textAnchor="middle">{d.doneCount}/{d.totalCount} Done</text>
                 </g>
               );
             })}
@@ -4287,7 +4295,7 @@ function InformePane() {
             {[["#818cf8","H estimadas entregadas (Done)"],["#818cf870","H Clockify invertidas"],["#818cf81a","H estimadas totales"]].map(([bg,lbl])=>(
               <div key={lbl} style={{ display:"flex", alignItems:"center", gap:5 }}>
                 <div style={{ width:12, height:8, background:bg, borderRadius:2, border:bg.endsWith("1a")?`1px solid #818cf844`:"none" }} />
-                <span style={{ color:"#71717a", fontSize:10 }}>{lbl}</span>
+                <span style={{ color:"var(--tx3)", fontSize:10 }}>{lbl}</span>
               </div>
             ))}
           </div>
@@ -4310,7 +4318,7 @@ function InformePane() {
       Object.keys(report.dailyHoursByProject?.[key] || {}).forEach(d => allDatesSet.add(d))
     );
     const dates = [...allDatesSet].sort();
-    if (!dates.length) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>Sin datos Clockify.</div>;
+    if (!dates.length) return <div style={{ color:"var(--tx4)", padding:20, textAlign:"center" }}>Sin datos Clockify.</div>;
 
     const bars = dates.map(d => {
       const segments = projectDefs
@@ -4336,8 +4344,8 @@ function InformePane() {
             return <InfStatCard key={key} label={label} value={`${total.toFixed(1)}h`} sub={`en ${nDays} días · media ${(total/nDays).toFixed(1)}h/día`} color={color} />;
           })}
         </div>
-        <div style={{ background:"#0c0c10", borderRadius:10, padding:16, overflowX:"auto" }}>
-          <div style={{ color:"#71717a", fontSize:10, marginBottom:8, textTransform:"uppercase", letterSpacing:1 }}>
+        <div style={{ background:"var(--bg1)", borderRadius:10, padding:16, overflowX:"auto" }}>
+          <div style={{ color:"var(--tx3)", fontSize:10, marginBottom:8, textTransform:"uppercase", letterSpacing:1 }}>
             Actividad diaria — horas Clockify registradas por día
           </div>
           <svg viewBox={`0 0 ${svgW} ${svgH}`} style={{ width:"100%", minWidth:Math.min(svgW,380) }}>
@@ -4345,8 +4353,8 @@ function InformePane() {
               const y = pad.t + cH * (1-f), maj = f===0||f===1;
               return (
                 <g key={f}>
-                  <line x1={pad.l} y1={y} x2={pad.l+cW} y2={y} stroke={maj?"#27272a":"#1c1c1e"} strokeWidth={maj?1:0.5} />
-                  <text x={pad.l-5} y={y+3.5} fill="#52525b" fontSize="8" textAnchor="end">{(maxH*f).toFixed(0)}h</text>
+                  <line x1={pad.l} y1={y} x2={pad.l+cW} y2={y} stroke={maj?"var(--bdr)":"#1c1c1e"} strokeWidth={maj?1:0.5} />
+                  <text x={pad.l-5} y={y+3.5} fill="var(--tx4)" fontSize="8" textAnchor="end">{(maxH*f).toFixed(0)}h</text>
                 </g>
               );
             })}
@@ -4362,7 +4370,7 @@ function InformePane() {
                     return <rect key={seg.key} x={cx-barW/2} y={y} width={barW} height={h} fill={seg.color} rx={1} />;
                   })}
                   {i%step===0 && (
-                    <text x={cx} y={svgH-pad.b+12} fill="#52525b" fontSize="8" textAnchor="middle">{bar.date.slice(5)}</text>
+                    <text x={cx} y={svgH-pad.b+12} fill="var(--tx4)" fontSize="8" textAnchor="middle">{bar.date.slice(5)}</text>
                   )}
                 </g>
               );
@@ -4372,7 +4380,7 @@ function InformePane() {
             {projectDefs.map(({ key, color, label }) => (
               <div key={key} style={{ display:"flex", alignItems:"center", gap:5 }}>
                 <div style={{ width:10, height:10, borderRadius:2, background:color }} />
-                <span style={{ color:"#71717a", fontSize:10 }}>{label}</span>
+                <span style={{ color:"var(--tx3)", fontSize:10 }}>{label}</span>
               </div>
             ))}
           </div>
@@ -4387,8 +4395,8 @@ function InformePane() {
       ? []
       : Object.values(BACKLOG_MAP).filter(t => sprint === 0 || t.sprint === sprint);
 
-    if (sprint === -1) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>S0/DP no tiene tareas en el backlog.</div>;
-    if (!relevantTasks.length) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>Sin tareas para este filtro.</div>;
+    if (sprint === -1) return <div style={{ color:"var(--tx4)", padding:20, textAlign:"center" }}>S0/DP no tiene tareas en el backlog.</div>;
+    if (!relevantTasks.length) return <div style={{ color:"var(--tx4)", padding:20, textAlign:"center" }}>Sin tareas para este filtro.</div>;
 
     const areaMap = {};
     relevantTasks.forEach(t => {
@@ -4412,40 +4420,40 @@ function InformePane() {
     return (
       <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
         <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
-          <InfStatCard label="Áreas" value={`${areas.length}`} sub={`${totalTasks} tareas · ${totalEst.toFixed(0)}h estimadas`} color="#94a3b8" />
+          <InfStatCard label="Áreas" value={`${areas.length}`} sub={`${totalTasks} tareas · ${totalEst.toFixed(0)}h estimadas`} color="var(--tx2)" />
           <InfStatCard label="Tareas Done" value={`${totalDone}/${totalTasks}`} sub={`${(totalDone/totalTasks*100).toFixed(0)}% completitud global`} color={totalDone/totalTasks>=0.75?"#22c55e":totalDone/totalTasks>=0.4?"#f59e0b":"#ef4444"} />
           {totalClockify > 0 && <InfStatCard label="H Clockify" value={`${totalClockify.toFixed(1)}h`} sub={`de ${totalEst.toFixed(0)}h estimadas · ${(totalClockify/totalEst*100).toFixed(0)}%`} color={totalClockify/totalEst>=1?"#ef4444":totalClockify/totalEst>=0.75?"#f59e0b":"#22c55e"} />}
         </div>
         {areas.map(({ area, estimatedH, doneH, clockifyH, total, done, pctDone }) => {
           const pctClockify = estimatedH > 0 ? clockifyH / estimatedH * 100 : null;
-          const doneColor   = pctDone>=80?"#22c55e":pctDone>=40?"#f59e0b":"#94a3b8";
-          const clockColor  = pctClockify===null?"#3f3f46":pctClockify>=100?"#ef4444":pctClockify>=75?"#f59e0b":"#22c55e";
+          const doneColor   = pctDone>=80?"#22c55e":pctDone>=40?"#f59e0b":"var(--tx2)";
+          const clockColor  = pctClockify===null?"var(--bdr2)":pctClockify>=100?"#ef4444":pctClockify>=75?"#f59e0b":"#22c55e";
           return (
-            <div key={area} style={{ background:"#111113", border:"1px solid #27272a", borderRadius:8, padding:"10px 14px" }}>
+            <div key={area} style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:8, padding:"10px 14px" }}>
               <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
-                <span style={{ flex:1, color:"#e2e8f0", fontWeight:700, fontSize:12 }}>{area}</span>
-                <span style={{ color:"#52525b", fontSize:10 }}>{done}/{total}</span>
+                <span style={{ flex:1, color:"var(--tx0)", fontWeight:700, fontSize:12 }}>{area}</span>
+                <span style={{ color:"var(--tx4)", fontSize:10 }}>{done}/{total}</span>
                 <span style={{ color:doneColor, fontSize:10, fontWeight:700, minWidth:34, textAlign:"right" }}>{pctDone.toFixed(0)}%</span>
-                <span style={{ color:"#71717a", fontSize:10, minWidth:58, textAlign:"right" }}>{estimatedH.toFixed(0)}h est.</span>
+                <span style={{ color:"var(--tx3)", fontSize:10, minWidth:58, textAlign:"right" }}>{estimatedH.toFixed(0)}h est.</span>
                 {clockifyH > 0 && <span style={{ color:clockColor, fontSize:10, minWidth:58, textAlign:"right" }}>{clockifyH.toFixed(1)}h reg.</span>}
               </div>
               <div style={{ display:"flex", gap:8 }}>
                 <div style={{ flex:1 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", marginBottom:2 }}>
-                    <span style={{ color:"#3f3f46", fontSize:8, textTransform:"uppercase", letterSpacing:1 }}>Done</span>
+                    <span style={{ color:"var(--bdr2)", fontSize:8, textTransform:"uppercase", letterSpacing:1 }}>Done</span>
                     <span style={{ color:doneColor, fontSize:8, fontWeight:700 }}>{pctDone.toFixed(0)}%</span>
                   </div>
-                  <div style={{ height:3, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                  <div style={{ height:3, background:"var(--bdr)", borderRadius:2, overflow:"hidden" }}>
                     <div style={{ height:"100%", width:`${Math.min(pctDone,100)}%`, background:doneColor, borderRadius:2 }} />
                   </div>
                 </div>
                 {pctClockify !== null && (
                   <div style={{ flex:1 }}>
                     <div style={{ display:"flex", justifyContent:"space-between", marginBottom:2 }}>
-                      <span style={{ color:"#3f3f46", fontSize:8, textTransform:"uppercase", letterSpacing:1 }}>Consumo</span>
+                      <span style={{ color:"var(--bdr2)", fontSize:8, textTransform:"uppercase", letterSpacing:1 }}>Consumo</span>
                       <span style={{ color:clockColor, fontSize:8, fontWeight:700 }}>{pctClockify.toFixed(0)}%</span>
                     </div>
-                    <div style={{ height:3, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                    <div style={{ height:3, background:"var(--bdr)", borderRadius:2, overflow:"hidden" }}>
                       <div style={{ height:"100%", width:`${Math.min(pctClockify,100)}%`, background:clockColor, borderRadius:2 }} />
                     </div>
                   </div>
@@ -4464,8 +4472,8 @@ function InformePane() {
       ? []
       : Object.values(BACKLOG_MAP).filter(t => sprint === 0 || t.sprint === sprint);
 
-    if (sprint === -1) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>S0/DP no tiene tareas en el backlog.</div>;
-    if (!relevantTasks.length) return <div style={{ color:"#52525b", padding:20, textAlign:"center" }}>Sin tareas para este filtro.</div>;
+    if (sprint === -1) return <div style={{ color:"var(--tx4)", padding:20, textAlign:"center" }}>S0/DP no tiene tareas en el backlog.</div>;
+    if (!relevantTasks.length) return <div style={{ color:"var(--tx4)", padding:20, textAlign:"center" }}>Sin tareas para este filtro.</div>;
 
     const tagged   = relevantTasks.filter(t => (report.byTask[t.id]?.real_h || 0) > 0);
     const untagged = relevantTasks.filter(t => (report.byTask[t.id]?.real_h || 0) === 0);
@@ -4499,25 +4507,25 @@ function InformePane() {
             sub="tareas sin ninguna entrada Clockify"
             color={untagged.length===0?"#22c55e":"#ef4444"} />
         </div>
-        <div style={{ color:"#52525b", fontSize:10, textTransform:"uppercase", letterSpacing:1 }}>
+        <div style={{ color:"var(--tx4)", fontSize:10, textTransform:"uppercase", letterSpacing:1 }}>
           Por área — peor cobertura primero
         </div>
         {areas.map(({ area, taggedCount, total, pct, untaggedTasks }) => {
           const c = pct>=80?"#22c55e":pct>=40?"#f59e0b":"#ef4444";
           return (
-            <div key={area} style={{ background:"#111113", border:"1px solid #27272a", borderRadius:8, padding:"10px 14px" }}>
+            <div key={area} style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:8, padding:"10px 14px" }}>
               <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom: untaggedTasks.length>0?6:0 }}>
-                <span style={{ flex:1, color:"#e2e8f0", fontWeight:600, fontSize:12 }}>{area}</span>
-                <span style={{ color:"#52525b", fontSize:10 }}>{taggedCount}/{total}</span>
+                <span style={{ flex:1, color:"var(--tx0)", fontWeight:600, fontSize:12 }}>{area}</span>
+                <span style={{ color:"var(--tx4)", fontSize:10 }}>{taggedCount}/{total}</span>
                 <span style={{ color:c, fontWeight:700, fontSize:10, minWidth:38, textAlign:"right" }}>{pct.toFixed(0)}%</span>
-                <div style={{ width:80, height:4, background:"#27272a", borderRadius:2, overflow:"hidden" }}>
+                <div style={{ width:80, height:4, background:"var(--bdr)", borderRadius:2, overflow:"hidden" }}>
                   <div style={{ height:"100%", width:`${pct}%`, background:c, borderRadius:2 }} />
                 </div>
               </div>
               {untaggedTasks.length > 0 && (
                 <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
                   {untaggedTasks.map(t => (
-                    <span key={t.id} style={{ background:"#18181b", color:"#71717a", fontSize:9, padding:"2px 6px", borderRadius:3, border:"1px solid #27272a" }}>
+                    <span key={t.id} style={{ background:"var(--bg3)", color:"var(--tx3)", fontSize:9, padding:"2px 6px", borderRadius:3, border:"1px solid var(--bdr)" }}>
                       {t.id}
                     </span>
                   ))}
@@ -4526,6 +4534,324 @@ function InformePane() {
             </div>
           );
         })}
+      </div>
+    );
+  }
+
+  // ── PersonPane ────────────────────────────────────────────────
+  function PersonPane({ login, onChangePerson }) {
+    const TC_P     = { A:"#3b82f6", B:"#22c55e", C:"#f59e0b", D:"#a855f7" };
+    const STATUSES = ["Backlog","Ready","In progress","In review","Done"];
+    const TALLA_PTS = { XS:1, S:2, M:3, L:5, XL:8 };
+    const SC_P     = { 1:"#818cf8", 2:"#34d399", 3:"#fbbf24" };
+
+    const member = TEAM_MEMBERS.find(m => m.login === login);
+    if (!member) return <div style={{ color:"#ef4444", padding:20 }}>Persona no encontrada: {login}</div>;
+    const tc = TC_P[member.team] || "#6ee7b7";
+    const loginLower = login.toLowerCase();
+
+    // ── GitHub stats ─────────────────────────────────────────────
+    const ghStats  = (() => { try { const r = localStorage.getItem(GH_STATS_KEY); return r ? JSON.parse(r) : null; } catch(_){return null;} })();
+    const commits  = ghStats?.commits?.[loginLower] || 0;
+    const pr       = ghStats?.prs?.[loginLower] || { total:0, merged:0, open:0, additions:0, deletions:0 };
+    const revs     = ghStats?.reviews?.[loginLower] || 0;
+    const lns      = ghStats?.lines?.[loginLower] || { added:0, deleted:0 };
+    const cons     = ghStats?.consistency?.[loginLower] ?? null;
+    const amt      = ghStats?.avgMergeTime?.[loginLower] ?? null;
+    const prEff    = pr.total > 0 ? Math.round(pr.merged / pr.total * 100) : null;
+    const collab   = Math.min(Math.round(revs / (commits + 1) * 50), 100);
+    const cImpact  = lns.added + lns.deleted;
+    const cChurn   = cImpact > 0 ? Math.round(lns.deleted / cImpact * 100) : null;
+    const avgPRS   = pr.merged > 0 ? Math.round((pr.additions + pr.deletions) / pr.merged) : null;
+
+    // ── Clockify data ────────────────────────────────────────────
+    const ue           = report?.byEmail?.[member.email?.toLowerCase()] || {};
+    const clockifyName = ue.name || member.name;
+    const rawEntries   = (report?.rawEntriesByUser?.[clockifyName] || [])
+      .slice().sort((a,b) => (b.date||"").localeCompare(a.date||""));
+
+    let totalH = 0, taggedH = 0;
+    if (sprint === -1) {
+      totalH = ue.dp_h || 0;
+    } else if (sprint === 0) {
+      totalH  = (ue.dp_h||0)+(ue.s1_h||0)+(ue.s2_h||0)+(ue.s3_h||0);
+      taggedH = (ue.s1_tagged_h||0)+(ue.s2_tagged_h||0)+(ue.s3_tagged_h||0);
+    } else {
+      totalH  = ue[`s${sprint}_h`]       || 0;
+      taggedH = ue[`s${sprint}_tagged_h`] || 0;
+    }
+
+    // ── Tasks ───────────────────────────────────────────────────
+    const teamEquipo   = `Equipo ${member.team}`;
+    const relevantTasks = sprint === -1 ? []
+      : Object.entries(BACKLOG_MAP)
+          .filter(([,t]) => sprint === 0 || t.sprint === sprint)
+          .sort((a,b) => a[1].sprint - b[1].sprint || a[0].localeCompare(b[0]));
+
+    const taskRows = relevantTasks.map(([tid, t]) => {
+      const assignees  = t.assignees || [];
+      const isDirecta  = assignees.some(a => a.login.toLowerCase() === loginLower);
+      const isTeamTask = t.equipo === teamEquipo;
+      const isDelegada = isTeamTask && assignees.length === 0 && !isDirecta;
+      const teamLogins = EQUIPO_LOGINS[t.equipo] || [];
+      const n          = assignees.length || 1;
+      const nTeam      = teamLogins.length || 1;
+      const hDirectas  = isDirecta  ? (t.estimated_h||0) / n    : 0;
+      const hDelegadas = isDelegada ? (t.estimated_h||0) / nTeam : 0;
+      const hEquipo    = isTeamTask ? (t.estimated_h||0)         : 0;
+      const hReal      = report?.byTask?.[tid]?.byUser?.[clockifyName] || 0;
+      const hasImputed = hReal > 0 && !isDirecta;
+      return { tid, t, isDirecta, isDelegada, isTeamTask, hDirectas, hDelegadas, hEquipo, hReal, hasImputed };
+    }).filter(r => r.isDirecta || r.isDelegada || r.hReal > 0);
+
+    const equipoTasks     = relevantTasks.filter(([,t]) => t.equipo === teamEquipo);
+    const totalHDirectas  = taskRows.reduce((s,r) => s+r.hDirectas,  0);
+    const totalHDelegadas = taskRows.reduce((s,r) => s+r.hDelegadas, 0);
+    const totalHEquipo    = equipoTasks.reduce((s,[,t]) => s+(t.estimated_h||0), 0);
+
+    // ── Score (misma fórmula que UsersView) ──────────────────────
+    const S1_WPR_IDX = [22,23,24,25];
+    const wpr         = ghStats?.weeklyPRs?.[loginLower] || [];
+    const totalMerged = ghStats?.prs?.[loginLower]?.merged || 0;
+    const s1Prs       = S1_WPR_IDX.reduce((s,i)=>s+(wpr[i]||0), 0);
+    const ghCombined  = (sprint===1?s1Prs:sprint===2?Math.max(0,totalMerged-s1Prs):sprint===0?totalMerged:0)+revs;
+    const allGhVals   = TEAM_MEMBERS.map(m2 => {
+      const ll2=m2.login.toLowerCase(), wpr2=ghStats?.weeklyPRs?.[ll2]||[], mer2=ghStats?.prs?.[ll2]?.merged||0;
+      const s1p2=S1_WPR_IDX.reduce((s,i)=>s+(wpr2[i]||0),0), rv2=ghStats?.reviews?.[ll2]||0;
+      return (sprint===1?s1p2:sprint===2?Math.max(0,mer2-s1p2):sprint===0?mer2:0)+rv2;
+    });
+    const meanGh = allGhVals.length ? allGhVals.reduce((s,v)=>s+v,0)/allGhVals.length : 1;
+    const ghNorm = meanGh > 0 ? ghCombined/meanGh : 0;
+
+    const statusCounts = Object.fromEntries(STATUSES.map(s=>[s,0]));
+    let estimatedH=0, effPts=0, totalPts=0;
+    taskRows.forEach(({ t, isDirecta, isDelegada }) => {
+      if (!isDirecta && !isDelegada) return;
+      const teamLogsT = EQUIPO_LOGINS[t.equipo]||[];
+      const n = isDirecta ? ((t.assignees||[]).length||1) : (teamLogsT.length||1);
+      const perH = (t.estimated_h||0)/n, perPt = (TALLA_PTS[t.size]||1)/n;
+      estimatedH += perH; totalPts += perPt;
+      const w = t.status==="Done"?1:t.status==="In review"?0.8:t.status==="In progress"?0.2:0;
+      effPts += perPt*w;
+      statusCounts[t.status]=(statusCounts[t.status]||0)+1;
+    });
+    const totalTasks = Object.values(statusCounts).reduce((s,v)=>s+v,0);
+    const doneCount  = statusCounts["Done"];
+    const cr   = totalPts>0 ? effPts/totalPts : null;
+    const dev  = estimatedH>0 ? (taggedH-estimatedH)/estimatedH : 0;
+    const ef   = estimatedH>0 ? (dev>0?1/(1+1.5*dev):1/(1+0.5*Math.abs(dev))) : null;
+    const rendimiento = cr!==null&&ef!==null ? (0.25*cr+0.50*ef+0.25*ghNorm)*100 : null;
+    const rendColor   = rendimiento===null?"var(--tx4)":rendimiento>=80?"#22c55e":rendimiento>=50?"#f59e0b":"#ef4444";
+
+    const ghCard = (label, val, sub, col="var(--tx2)") => (
+      <div style={{ background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:8, padding:"8px 12px", minWidth:80 }}>
+        <div style={{ color:col, fontWeight:800, fontSize:15 }}>{val??<span style={{color:"var(--bdr2)"}}>—</span>}</div>
+        <div style={{ color:"var(--tx3)", fontSize:9, textTransform:"uppercase", letterSpacing:1, marginTop:2 }}>{label}</div>
+        {sub && <div style={{ color:"var(--tx4)", fontSize:9, marginTop:1 }}>{sub}</div>}
+      </div>
+    );
+
+    return (
+      <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
+        {/* ── Header ── */}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, flexWrap:"wrap" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+            <img src={`https://github.com/${login}.png?size=64`} alt={member.name}
+              style={{ width:52, height:52, borderRadius:"50%", border:`3px solid ${tc}` }}/>
+            <div>
+              <div style={{ color:"var(--tx0)", fontWeight:800, fontSize:16 }}>{member.name}</div>
+              <div style={{ color:"var(--tx4)", fontSize:11, marginBottom:4 }}>@{login} · {member.role}{member.coord?" · Coord":""}</div>
+              <span style={{ background:`${tc}20`, color:tc, fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:4 }}>Equipo {member.team}</span>
+            </div>
+          </div>
+          <select value={login} onChange={e=>onChangePerson(e.target.value)}
+            style={{ background:"var(--bg0)", border:"1px solid var(--bdr)", color:"var(--tx0)", padding:"6px 10px", borderRadius:6, fontSize:11, cursor:"pointer" }}>
+            {TEAM_MEMBERS.map(m2=>(
+              <option key={m2.login} value={m2.login}>{m2.name} · Eq.{m2.team}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* ── GitHub metrics ── */}
+        <div>
+          <div style={{ color:"var(--tx4)", fontSize:10, textTransform:"uppercase", letterSpacing:2, marginBottom:8, fontWeight:700 }}>Métricas GitHub</div>
+          {ghStats ? (
+            <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+              {ghCard("Commits",       commits,                              null,              "#818cf8")}
+              {ghCard("PRs merged",    `${pr.merged}/${pr.total}`,           pr.open>0?`${pr.open} open`:null, "#34d399")}
+              {ghCard("Reviews",       revs,                                 null,              "#38bdf8")}
+              {ghCard("Líneas +",      `+${lns.added.toLocaleString()}`,     `-${lns.deleted.toLocaleString()}`, "#4ade80")}
+              {ghCard("Consistency",   cons!==null?`${cons}%`:null,          "sem. activas",    "#a78bfa")}
+              {ghCard("PR Efficiency", prEff!==null?`${prEff}%`:null,        "merged/total",    "#fbbf24")}
+              {ghCard("Collab Score",  collab,                               "revs/commits×50", "#fb923c")}
+              {ghCard("Merge Time",    amt!==null?`${amt.toFixed(1)}d`:null, "días promedio",   "#e879f9")}
+              {ghCard("Avg PR Size",   avgPRS!==null?`${avgPRS} lns`:null,   "lines/merged PR", "var(--tx2)")}
+              {ghCard("Code Churn",    cChurn!==null?`${cChurn}%`:null,      "deleted/total",   "#f87171")}
+            </div>
+          ) : (
+            <div style={{ color:"var(--tx4)", fontSize:11, background:"var(--bg0)", borderRadius:8, padding:"10px 14px" }}>
+              Sin datos de GitHub — sincroniza desde el tab GitHub con tu token.
+            </div>
+          )}
+        </div>
+
+        {/* ── Tasks table ── */}
+        {sprint !== -1 && taskRows.length > 0 && (
+          <div>
+            <div style={{ color:"var(--tx4)", fontSize:10, textTransform:"uppercase", letterSpacing:2, marginBottom:8, fontWeight:700 }}>
+              Tareas — {totalTasks} en scope · {doneCount} done
+            </div>
+            <div style={{ overflowX:"auto" }}>
+              <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
+                <thead>
+                  <tr style={{ borderBottom:"1px solid var(--bdr)" }}>
+                    {["ID","Tarea","S","Estado","Talla","H.Directas","H.Delegadas","H.Equipo","H.Real","⚠️"].map(h=>(
+                      <th key={h} style={{ padding:"4px 8px", color:"var(--tx4)", fontWeight:700, textAlign:h==="Tarea"?"left":"center", whiteSpace:"nowrap", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {taskRows.map(({ tid, t, isDirecta, isDelegada, hDirectas, hDelegadas, hEquipo, hReal, hasImputed })=>{
+                    const sm = STATUS_META[t.status] || { bg:"var(--bdr)", text:"var(--tx3)" };
+                    const bg = isDirecta?"#818cf808":isDelegada?"#fbbf2408":"transparent";
+                    return (
+                      <tr key={tid} style={{ borderBottom:"1px solid var(--bg4)", background:bg }}>
+                        <td style={{ padding:"5px 8px", whiteSpace:"nowrap" }}>
+                          <a href={`https://github.com/ispp-g7-nexus/7-NexUS/issues/${tid.replace(/[^\d]/g,"")}`}
+                            target="_blank" rel="noopener"
+                            style={{ color:"#818cf8", textDecoration:"none", fontSize:10 }}>{tid}</a>
+                        </td>
+                        <td style={{ padding:"5px 8px", color:"var(--tx1)", maxWidth:220, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }} title={t.title}>{t.title}</td>
+                        <td style={{ padding:"5px 8px", textAlign:"center" }}>
+                          <span style={{ background:`${SC_P[t.sprint]||"var(--tx4)"}20`, color:SC_P[t.sprint]||"var(--tx4)", fontSize:9, padding:"1px 5px", borderRadius:3 }}>S{t.sprint}</span>
+                        </td>
+                        <td style={{ padding:"5px 8px", textAlign:"center" }}>
+                          <span style={{ background:sm.bg, color:sm.text, fontSize:9, padding:"2px 6px", borderRadius:4, whiteSpace:"nowrap" }}>{t.status}</span>
+                        </td>
+                        <td style={{ padding:"5px 8px", textAlign:"center", color:"var(--tx2)", fontSize:10 }}>{t.size}</td>
+                        <td style={{ padding:"5px 8px", textAlign:"center", color:hDirectas>0?"#818cf8":"var(--bdr2)", fontWeight:hDirectas>0?700:400 }}>
+                          {hDirectas>0?`${hDirectas.toFixed(1)}h`:"—"}
+                        </td>
+                        <td style={{ padding:"5px 8px", textAlign:"center", color:hDelegadas>0?"#fbbf24":"var(--bdr2)", fontWeight:hDelegadas>0?700:400 }}>
+                          {hDelegadas>0?`${hDelegadas.toFixed(1)}h`:"—"}
+                        </td>
+                        <td style={{ padding:"5px 8px", textAlign:"center", color:hEquipo>0?"#34d399":"var(--bdr2)" }}>
+                          {hEquipo>0?`${hEquipo.toFixed(1)}h`:"—"}
+                        </td>
+                        <td style={{ padding:"5px 8px", textAlign:"center", color:hReal>0?"#6ee7b7":"var(--bdr2)", fontWeight:hReal>0?700:400 }}>
+                          {hReal>0?`${hReal.toFixed(1)}h`:"—"}
+                        </td>
+                        <td style={{ padding:"5px 8px", textAlign:"center" }}>
+                          {hasImputed&&<span title="Horas en tarea no asignada" style={{ color:"#f59e0b" }}>⚠️</span>}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                <tfoot>
+                  <tr style={{ borderTop:"2px solid var(--bdr)" }}>
+                    <td colSpan={5} style={{ padding:"5px 8px", color:"var(--tx4)", fontSize:10, fontWeight:700 }}>TOTAL</td>
+                    <td style={{ padding:"5px 8px", textAlign:"center", color:"#818cf8", fontWeight:800 }}>{totalHDirectas.toFixed(1)}h</td>
+                    <td style={{ padding:"5px 8px", textAlign:"center", color:"#fbbf24", fontWeight:800 }}>{totalHDelegadas.toFixed(1)}h</td>
+                    <td style={{ padding:"5px 8px", textAlign:"center", color:"#34d399", fontWeight:800 }}>{totalHEquipo.toFixed(1)}h</td>
+                    <td colSpan={2} style={{ padding:"5px 8px", textAlign:"center", color:"#6ee7b7", fontWeight:800 }}>{totalH.toFixed(1)}h real</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ── Clockify entries ── */}
+        {report && (
+          <div>
+            <div style={{ color:"var(--tx4)", fontSize:10, textTransform:"uppercase", letterSpacing:2, marginBottom:8, fontWeight:700 }}>
+              Entradas Clockify{rawEntries.length>0?` (${rawEntries.length}) · ${rawEntries.filter(e=>e.taskId).length} etiquetadas`:""}
+            </div>
+            {rawEntries.length === 0 ? (
+              <div style={{ color:"var(--tx4)", fontSize:11, background:"var(--bg0)", borderRadius:8, padding:"10px 14px" }}>
+                Sin entradas para {member.name}. El nombre en Clockify debe coincidir exactamente.
+              </div>
+            ) : (<>
+              <div style={{ overflowX:"auto", maxHeight:320, overflowY:"auto", borderRadius:8, border:"1px solid var(--bdr)" }}>
+                <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
+                  <thead style={{ position:"sticky", top:0, background:"var(--bg1)" }}>
+                    <tr style={{ borderBottom:"1px solid var(--bdr)" }}>
+                      {["Fecha","Proy","Task ID","Horas","Etiquetada","Asignada"].map(h=>(
+                        <th key={h} style={{ padding:"4px 8px", color:"var(--tx4)", fontWeight:700, textAlign:"center", fontSize:9, textTransform:"uppercase", letterSpacing:1 }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rawEntries.map((e,i)=>{
+                      const hasTag      = !!e.taskId;
+                      const task        = e.taskId ? BACKLOG_MAP[e.taskId] : null;
+                      const assignees2  = task?.assignees || [];
+                      const isAssigned2 = assignees2.some(a=>a.login.toLowerCase()===loginLower);
+                      const isTeamEntry = task ? task.equipo===teamEquipo : false;
+                      const projC = { s1:"#818cf8", s2:"#34d399", s3:"#fbbf24", dp:"#6366f1" };
+                      const rowBg  = !hasTag?"#ef444408":isAssigned2?"#22c55e06":isTeamEntry?"#fbbf2406":"#f59e0b08";
+                      const tagCol = hasTag?"#22c55e":"#ef4444";
+                      const assCol = !hasTag?"var(--tx4)":isAssigned2?"#22c55e":isTeamEntry?"#fbbf24":"#ef4444";
+                      return (
+                        <tr key={i} style={{ borderBottom:"1px solid var(--bg3)", background:rowBg }}>
+                          <td style={{ padding:"4px 8px", color:"var(--tx2)", textAlign:"center", whiteSpace:"nowrap" }}>{e.date||"—"}</td>
+                          <td style={{ padding:"4px 8px", textAlign:"center" }}>
+                            <span style={{ background:`${projC[e.project]||"var(--tx4)"}25`, color:projC[e.project]||"var(--tx4)", fontSize:9, padding:"1px 5px", borderRadius:3, fontWeight:700 }}>{e.project||"—"}</span>
+                          </td>
+                          <td style={{ padding:"4px 8px", color:"#818cf8", textAlign:"center", fontSize:10 }}>
+                            {e.taskId||<span style={{color:"var(--bdr2)",fontStyle:"italic"}}>sin tag</span>}
+                          </td>
+                          <td style={{ padding:"4px 8px", color:"var(--tx0)", textAlign:"center", fontWeight:700 }}>{e.hours.toFixed(2)}h</td>
+                          <td style={{ padding:"4px 8px", textAlign:"center", color:tagCol, fontWeight:800 }}>{hasTag?"✓":"✗"}</td>
+                          <td style={{ padding:"4px 8px", textAlign:"center", color:assCol, fontWeight:700 }}>
+                            {!hasTag?"—":isAssigned2?"✓ directa":isTeamEntry?"equipo":"⚠️ ajena"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div style={{ display:"flex", gap:12, marginTop:8, flexWrap:"wrap", fontSize:10 }}>
+                <span style={{ color:"#22c55e" }}>✓ {rawEntries.filter(e=>e.taskId).length} etiquetadas</span>
+                <span style={{ color:"#ef4444" }}>✗ {rawEntries.filter(e=>!e.taskId).length} sin tag ({rawEntries.filter(e=>!e.taskId).reduce((s,e)=>s+e.hours,0).toFixed(1)}h)</span>
+                <span style={{ color:"#f59e0b" }}>
+                  ⚠️ {rawEntries.filter(e=>e.taskId&&BACKLOG_MAP[e.taskId]&&!(BACKLOG_MAP[e.taskId].assignees||[]).some(a=>a.login.toLowerCase()===loginLower)).length} en tareas no asignadas
+                </span>
+              </div>
+            </>)}
+          </div>
+        )}
+
+        {/* ── Score breakdown ── */}
+        {rendimiento !== null && (
+          <div>
+            <div style={{ color:"var(--tx4)", fontSize:10, textTransform:"uppercase", letterSpacing:2, marginBottom:8, fontWeight:700 }}>Score de Rendimiento</div>
+            <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+              <div style={{ background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:8, padding:"10px 14px", flex:1, minWidth:130 }}>
+                <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>CR — Ejecución (25%)</div>
+                <div style={{ color:"#818cf8", fontWeight:800, fontSize:20 }}>{cr!==null?`${(cr*100).toFixed(0)}%`:"—"}</div>
+                <div style={{ color:"var(--tx4)", fontSize:9, marginTop:3 }}>effPts / totalPts · {effPts.toFixed(1)}/{totalPts.toFixed(1)}</div>
+              </div>
+              <div style={{ background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:8, padding:"10px 14px", flex:1, minWidth:130 }}>
+                <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>EF — Horas (50%)</div>
+                <div style={{ color:"#34d399", fontWeight:800, fontSize:20 }}>{ef!==null?`${(ef*100).toFixed(0)}%`:"—"}</div>
+                <div style={{ color:"var(--tx4)", fontSize:9, marginTop:3 }}>{taggedH.toFixed(1)}h etiq / {estimatedH.toFixed(1)}h est · desv {dev>=0?"+":""}{(dev*100).toFixed(0)}%</div>
+              </div>
+              <div style={{ background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:8, padding:"10px 14px", flex:1, minWidth:130 }}>
+                <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>GH — GitHub (25%)</div>
+                <div style={{ color:"#38bdf8", fontWeight:800, fontSize:20 }}>{(ghNorm*100).toFixed(0)}%</div>
+                <div style={{ color:"var(--tx4)", fontSize:9, marginTop:3 }}>{ghCombined} PRs+reviews · media {meanGh.toFixed(1)}</div>
+              </div>
+              <div style={{ background:`${rendColor}12`, border:`1px solid ${rendColor}35`, borderRadius:8, padding:"10px 14px", flex:1, minWidth:130 }}>
+                <div style={{ color:"var(--tx4)", fontSize:9, textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>Rendimiento final</div>
+                <div style={{ color:rendColor, fontWeight:800, fontSize:24 }}>{rendimiento.toFixed(0)}%</div>
+                <div style={{ color:"var(--tx4)", fontSize:9, marginTop:3 }}>0.25×CR + 0.50×EF + 0.25×GH</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -4548,14 +4874,14 @@ function InformePane() {
       {showExport && <ExportMdModal report={report} sprint={sprint} onClose={() => setShowExport(false)} />}
 
       {/* Header */}
-      <div style={{ background:"#111113", border:"1px solid #6ee7b730", borderRadius:12, padding:"14px 20px" }}>
+      <div style={{ background:"var(--bg2)", border:"1px solid #6ee7b730", borderRadius:12, padding:"14px 20px" }}>
         <div style={{ color:"#6ee7b7", fontWeight:700, fontSize:14, marginBottom:2 }}>📊 Informe CSV — Clockify × Backlog</div>
-        <div style={{ color:"#71717a", fontSize:11 }}>Exporta el informe Detallado de Clockify en CSV y arrástralo aquí. Los tags de cada entrada deben incluir el ID de tarea (NX-S1.1, NX-S2.3...).</div>
+        <div style={{ color:"var(--tx3)", fontSize:11 }}>Exporta el informe Detallado de Clockify en CSV y arrástralo aquí. Los tags de cada entrada deben incluir el ID de tarea (NX-S1.1, NX-S2.3...).</div>
       </div>
 
       {/* Cómo exportar */}
-      <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:"14px 20px" }}>
-        <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:12, marginBottom:10 }}>📤 Cómo exportar desde Clockify</div>
+      <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, padding:"14px 20px" }}>
+        <div style={{ color:"var(--tx0)", fontWeight:700, fontSize:12, marginBottom:10 }}>📤 Cómo exportar desde Clockify</div>
         <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
           {[
             "1. Ve a Clockify → Reports → Detailed",
@@ -4565,11 +4891,11 @@ function InformePane() {
           ].map((s,i)=>(
             <div key={i} style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
               <span style={{ color:"#6ee7b7", fontWeight:700, fontSize:11, whiteSpace:"nowrap" }}>→</span>
-              <span style={{ color:"#94a3b8", fontSize:11 }}>{s}</span>
+              <span style={{ color:"var(--tx2)", fontSize:11 }}>{s}</span>
             </div>
           ))}
         </div>
-        <div style={{ marginTop:10, background:"#09090b", borderRadius:7, padding:"8px 12px", color:"#52525b", fontSize:10 }}>
+        <div style={{ marginTop:10, background:"var(--bg0)", borderRadius:7, padding:"8px 12px", color:"var(--tx4)", fontSize:10 }}>
           ⚙️ Cada entrada debe tener un tag con el ID de tarea (NX-S1.1, NX-S2.3...). El tag puede ir junto a otros tags.
         </div>
       </div>
@@ -4580,10 +4906,10 @@ function InformePane() {
         onDragLeave={()=>setDrag(false)}
         onDrop={onDrop}
         style={{
-          border:`2px dashed ${drag?"#6ee7b7":"#27272a"}`,
+          border:`2px dashed ${drag?"#6ee7b7":"var(--bdr)"}`,
           borderRadius:12, padding:"36px 20px",
           textAlign:"center", cursor:"pointer",
-          background: drag?"#6ee7b708":"#111113",
+          background: drag?"#6ee7b708":"var(--bg2)",
           transition:"all .15s"
         }}
         onClick={()=>document.getElementById("csv-input").click()}
@@ -4592,11 +4918,11 @@ function InformePane() {
         <div style={{ fontSize:32, marginBottom:10 }}>{status==="ok"?"✅":"📂"}</div>
         {status==="ok"
           ? <div style={{ color:"#6ee7b7", fontWeight:700, fontSize:13 }}>{fileName}</div>
-          : <div style={{ color:"#52525b", fontSize:13, fontWeight:600 }}>Arrastra el CSV de Clockify aquí o haz clic para seleccionarlo</div>
+          : <div style={{ color:"var(--tx4)", fontSize:13, fontWeight:600 }}>Arrastra el CSV de Clockify aquí o haz clic para seleccionarlo</div>
         }
         {status==="ok"
-          ? <div style={{ color:"#52525b", fontSize:11, marginTop:4 }}>{report.totalEntries} entradas · {report.matchedEntries} con tarea · haz clic para <strong style={{color:"#6ee7b7"}}>actualizar con un nuevo CSV</strong></div>
-          : <div style={{ color:"#3f3f46", fontSize:11, marginTop:4 }}>Exporta el informe Detallado desde Clockify → Reports → Detailed → Export CSV</div>
+          ? <div style={{ color:"var(--tx4)", fontSize:11, marginTop:4 }}>{report.totalEntries} entradas · {report.matchedEntries} con tarea · haz clic para <strong style={{color:"#6ee7b7"}}>actualizar con un nuevo CSV</strong></div>
+          : <div style={{ color:"var(--bdr2)", fontSize:11, marginTop:4 }}>Exporta el informe Detallado desde Clockify → Reports → Detailed → Export CSV</div>
         }
       </div>
 
@@ -4607,11 +4933,11 @@ function InformePane() {
         <>
           {/* Sprint filter */}
           <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-            <span style={{ color:"#71717a", fontSize:11, fontWeight:600 }}>Filtrar sprint:</span>
+            <span style={{ color:"var(--tx3)", fontSize:11, fontWeight:600 }}>Filtrar sprint:</span>
             {[{v:0,l:"Todos"},{v:-1,l:"Sprint 0"},{v:1,l:"Sprint 1"},{v:2,l:"Sprint 2"},{v:3,l:"Sprint 3"}].map(({v,l})=>{
               const active = sprint===v;
               const c = v===0?"#6ee7b7":v===-1?"#6366f1":sprintC[v];
-              return <button key={v} onClick={()=>setSprint(v)} style={{ padding:"4px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer", border:`1px solid ${active?c+"60":"transparent"}`, background:active?`${c}20`:"transparent", color:active?c:"#52525b", transition:"all .12s" }}>{l}</button>;
+              return <button key={v} onClick={()=>setSprint(v)} style={{ padding:"4px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer", border:`1px solid ${active?c+"60":"transparent"}`, background:active?`${c}20`:"transparent", color:active?c:"var(--tx4)", transition:"all .12s" }}>{l}</button>;
             })}
             <button onClick={() => setShowExport(true)} title="Exportar secciones Clockify a Markdown"
               style={{ marginLeft:"auto", padding:"4px 12px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer",
@@ -4623,14 +4949,27 @@ function InformePane() {
           <KpiRow />
 
           {/* View tabs */}
-          <div style={{ display:"flex", gap:3, background:"#09090b", border:"1px solid #27272a", borderRadius:9, padding:3, alignSelf:"flex-start" }}>
+          <div style={{ display:"flex", gap:3, background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:9, padding:3, alignSelf:"flex-start", flexWrap:"wrap" }}>
             {viewTabs.map(vt=>{
               const active=view===vt.id;
-              return <button key={vt.id} onClick={()=>setView(vt.id)} style={{ padding:"5px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer", border:active?"1px solid #6ee7b745":"1px solid transparent", background:active?"#6ee7b720":"transparent", color:active?"#6ee7b7":"#71717a", transition:"all .12s" }}>{vt.label}</button>;
+              return <button key={vt.id} onClick={()=>setView(vt.id)} style={{ padding:"5px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer", border:active?"1px solid #6ee7b745":"1px solid transparent", background:active?"#6ee7b720":"transparent", color:active?"#6ee7b7":"var(--tx3)", transition:"all .12s" }}>{vt.label}</button>;
             })}
+            {selectedPerson && (() => {
+              const pm = TEAM_MEMBERS.find(m => m.login === selectedPerson);
+              const active = view === "persona";
+              const tc = { A:"#3b82f6", B:"#22c55e", C:"#f59e0b", D:"#a855f7" }[pm?.team] || "#6ee7b7";
+              return (
+                <div key="persona" style={{ display:"flex", alignItems:"center", gap:0 }}>
+                  <button onClick={()=>setView("persona")} style={{ padding:"5px 12px", borderRadius:"6px 0 0 6px", fontSize:11, fontWeight:700, cursor:"pointer", border:active?`1px solid ${tc}45`:"1px solid transparent", background:active?`${tc}20`:"transparent", color:active?tc:"var(--tx3)", transition:"all .12s" }}>
+                    👤 {pm?.name || selectedPerson}
+                  </button>
+                  <button onClick={()=>{ setSelectedPerson(null); setView("users"); }} style={{ padding:"5px 7px", borderRadius:"0 6px 6px 0", fontSize:11, fontWeight:700, cursor:"pointer", border:active?`1px solid ${tc}45`:"1px solid transparent", borderLeft:"none", background:active?`${tc}20`:"transparent", color:"var(--tx4)", transition:"all .12s" }} title="Cerrar">×</button>
+                </div>
+              );
+            })()}
           </div>
 
-          <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:18 }}>
+          <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, padding:18 }}>
             {view==="tasks"    && <TasksView />}
             {view==="users"    && <UsersView />}
             {view==="equipo"   && <EquipoView />}
@@ -4640,6 +4979,7 @@ function InformePane() {
             {view==="areas"    && <AreasView />}
             {view==="coverage" && <CoverageView />}
             {view==="alerts"   && <AlertsView />}
+            {view==="persona"  && selectedPerson && <PersonPane login={selectedPerson} onChangePerson={login => setSelectedPerson(login)} />}
           </div>
         </>
       )}
@@ -4697,10 +5037,10 @@ const TOTAL_PROJECT_HOURS = S0_HOURS + SPRINT_HOURS[1] + SPRINT_HOURS[2] + SPRIN
 
 function StatCard({ label, value, sub, color }) {
   return (
-    <div style={{ background:"#111113", border:`1px solid ${color}30`, borderRadius:12, padding:"18px 22px", flex:"1 1 180px" }}>
-      <div style={{ color:"#52525b", fontSize:11, fontWeight:600, marginBottom:4, textTransform:"uppercase", letterSpacing:1 }}>{label}</div>
+    <div style={{ background:"var(--bg2)", border:`1px solid ${color}30`, borderRadius:12, padding:"18px 22px", flex:"1 1 180px" }}>
+      <div style={{ color:"var(--tx4)", fontSize:11, fontWeight:600, marginBottom:4, textTransform:"uppercase", letterSpacing:1 }}>{label}</div>
       <div style={{ color, fontSize:28, fontWeight:800, lineHeight:1 }}>{value}</div>
-      {sub && <div style={{ color:"#71717a", fontSize:11, marginTop:5 }}>{sub}</div>}
+      {sub && <div style={{ color:"var(--tx3)", fontSize:11, marginTop:5 }}>{sub}</div>}
     </div>
   );
 }
@@ -4709,10 +5049,10 @@ function ProgressBar({ pct, color, label, spent, total }) {
   return (
     <div style={{ marginBottom:14 }}>
       <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
-        <span style={{ color:"#e2e8f0", fontSize:12, fontWeight:600 }}>{label}</span>
-        <span style={{ color:"#71717a", fontSize:11 }}>{spent}h / {total}h ({pct.toFixed(0)}%)</span>
+        <span style={{ color:"var(--tx0)", fontSize:12, fontWeight:600 }}>{label}</span>
+        <span style={{ color:"var(--tx3)", fontSize:11 }}>{spent}h / {total}h ({pct.toFixed(0)}%)</span>
       </div>
-      <div style={{ height:8, background:"#27272a", borderRadius:4, overflow:"hidden" }}>
+      <div style={{ height:8, background:"var(--bdr)", borderRadius:4, overflow:"hidden" }}>
         <div style={{ height:"100%", width:`${Math.min(pct,100)}%`, background:color, borderRadius:4, transition:"width .4s" }} />
       </div>
     </div>
@@ -4739,9 +5079,9 @@ function CostesPane() {
   function BudgetRow({ label, value, color, bold, border }) {
     return (
       <div style={{ display:"flex", justifyContent:"space-between", padding:"6px 0",
-        borderTop: border ? "1px solid #3f3f46" : "none" }}>
-        <span style={{ color: color || "#71717a", fontSize:12, fontWeight: bold ? 700 : 400 }}>{label}</span>
-        <span style={{ color: color || "#e2e8f0", fontSize:12, fontWeight: bold ? 700 : 600, fontVariantNumeric:"tabular-nums" }}>
+        borderTop: border ? "1px solid var(--bdr2)" : "none" }}>
+        <span style={{ color: color || "var(--tx3)", fontSize:12, fontWeight: bold ? 700 : 400 }}>{label}</span>
+        <span style={{ color: color || "var(--tx0)", fontSize:12, fontWeight: bold ? 700 : 600, fontVariantNumeric:"tabular-nums" }}>
           {value}
         </span>
       </div>
@@ -4760,17 +5100,17 @@ function CostesPane() {
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6, marginBottom:10, fontSize:11 }}>
           <div>
-            <div style={{ color:"#52525b", fontSize:10 }}>HORAS</div>
-            <div style={{ color:"#e2e8f0", fontWeight:800, fontSize:16 }}>{hours}h</div>
-            <div style={{ color:"#71717a" }}>{(hours/21).toFixed(1)}h/persona</div>
+            <div style={{ color:"var(--tx4)", fontSize:10 }}>HORAS</div>
+            <div style={{ color:"var(--tx0)", fontWeight:800, fontSize:16 }}>{hours}h</div>
+            <div style={{ color:"var(--tx3)" }}>{(hours/21).toFixed(1)}h/persona</div>
           </div>
           <div>
-            <div style={{ color:"#52525b", fontSize:10 }}>TOTAL (IVA inc.)</div>
+            <div style={{ color:"var(--tx4)", fontSize:10 }}>TOTAL (IVA inc.)</div>
             <div style={{ color, fontWeight:800, fontSize:16 }}>{eur(bud.total)} €</div>
-            <div style={{ color:"#71717a" }}>PEM: {eur(bud.pem)} €</div>
+            <div style={{ color:"var(--tx3)" }}>PEM: {eur(bud.pem)} €</div>
           </div>
         </div>
-        <div style={{ background:"#09090b", borderRadius:7, padding:"8px 12px", fontSize:11 }}>
+        <div style={{ background:"var(--bg0)", borderRadius:7, padding:"8px 12px", fontSize:11 }}>
           <BudgetRow label="PEM (mano de obra)"          value={`${eur(bud.pem)} €`}   />
           <BudgetRow label={`Gastos Generales (${(GG_PCT*100).toFixed(0)}%)`}  value={`${eur(bud.gg)} €`}    />
           <BudgetRow label={`Beneficio Industrial (${(BI_PCT*100).toFixed(0)}%)`} value={`${eur(bud.bi)} €`} />
@@ -4793,9 +5133,9 @@ function CostesPane() {
     <div style={{ display:"flex", flexDirection:"column", gap:18 }}>
 
       {/* Header */}
-      <div style={{ background:"#111113", border:"1px solid #f9731630", borderRadius:12, padding:"14px 20px" }}>
+      <div style={{ background:"var(--bg2)", border:"1px solid #f9731630", borderRadius:12, padding:"14px 20px" }}>
         <div style={{ color:"#f97316", fontWeight:700, fontSize:14, marginBottom:2 }}>💰 Seguimiento económico — PPT Junta de Andalucía</div>
-        <div style={{ color:"#71717a", fontSize:11 }}>
+        <div style={{ color:"var(--tx3)", fontSize:11 }}>
           HBS {eur(HBS_RATE)}€/h · GG {(GG_PCT*100).toFixed(0)}% · BI {(BI_PCT*100).toFixed(0)}% · IVA {(IVA_PCT*100).toFixed(0)}% · Presupuesto adjudicado 150.000,00 €
         </div>
       </div>
@@ -4809,16 +5149,16 @@ function CostesPane() {
       </div>
 
       {/* Tabla de tarifas PPT */}
-      <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:"18px 22px" }}>
-        <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:13, marginBottom:14 }}>
+      <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, padding:"18px 22px" }}>
+        <div style={{ color:"var(--tx0)", fontWeight:700, fontSize:13, marginBottom:14 }}>
           📋 Desglose de Costes de Personal (HBS — Hora Básica de Servicio)
         </div>
         <div style={{ overflowX:"auto" }}>
           <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
             <thead>
-              <tr style={{ borderBottom:"1px solid #27272a" }}>
+              <tr style={{ borderBottom:"1px solid var(--bdr)" }}>
                 {["Perfil Profesional (PPT)","Rol Asignado","Multiplicador","Precio/Hora","Personas","Horas S1 (20h/p)","Total Sprint 1"].map(h => (
-                  <th key={h} style={{ padding:"7px 12px", color:"#71717a", fontWeight:600, textAlign: h.startsWith("Total") || h.startsWith("Horas") || h === "Personas" || h === "Multiplicador" || h === "Precio/Hora" ? "right" : "left", whiteSpace:"nowrap" }}>{h}</th>
+                  <th key={h} style={{ padding:"7px 12px", color:"var(--tx3)", fontWeight:600, textAlign: h.startsWith("Total") || h.startsWith("Horas") || h === "Personas" || h === "Multiplicador" || h === "Precio/Hora" ? "right" : "left", whiteSpace:"nowrap" }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -4830,21 +5170,21 @@ function CostesPane() {
                   <tr key={p.perfil} style={{ borderBottom:"1px solid #1c1c1e" }}>
                     <td style={{ padding:"8px 12px" }}><span style={{ color:p.color, fontWeight:700 }}>{p.perfil}</span></td>
                     <td style={{ padding:"8px 12px", color:"#a1a1aa" }}>{p.rolLabel}</td>
-                    <td style={{ padding:"8px 12px", color:"#e2e8f0", fontWeight:600, textAlign:"right" }}>×{p.mult.toFixed(2)}</td>
+                    <td style={{ padding:"8px 12px", color:"var(--tx0)", fontWeight:600, textAlign:"right" }}>×{p.mult.toFixed(2)}</td>
                     <td style={{ padding:"8px 12px", color:p.color, fontWeight:700, textAlign:"right" }}>{eur(p.precioH)} €</td>
-                    <td style={{ padding:"8px 12px", color:"#e2e8f0", fontWeight:800, textAlign:"right" }}>{p.count}</td>
-                    <td style={{ padding:"8px 12px", color:"#71717a", textAlign:"right" }}>{p.count * hS1}h</td>
-                    <td style={{ padding:"8px 12px", color:"#e2e8f0", fontWeight:700, textAlign:"right" }}>{eur(total)} €</td>
+                    <td style={{ padding:"8px 12px", color:"var(--tx0)", fontWeight:800, textAlign:"right" }}>{p.count}</td>
+                    <td style={{ padding:"8px 12px", color:"var(--tx3)", textAlign:"right" }}>{p.count * hS1}h</td>
+                    <td style={{ padding:"8px 12px", color:"var(--tx0)", fontWeight:700, textAlign:"right" }}>{eur(total)} €</td>
                   </tr>
                 );
               })}
             </tbody>
             <tfoot>
-              <tr style={{ borderTop:"1px solid #3f3f46", background:"#09090b" }}>
-                <td colSpan={5} style={{ padding:"8px 12px", color:"#71717a", fontSize:11 }}>
+              <tr style={{ borderTop:"1px solid var(--bdr2)", background:"var(--bg0)" }}>
+                <td colSpan={5} style={{ padding:"8px 12px", color:"var(--tx3)", fontSize:11 }}>
                   HBS base: {eur(HBS_RATE)} €/h · Total equipo: 21 personas
                 </td>
-                <td style={{ padding:"8px 12px", color:"#f1f5f9", fontWeight:800, textAlign:"right" }}>
+                <td style={{ padding:"8px 12px", color:"var(--tx0)", fontWeight:800, textAlign:"right" }}>
                   {PPT_PERFILES.reduce((s,p)=>s+p.count*20,0)}h
                 </td>
                 <td style={{ padding:"8px 12px", color:"#f97316", fontWeight:800, textAlign:"right" }}>
@@ -4857,8 +5197,8 @@ function CostesPane() {
       </div>
 
       {/* Desglose por fase */}
-      <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:"18px 22px" }}>
-        <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:13, marginBottom:16 }}>📊 Presupuesto de Licitación por Fase</div>
+      <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, padding:"18px 22px" }}>
+        <div style={{ color:"var(--tx0)", fontWeight:700, fontSize:13, marginBottom:16 }}>📊 Presupuesto de Licitación por Fase</div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap:12 }}>
           <PhaseCard label="S0 — Devising a Project" color="#6366f1" hours={S0_HOURS} bud={s0bud} />
           <PhaseCard label="Sprint 1" color="#818cf8" hours={SPRINT_HOURS[1]} bud={s1bud} isEstim
@@ -4868,19 +5208,19 @@ function CostesPane() {
         </div>
 
         {/* Total proyecto */}
-        <div style={{ background:"#09090b", border:"1px solid #3f3f46", borderRadius:10, padding:"16px 18px", marginTop:14 }}>
-          <div style={{ color:"#f1f5f9", fontWeight:700, fontSize:13, marginBottom:10 }}>TOTAL PROYECTO (Estimado)</div>
+        <div style={{ background:"var(--bg0)", border:"1px solid var(--bdr2)", borderRadius:10, padding:"16px 18px", marginTop:14 }}>
+          <div style={{ color:"var(--tx0)", fontWeight:700, fontSize:13, marginBottom:10 }}>TOTAL PROYECTO (Estimado)</div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:10, marginBottom:12, fontSize:11 }}>
             {[
               { l:"PEM",              v: totbud.pem,  c:"#a1a1aa" },
-              { l:`GG (${(GG_PCT*100).toFixed(0)}%)`, v: totbud.gg,   c:"#71717a" },
-              { l:`BI (${(BI_PCT*100).toFixed(0)}%)`,  v: totbud.bi,   c:"#71717a" },
-              { l:"Base Imponible",   v: totbud.base, c:"#e2e8f0" },
-              { l:`IVA (${(IVA_PCT*100).toFixed(0)}%)`,v: totbud.iva,  c:"#71717a" },
+              { l:`GG (${(GG_PCT*100).toFixed(0)}%)`, v: totbud.gg,   c:"var(--tx3)" },
+              { l:`BI (${(BI_PCT*100).toFixed(0)}%)`,  v: totbud.bi,   c:"var(--tx3)" },
+              { l:"Base Imponible",   v: totbud.base, c:"var(--tx0)" },
+              { l:`IVA (${(IVA_PCT*100).toFixed(0)}%)`,v: totbud.iva,  c:"var(--tx3)" },
               { l:"TOTAL CON IVA",    v: totbud.total,c:"#818cf8" },
             ].map(({ l, v, c }) => (
-              <div key={l} style={{ background:"#111113", borderRadius:7, padding:"10px 12px" }}>
-                <div style={{ color:"#52525b", fontSize:10 }}>{l}</div>
+              <div key={l} style={{ background:"var(--bg2)", borderRadius:7, padding:"10px 12px" }}>
+                <div style={{ color:"var(--tx4)", fontSize:10 }}>{l}</div>
                 <div style={{ color:c, fontWeight:700, fontSize:15 }}>{eur(v)} €</div>
               </div>
             ))}
@@ -4889,39 +5229,39 @@ function CostesPane() {
       </div>
 
       {/* Estado presupuesto global */}
-      <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:12, padding:"18px 22px" }}>
-        <div style={{ color:"#e2e8f0", fontWeight:700, fontSize:13, marginBottom:16 }}>📈 Estado del Presupuesto Global</div>
+      <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, padding:"18px 22px" }}>
+        <div style={{ color:"var(--tx0)", fontWeight:700, fontSize:13, marginBottom:16 }}>📈 Estado del Presupuesto Global</div>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:16, fontSize:11 }}>
-          <div style={{ background:"#09090b", borderRadius:8, padding:"12px 14px" }}>
-            <div style={{ color:"#52525b", fontSize:10, marginBottom:3 }}>PRESUPUESTO TOTAL ADJUDICADO</div>
-            <div style={{ color:"#f1f5f9", fontWeight:800, fontSize:18 }}>150.000,00 €</div>
-            <div style={{ color:"#71717a" }}>IVA incluido</div>
+          <div style={{ background:"var(--bg0)", borderRadius:8, padding:"12px 14px" }}>
+            <div style={{ color:"var(--tx4)", fontSize:10, marginBottom:3 }}>PRESUPUESTO TOTAL ADJUDICADO</div>
+            <div style={{ color:"var(--tx0)", fontWeight:800, fontSize:18 }}>150.000,00 €</div>
+            <div style={{ color:"var(--tx3)" }}>IVA incluido</div>
           </div>
-          <div style={{ background:"#09090b", borderRadius:8, padding:"12px 14px" }}>
-            <div style={{ color:"#52525b", fontSize:10, marginBottom:3 }}>GASTO ACUMULADO (S0 + S1)</div>
+          <div style={{ background:"var(--bg0)", borderRadius:8, padding:"12px 14px" }}>
+            <div style={{ color:"var(--tx4)", fontSize:10, marginBottom:3 }}>GASTO ACUMULADO (S0 + S1)</div>
             <div style={{ color:"#f43f5e", fontWeight:800, fontSize:18 }}>{eur(gastadoAcum)} €</div>
-            <div style={{ color:"#71717a" }}>S0 real + S1 real Clockify</div>
+            <div style={{ color:"var(--tx3)" }}>S0 real + S1 real Clockify</div>
           </div>
-          <div style={{ background:"#09090b", borderRadius:8, padding:"12px 14px" }}>
-            <div style={{ color:"#52525b", fontSize:10, marginBottom:3 }}>REMANENTE PRESUPUESTARIO</div>
+          <div style={{ background:"var(--bg0)", borderRadius:8, padding:"12px 14px" }}>
+            <div style={{ color:"var(--tx4)", fontSize:10, marginBottom:3 }}>REMANENTE PRESUPUESTARIO</div>
             <div style={{ color:"#34d399", fontWeight:800, fontSize:18 }}>{eur(remanente)} €</div>
-            <div style={{ color:"#71717a" }}>Disponible para S2 + S3</div>
+            <div style={{ color:"var(--tx3)" }}>Disponible para S2 + S3</div>
           </div>
         </div>
         <div style={{ marginBottom:6 }}>
-          <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"#71717a", marginBottom:5 }}>
+          <div style={{ display:"flex", justifyContent:"space-between", fontSize:11, color:"var(--tx3)", marginBottom:5 }}>
             <span>Grado de Ejecución Presupuestaria</span>
             <span style={{ color: ejecucion < 15 ? "#34d399" : "#f87171", fontWeight:700, fontSize:13 }}>
               {ejecucion.toFixed(2)} %
             </span>
           </div>
-          <div style={{ height:12, background:"#27272a", borderRadius:6, overflow:"hidden" }}>
+          <div style={{ height:12, background:"var(--bdr)", borderRadius:6, overflow:"hidden" }}>
             <div style={{ height:"100%", width:`${Math.min(ejecucion,100)}%`,
               background: ejecucion < 15 ? "#34d399" : "#f87171", borderRadius:6, transition:"width .5s" }} />
           </div>
-          <div style={{ display:"flex", justifyContent:"space-between", marginTop:4, fontSize:10, color:"#3f3f46" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", marginTop:4, fontSize:10, color:"var(--bdr2)" }}>
             <span>0 €</span>
-            <span style={{ color:"#52525b" }}>↑ Umbral lineal estimado: ~15 %</span>
+            <span style={{ color:"var(--tx4)" }}>↑ Umbral lineal estimado: ~15 %</span>
             <span>150.000 €</span>
           </div>
         </div>
@@ -4933,7 +5273,7 @@ function CostesPane() {
       </div>
 
       {/* Nota metodológica */}
-      <div style={{ background:"#111113", border:"1px solid #27272a", borderRadius:8, padding:"10px 16px", color:"#52525b", fontSize:11 }}>
+      <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:8, padding:"10px 16px", color:"var(--tx4)", fontSize:11 }}>
         📄 Metodología: PPT Junta de Andalucía · HBS {eur(HBS_RATE)}€/h · GG {(GG_PCT*100).toFixed(0)}% · BI {(BI_PCT*100).toFixed(0)}% · IVA {(IVA_PCT*100).toFixed(0)}%.
         Horas S0 y S1: datos reales Clockify. Sprints S2-S3: estimación por tamaños backlog (XS=2h · S=4h · M=8h · L=16h · XL=24h).
         Composición: 1 PO (Jefe de Proyecto) + 1 SM (Consultor) + 4 Coordinadores + 15 Programadores.
@@ -4943,27 +5283,36 @@ function CostesPane() {
 }
 
 export default function App() {
-  const [tab,      setTab]      = useState("github");
-  const [showSync, setShowSync] = useState(false);
+  const [tab,       setTab]       = useState("github");
+  const [showSync,  setShowSync]  = useState(false);
   const [sprintTab, setSprintTab] = useState("s1");
+  const [lightMode, setLightMode] = useState(false);
   const isLive = _storedLive && _storedLive.fetchedAt > rawData.fetchedAt;
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", lightMode ? "light" : "dark");
+  }, [lightMode]);
   return (
-    <div style={{ background:"#09090b", minHeight:"100vh", fontFamily:"'Inter','Segoe UI',system-ui,sans-serif", color:"#e2e8f0" }}>
+    <>
+    <style>{`
+      :root{--bg0:#09090b;--bg1:#0c0c10;--bg2:#111113;--bg3:#18181b;--bg4:#1c1c1f;--bdr:#27272a;--bdr2:#3f3f46;--tx0:#e2e8f0;--tx1:#cbd5e1;--tx2:#94a3b8;--tx3:#71717a;--tx4:#52525b;--cal-day:#0f0f18;--st-ready-bg:#1e3a8a;--st-ready-tx:#93c5fd;--st-prog-bg:#064e3b;--st-prog-tx:#6ee7b7;--st-rev-bg:#4c1d95;--st-rev-tx:#c4b5fd;--st-done-bg:#052e16;--st-done-tx:#34d399;--sz-xs-bg:#4c1d95;--sz-xs-tx:#e9d5ff;--sz-s-bg:#064e3b;--sz-s-tx:#6ee7b7;--sz-m-bg:#1e3a8a;--sz-m-tx:#93c5fd;--sz-l-bg:#7c2d12;--sz-l-tx:#fdba74;--sz-xl-bg:#881337;--sz-xl-tx:#fda4af;}
+      :root[data-theme="light"]{--bg0:#f8fafc;--bg1:#f1f5f9;--bg2:#ffffff;--bg3:#f8fafc;--bg4:#f1f5f9;--bdr:#e2e8f0;--bdr2:#cbd5e1;--tx0:#111827;--tx1:#1f2937;--tx2:#4b5563;--tx3:#6b7280;--tx4:#9ca3af;--cal-day:#eef2ff;--st-ready-bg:#dbeafe;--st-ready-tx:#1d4ed8;--st-prog-bg:#d1fae5;--st-prog-tx:#065f46;--st-rev-bg:#ede9fe;--st-rev-tx:#6d28d9;--st-done-bg:#dcfce7;--st-done-tx:#15803d;--sz-xs-bg:#ede9fe;--sz-xs-tx:#6d28d9;--sz-s-bg:#d1fae5;--sz-s-tx:#065f46;--sz-m-bg:#dbeafe;--sz-m-tx:#1d4ed8;--sz-l-bg:#ffedd5;--sz-l-tx:#c2410c;--sz-xl-bg:#ffe4e6;--sz-xl-tx:#be123c;}
+    `}</style>
+    <div style={{ background:"var(--bg0)", minHeight:"100vh", fontFamily:"'Inter','Segoe UI',system-ui,sans-serif", color:"var(--tx0)" }}>
       {showSync && <SyncModal onClose={() => setShowSync(false)} />}
       {/* NAV */}
-      <div style={{ background:"#111113", borderBottom:"1px solid #27272a", position:"sticky", top:0, zIndex:30 }}>
+      <div style={{ background:"var(--bg2)", borderBottom:"1px solid var(--bdr)", position:"sticky", top:0, zIndex:30 }}>
         <div style={{ maxWidth:1080, margin:"0 auto", padding:"10px 16px", display:"flex", alignItems:"center", gap:14, flexWrap:"wrap" }}>
           <div style={{ display:"flex", alignItems:"center", gap:9 }}>
             <div style={{ width:29, height:29, borderRadius:7, background:"#3730a320", border:"1px solid #6366f140", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, color:"#818cf8", fontSize:13 }}>N</div>
             <div>
-              <div style={{ fontWeight:700, fontSize:13, color:"#f1f5f9", lineHeight:1.2 }}>NexUS — Product Backlog</div>
-              <div style={{ fontSize:10, color:"#52525b" }}>
+              <div style={{ fontWeight:700, fontSize:13, color:"var(--tx0)", lineHeight:1.2 }}>NexUS — Product Backlog</div>
+              <div style={{ fontSize:10, color:"var(--tx4)" }}>
                 Grupo 7 · ISPP 25/26 · {BACKLOG.length} HU · Sync: {new Date(_sourceData.fetchedAt).toLocaleString("es-ES",{dateStyle:"short",timeStyle:"short"})}
                 {isLive && <span style={{ color:"#34d399", marginLeft:4 }}>● live</span>}
               </div>
             </div>
           </div>
-          <div style={{ display:"flex", gap:3, background:"#09090b", border:"1px solid #27272a", borderRadius:9, padding:3 }}>
+          <div style={{ display:"flex", gap:3, background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:9, padding:3 }}>
             {TABS.map(t => {
               const active = tab === t.id;
               return (
@@ -4971,15 +5320,21 @@ export default function App() {
                   style={{
                     padding:"5px 14px", borderRadius:6, fontSize:12, fontWeight:700, cursor:"pointer",
                     background: active ? `${t.color}20` : "transparent",
-                    color:      active ? t.color : "#71717a",
+                    color:      active ? t.color : "var(--tx3)",
                     border:     active ? `1px solid ${t.color}45` : "1px solid transparent",
                     transition:"all .12s",
                   }}>{t.label}</button>
               );
             })}
           </div>
+          <button onClick={() => setLightMode(lm => !lm)}
+            title={lightMode ? "Cambiar a modo oscuro" : "Cambiar a modo claro"}
+            style={{ marginLeft:"auto", padding:"5px 10px", borderRadius:7, fontSize:14, cursor:"pointer",
+              background:"transparent", border:"1px solid var(--bdr)", color:"var(--tx2)", transition:"all .15s" }}>
+            {lightMode ? "🌙" : "☀️"}
+          </button>
           <button onClick={() => setShowSync(true)} title="Sincronizar datos desde GitHub"
-            style={{ marginLeft:"auto", padding:"5px 10px", borderRadius:7, fontSize:12, fontWeight:700, cursor:"pointer",
+            style={{ padding:"5px 10px", borderRadius:7, fontSize:12, fontWeight:700, cursor:"pointer",
               background: isLive ? "#34d39915" : "#6366f115",
               border: isLive ? "1px solid #34d39940" : "1px solid #6366f140",
               color: isLive ? "#34d399" : "#818cf8", transition:"all .15s" }}>
@@ -4992,7 +5347,7 @@ export default function App() {
       <div style={{ maxWidth:1080, margin:"0 auto", padding:"16px 16px 32px" }}>
         {tab === "project" && (
           <div>
-            <div style={{ display:"flex", gap:3, background:"#09090b", border:"1px solid #27272a", borderRadius:9, padding:3, marginBottom:16, width:"fit-content" }}>
+            <div style={{ display:"flex", gap:3, background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:9, padding:3, marginBottom:16, width:"fit-content" }}>
               {SPRINT_TABS.map(s => {
                 const active = sprintTab === s.id;
                 return (
@@ -5000,7 +5355,7 @@ export default function App() {
                     style={{
                       padding:"5px 14px", borderRadius:6, fontSize:12, fontWeight:700, cursor:"pointer",
                       background: active ? `${s.color}20` : "transparent",
-                      color:      active ? s.color : "#71717a",
+                      color:      active ? s.color : "var(--tx3)",
                       border:     active ? `1px solid ${s.color}45` : "1px solid transparent",
                       transition:"all .12s",
                     }}>{s.label}</button>
@@ -5018,5 +5373,6 @@ export default function App() {
         {tab === "informe" && <InformePane />}
       </div>
     </div>
+    </>
   );
 }
