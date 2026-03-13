@@ -15,7 +15,7 @@ export default function App() {
   }, [lightMode]);
 
   return (
-    <div style={{ background: "#09090b", minHeight: "100vh", color: "#e2e8f0", fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div style={{ background: "var(--bg0)", minHeight: "100vh", color: "var(--tx0)", fontFamily: "Inter, system-ui, sans-serif" }}>
       <style>{`
         :root{--bg0:#09090b;--bg1:#0c0c10;--bg2:#111113;--bg3:#18181b;--bdr:#27272a;--tx0:#e2e8f0;--tx3:#71717a;--tx4:#52525b}
         :root[data-theme="light"]{--bg0:#f8fafc;--bg1:#f1f5f9;--bg2:#ffffff;--bg3:#f8fafc;--bdr:#e2e8f0;--tx0:#111827;--tx3:#6b7280;--tx4:#9ca3af}

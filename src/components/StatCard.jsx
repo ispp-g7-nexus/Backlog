@@ -5,10 +5,10 @@ export function StatCard({ label, value, sub, color, size = "md" }) {
   }[size];
 
   return (
-    <div style={{ background: "#111113", border: `1px solid ${color}30`, borderRadius: styles.borderRadius, padding: styles.padding, flex: styles.flex, minWidth: styles.minWidth }}>
-      <div style={{ color: "#52525b", fontSize: styles.fontSize, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>{label}</div>
+    <div style={{ background: "var(--bg2)", border: `1px solid ${color}30`, borderRadius: styles.borderRadius, padding: styles.padding, flex: styles.flex, minWidth: styles.minWidth }}>
+      <div style={{ color: "var(--tx4)", fontSize: styles.fontSize, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>{label}</div>
       <div style={{ color, fontSize: styles.valueFontSize, fontWeight: 800, lineHeight: 1.1 }}>{value}</div>
-      {sub && <div style={{ color: "#71717a", fontSize: styles.fontSize, marginTop: 4 }}>{sub}</div>}
+      {sub && <div style={{ color: "var(--tx3)", fontSize: styles.fontSize, marginTop: 4 }}>{sub}</div>}
     </div>
   );
 }

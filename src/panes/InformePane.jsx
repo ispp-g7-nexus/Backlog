@@ -369,9 +369,9 @@ function ExportMdModal({ report, sprint, onClose }) {
           {docs.map(d => (
             <button key={d.id} onClick={() => setDocType(d.id)}
               style={{ padding:"5px 12px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer",
-                background: docType===d.id ? "#6ee7b720" : "transparent",
-                border:     docType===d.id ? "1px solid #6ee7b745" : "1px solid var(--bdr)",
-                color:      docType===d.id ? "#6ee7b7" : "var(--tx3)" }}>
+                background: docType===d.id ? "#10b98120" : "transparent",
+                border:     docType===d.id ? "1px solid #10b98145" : "1px solid var(--bdr)",
+                color:      docType===d.id ? "#10b981" : "var(--tx3)" }}>
               {d.label}
             </button>
           ))}
@@ -476,7 +476,7 @@ export default function InformePane() {
       const activeDp  = dpUsers.filter(e => (e.dp_h || 0) > 0).length;
       return (
         <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:14 }}>
-          <InfStatCard label="Entradas CSV"    value={report.totalEntries}  sub={`${report.matchedEntries} con tarea identificada`} color="#6ee7b7" />
+          <InfStatCard label="Entradas CSV"    value={report.totalEntries}  sub={`${report.matchedEntries} con tarea identificada`} color="#10b981" />
           <InfStatCard label="S0 — DP horas"  value={`${totalDp.toFixed(1)}h`} sub="Devising a Project"        color="#6366f1" />
           <InfStatCard label="Personas activas" value={`${activeDp}`}       sub="con horas S0 registradas"     color="#e879f9" />
           <InfStatCard label="Estado S0"       value="✓ Completado"         sub="Sprint 0 finalizado"           color="#22c55e" />
@@ -491,7 +491,7 @@ export default function InformePane() {
     const pct       = totalEst ? totalReal/totalEst*100 : 0;
     return (
       <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:14 }}>
-        <InfStatCard label="Entradas CSV"    value={report.totalEntries}             sub={`${report.matchedEntries} con tarea identificada`} color="#6ee7b7" />
+        <InfStatCard label="Entradas CSV"    value={report.totalEntries}             sub={`${report.matchedEntries} con tarea identificada`} color="#10b981" />
         <InfStatCard label="H. estimadas"   value={`${totalEst}h`}                  sub="según backlog"          color="#818cf8" />
         <InfStatCard label="H. registradas" value={`${totalReal.toFixed(1)}h`}       sub={`${active} tareas activas`} color="#34d399" />
         <InfStatCard label="% completado"   value={`${pct.toFixed(1)}%`}             sub="horas reales / estimadas" color={pct>=100?"#ef4444":pct>=80?"#f59e0b":"#22c55e"} />
@@ -510,7 +510,7 @@ export default function InformePane() {
           El Sprint 0 (DP) registra horas por proyecto "dp" en Clockify,<br/>no por tareas individuales del backlog.
         </div>
         <div style={{ color:"var(--tx4)", fontSize:11 }}>
-          Consulta la pestaña <span style={{ color:"#6ee7b7", fontWeight:700 }}>Equipo</span> para ver el desglose de horas por persona.
+          Consulta la pestaña <span style={{ color:"#10b981", fontWeight:700 }}>Equipo</span> para ver el desglose de horas por persona.
         </div>
       </div>
     );
@@ -1097,7 +1097,7 @@ export default function InformePane() {
     const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => ({
       y: pad.t + cH * (1 - f), label: Math.round(totalEst * f) + "h", major: f === 0 || f === 1,
     }));
-    const sprintColor = sprint > 0 ? SC[sprint].color : "#6ee7b7";
+    const sprintColor = sprint > 0 ? SC[sprint].color : "#10b981";
     const fmtDate = (d) => new Date(d + 'T12:00:00').toLocaleDateString('es-ES', { day:'numeric', month:'short' });
 
     return (
@@ -1868,7 +1868,7 @@ export default function InformePane() {
 
     const member = TEAM_MEMBERS.find(m => m.login === login);
     if (!member) return <div style={{ color:"#ef4444", padding:20 }}>Persona no encontrada: {login}</div>;
-    const tc = TC_P[member.team] || "#6ee7b7";
+    const tc = TC_P[member.team] || "#10b981";
     const loginLower = login.toLowerCase();
 
     // ── GitHub stats ─────────────────────────────────────────────
@@ -2059,7 +2059,7 @@ export default function InformePane() {
                         <td style={{ padding:"5px 8px", textAlign:"center", color:hEquipo>0?"#34d399":"var(--bdr2)" }}>
                           {hEquipo>0?`${hEquipo.toFixed(1)}h`:"—"}
                         </td>
-                        <td style={{ padding:"5px 8px", textAlign:"center", color:hReal>0?"#6ee7b7":"var(--bdr2)", fontWeight:hReal>0?700:400 }}>
+                        <td style={{ padding:"5px 8px", textAlign:"center", color:hReal>0?"#10b981":"var(--bdr2)", fontWeight:hReal>0?700:400 }}>
                           {hReal>0?`${hReal.toFixed(1)}h`:"—"}
                         </td>
                         <td style={{ padding:"5px 8px", textAlign:"center" }}>
@@ -2075,7 +2075,7 @@ export default function InformePane() {
                     <td style={{ padding:"5px 8px", textAlign:"center", color:"#818cf8", fontWeight:800 }}>{totalHDirectas.toFixed(1)}h</td>
                     <td style={{ padding:"5px 8px", textAlign:"center", color:"#fbbf24", fontWeight:800 }}>{totalHDelegadas.toFixed(1)}h</td>
                     <td style={{ padding:"5px 8px", textAlign:"center", color:"#34d399", fontWeight:800 }}>{totalHEquipo.toFixed(1)}h</td>
-                    <td colSpan={2} style={{ padding:"5px 8px", textAlign:"center", color:"#6ee7b7", fontWeight:800 }}>{totalH.toFixed(1)}h real</td>
+                    <td colSpan={2} style={{ padding:"5px 8px", textAlign:"center", color:"#10b981", fontWeight:800 }}>{totalH.toFixed(1)}h real</td>
                   </tr>
                 </tfoot>
               </table>
@@ -2195,8 +2195,8 @@ export default function InformePane() {
       {showExport && <ExportMdModal report={report} sprint={sprint} onClose={() => setShowExport(false)} />}
 
       {/* Header */}
-      <div style={{ background:"var(--bg2)", border:"1px solid #6ee7b730", borderRadius:12, padding:"14px 20px" }}>
-        <div style={{ color:"#6ee7b7", fontWeight:700, fontSize:14, marginBottom:2 }}>📊 Informe CSV — Clockify × Backlog</div>
+      <div style={{ background:"var(--bg2)", border:"1px solid #10b98130", borderRadius:12, padding:"14px 20px" }}>
+        <div style={{ color:"#10b981", fontWeight:700, fontSize:14, marginBottom:2 }}>📊 Informe CSV — Clockify × Backlog</div>
         <div style={{ color:"var(--tx3)", fontSize:11 }}>Exporta el informe Detallado de Clockify en CSV y arrástralo aquí. Los tags de cada entrada deben incluir el ID de tarea (NX-S1.1, NX-S2.3...).</div>
       </div>
 
@@ -2211,7 +2211,7 @@ export default function InformePane() {
             "4. Arrastra el archivo descargado al área de abajo",
           ].map((s,i)=>(
             <div key={i} style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
-              <span style={{ color:"#6ee7b7", fontWeight:700, fontSize:11, whiteSpace:"nowrap" }}>→</span>
+              <span style={{ color:"#10b981", fontWeight:700, fontSize:11, whiteSpace:"nowrap" }}>→</span>
               <span style={{ color:"var(--tx2)", fontSize:11 }}>{s}</span>
             </div>
           ))}
@@ -2227,10 +2227,10 @@ export default function InformePane() {
         onDragLeave={()=>setDrag(false)}
         onDrop={onDrop}
         style={{
-          border:`2px dashed ${drag?"#6ee7b7":"var(--bdr)"}`,
+          border:`2px dashed ${drag?"#10b981":"var(--bdr)"}`,
           borderRadius:12, padding:"36px 20px",
           textAlign:"center", cursor:"pointer",
-          background: drag?"#6ee7b708":"var(--bg2)",
+          background: drag?"#10b98108":"var(--bg2)",
           transition:"all .15s"
         }}
         onClick={()=>document.getElementById("csv-input").click()}
@@ -2238,11 +2238,11 @@ export default function InformePane() {
         <input id="csv-input" type="file" accept=".csv" style={{ display:"none" }} onChange={e=>processFile(e.target.files[0])} />
         <div style={{ fontSize:32, marginBottom:10 }}>{status==="ok"?"✅":"📂"}</div>
         {status==="ok"
-          ? <div style={{ color:"#6ee7b7", fontWeight:700, fontSize:13 }}>{fileName}</div>
+          ? <div style={{ color:"#10b981", fontWeight:700, fontSize:13 }}>{fileName}</div>
           : <div style={{ color:"var(--tx4)", fontSize:13, fontWeight:600 }}>Arrastra el CSV de Clockify aquí o haz clic para seleccionarlo</div>
         }
         {status==="ok"
-          ? <div style={{ color:"var(--tx4)", fontSize:11, marginTop:4 }}>{report.totalEntries} entradas · {report.matchedEntries} con tarea · haz clic para <strong style={{color:"#6ee7b7"}}>actualizar con un nuevo CSV</strong></div>
+          ? <div style={{ color:"var(--tx4)", fontSize:11, marginTop:4 }}>{report.totalEntries} entradas · {report.matchedEntries} con tarea · haz clic para <strong style={{color:"#10b981"}}>actualizar con un nuevo CSV</strong></div>
           : <div style={{ color:"var(--bdr2)", fontSize:11, marginTop:4 }}>Exporta el informe Detallado desde Clockify → Reports → Detailed → Export CSV</div>
         }
       </div>
@@ -2257,7 +2257,7 @@ export default function InformePane() {
             <span style={{ color:"var(--tx3)", fontSize:11, fontWeight:600 }}>Filtrar sprint:</span>
             {[{v:0,l:"Todos"},{v:-1,l:"Sprint 0"},{v:1,l:"Sprint 1"},{v:2,l:"Sprint 2"},{v:3,l:"Sprint 3"}].map(({v,l})=>{
               const active = sprint===v;
-              const c = v===0?"#6ee7b7":v===-1?"#6366f1":sprintC[v];
+              const c = v===0?"#10b981":v===-1?"#6366f1":sprintC[v];
               return <button key={v} onClick={()=>setSprint(v)} style={{ padding:"4px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer", border:`1px solid ${active?c+"60":"transparent"}`, background:active?`${c}20`:"transparent", color:active?c:"var(--tx4)", transition:"all .12s" }}>{l}</button>;
             })}
             <button onClick={() => setShowExport(true)} title="Exportar secciones Clockify a Markdown"
@@ -2273,12 +2273,12 @@ export default function InformePane() {
           <div style={{ display:"flex", gap:3, background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:9, padding:3, alignSelf:"flex-start", flexWrap:"wrap" }}>
             {viewTabs.map(vt=>{
               const active=view===vt.id;
-              return <button key={vt.id} onClick={()=>setView(vt.id)} style={{ padding:"5px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer", border:active?"1px solid #6ee7b745":"1px solid transparent", background:active?"#6ee7b720":"transparent", color:active?"#6ee7b7":"var(--tx3)", transition:"all .12s" }}>{vt.label}</button>;
+              return <button key={vt.id} onClick={()=>setView(vt.id)} style={{ padding:"5px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer", border:active?"1px solid #10b98145":"1px solid transparent", background:active?"#10b98120":"transparent", color:active?"#10b981":"var(--tx3)", transition:"all .12s" }}>{vt.label}</button>;
             })}
             {selectedPerson && (() => {
               const pm = TEAM_MEMBERS.find(m => m.login === selectedPerson);
               const active = view === "persona";
-              const tc = { A:"#3b82f6", B:"#22c55e", C:"#f59e0b", D:"#a855f7" }[pm?.team] || "#6ee7b7";
+              const tc = { A:"#3b82f6", B:"#22c55e", C:"#f59e0b", D:"#a855f7" }[pm?.team] || "#10b981";
               return (
                 <div key="persona" style={{ display:"flex", alignItems:"center", gap:0 }}>
                   <button onClick={()=>setView("persona")} style={{ padding:"5px 12px", borderRadius:"6px 0 0 6px", fontSize:11, fontWeight:700, cursor:"pointer", border:active?`1px solid ${tc}45`:"1px solid transparent", background:active?`${tc}20`:"transparent", color:active?tc:"var(--tx3)", transition:"all .12s" }}>
