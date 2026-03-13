@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "node scripts/build-local.mjs"
+    "build": "node scripts/build-local.mjs",
+    "sync": "node scripts/fetch-project.mjs > data/nexus-backlog.json && node scripts/build-local.mjs",
+    "sync:data": "node scripts/fetch-project.mjs > data/nexus-backlog.json"
   },
   "devDependencies": {
     "esbuild": "^0.25.0"

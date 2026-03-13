@@ -1,5 +1,5 @@
 import { useState, useMemo, Fragment, useEffect } from 'react';
-import { TEAM_MEMBERS, EQUIPO_LOGINS } from '../constants.js';
+import { TEAM_MEMBERS, EQUIPO_LOGINS, SIZE_H_MAP } from '../constants.js';
 import { BACKLOG } from '../data.js';
 import { useGitHubStats } from '../hooks/useGitHubStats.js';
 import clockifyRaw from '../../data/clockify-entries.json';
@@ -234,7 +234,7 @@ export default function GitHubPane() {
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <span style={{ color: "var(--tx0)", fontWeight: 800, fontSize: 15 }}>🐙 GitHub — Insights & Métricas</span>
+        <span style={{ color: "var(--tx0)", fontWeight: 600, fontSize: 15 }}>🐙 GitHub — Insights & Métricas</span>
         {loading
           ? <span style={{ color: "var(--tx4)", fontSize: 10 }}>⏳ actualizando métricas…</span>
           : stats?.fetchedAt && (
@@ -243,6 +243,20 @@ export default function GitHubPane() {
             </span>
           )
         }
+        <button onClick={refresh} disabled={loading} style={{
+          marginLeft: "auto",
+          padding: "4px 12px",
+          borderRadius: 6,
+          fontSize: 11,
+          fontWeight: 600,
+          cursor: loading ? "default" : "pointer",
+          background: loading ? "transparent" : "#6366f115",
+          color: loading ? "var(--tx4)" : "#818cf8",
+          border: "1px solid " + (loading ? "var(--bdr)" : "#6366f140"),
+          transition: "all .15s"
+        }}>
+          {loading ? "⏳ cargando…" : "↻ Actualizar métricas"}
+        </button>
       </div>
 
       {/* Error */}

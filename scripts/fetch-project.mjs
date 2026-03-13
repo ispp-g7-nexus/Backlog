@@ -1,8 +1,24 @@
 // Script para traer todas las issues del GitHub Project v2
-// Uso: node scripts/fetch-project.mjs <TOKEN>
+// Uso: node scripts/fetch-project.mjs [TOKEN]
+// Si no se pasa token, lo lee de .env.local (GITHUB_TOKEN=...)
 
-const TOKEN = process.argv[2];
-if (!TOKEN) { console.error("Uso: node scripts/fetch-project.mjs <TOKEN>"); process.exit(1); }
+import { readFileSync, existsSync } from 'fs';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+function loadEnvLocal() {
+  const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const envPath = resolve(root, '.env.local');
+  if (!existsSync(envPath)) return {};
+  return Object.fromEntries(
+    readFileSync(envPath, 'utf8').split('\n')
+      .map(l => l.trim()).filter(l => l && !l.startsWith('#'))
+      .map(l => l.split('=').map((p, i) => i === 0 ? p.trim() : l.slice(l.indexOf('=') + 1).trim()))
+  );
+}
+
+const TOKEN = process.argv[2] || loadEnvLocal().GITHUB_TOKEN;
+if (!TOKEN) { console.error("Token no encontrado. Pásalo como argumento o añádelo a .env.local"); process.exit(1); }
 
 const ENDPOINT = "https://api.github.com/graphql";
 

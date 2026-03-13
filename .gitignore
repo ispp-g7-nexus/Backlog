@@ -25,6 +25,10 @@ Thumbs.db
 .idea/
 *.swp
 
+# Tokens locales (nunca subir)
+.env.local
+.env.*.local
+
 # Build temp files
 src/_entry.jsx
 dist/_bundle.js

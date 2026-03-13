@@ -6,19 +6,19 @@ export const MOSCOW_META = {
 };
 
 export const STATUS_META = {
-  "Backlog":     { bg:"var(--bdr)", text:"var(--tx3)" },
-  "Ready":       { bg:"var(--st-ready-bg)", text:"var(--st-ready-tx)" },
-  "In progress": { bg:"var(--st-prog-bg)",  text:"var(--st-prog-tx)" },
-  "In review":   { bg:"var(--st-rev-bg)",   text:"var(--st-rev-tx)" },
-  "Done":        { bg:"var(--st-done-bg)",  text:"var(--st-done-tx)" },
+  "Backlog":     { bg:"#27272a", text:"#71717a" },
+  "Ready":       { bg:"#0c2d4a", text:"#38bdf8" },
+  "In progress": { bg:"#3b1f00", text:"#fbbf24" },
+  "In review":   { bg:"#2a1052", text:"#c4b5fd" },
+  "Done":        { bg:"#052e16", text:"#34d399" },
 };
 
 export const SIZE_META = {
-  XS:{ bg:"var(--sz-xs-bg)", text:"var(--sz-xs-tx)" },
-  S: { bg:"var(--sz-s-bg)",  text:"var(--sz-s-tx)" },
-  M: { bg:"var(--sz-m-bg)",  text:"var(--sz-m-tx)" },
-  L: { bg:"var(--sz-l-bg)",  text:"var(--sz-l-tx)" },
-  XL:{ bg:"var(--sz-xl-bg)", text:"var(--sz-xl-tx)" },
+  XS:{ bg:"#1c1c1e", text:"#9ca3af" },
+  S: { bg:"#0f2235", text:"#60a5fa" },
+  M: { bg:"#172554", text:"#93c5fd" },
+  L: { bg:"#2d1b69", text:"#a78bfa" },
+  XL:{ bg:"#3b0764", text:"#c084fc" },
 };
 
 export const SC = {

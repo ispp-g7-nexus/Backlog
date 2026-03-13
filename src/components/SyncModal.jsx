@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { fetchFromGitHub } from '../api/github-project.js';
+import { fetchFromGitHub } from '../api/github.js';
 import { _storedLive } from '../data.js';
 
 export default function SyncModal({ onClose }) {
   const [token,    setToken]    = useState(() => localStorage.getItem('nexus_gh_token') || '');
-  const [remember, setRemember] = useState(true);
+  const [remember, setRemember] = useState(() => localStorage.getItem('nexus_gh_token_remember') !== 'false');
   const [status,   setStatus]   = useState('idle'); // idle | loading | error
   const [error,    setError]    = useState('');
   const [progress, setProgress] = useState('');
@@ -13,12 +13,13 @@ export default function SyncModal({ onClose }) {
     if (!token.trim()) return;
     setStatus('loading'); setError(''); setProgress('Conectando con GitHub…');
     try {
+      localStorage.setItem('nexus_gh_token_remember', remember ? 'true' : 'false');
       if (remember) localStorage.setItem('nexus_gh_token', token.trim());
-      else          localStorage.removeItem('nexus_gh_token');
       setProgress('Descargando datos del proyecto…');
       const data = await fetchFromGitHub(token.trim());
       setProgress(`✅ ${data.total} HU recibidas, recargando…`);
       localStorage.setItem('nexus_live_data', JSON.stringify(data));
+      localStorage.removeItem('nexus_edits_v1');
       setTimeout(() => window.location.reload(), 500);
     } catch(e) {
       setStatus('error');
@@ -47,10 +48,18 @@ export default function SyncModal({ onClose }) {
           style={{ width:"100%", background:"#09090b", border:"1px solid #3f3f46", borderRadius:6,
             padding:"8px 10px", color:"#f1f5f9", fontSize:13, outline:"none", boxSizing:"border-box" }}
         />
-        <label style={{ display:"flex", alignItems:"center", gap:6, marginTop:8, fontSize:11, color:"#71717a", cursor:"pointer", userSelect:"none" }}>
-          <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)} />
-          Recordar token en este navegador
-        </label>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:8 }}>
+          <label style={{ display:"flex", alignItems:"center", gap:6, fontSize:11, color:"#71717a", cursor:"pointer", userSelect:"none" }}>
+            <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)} />
+            Recordar token en este navegador
+          </label>
+          {localStorage.getItem('nexus_gh_token') && (
+            <span style={{ fontSize:10, color:"#ef4444", cursor:"pointer", textDecoration:"underline" }}
+              onClick={() => { localStorage.removeItem('nexus_gh_token'); setToken(''); }}>
+              olvidar
+            </span>
+          )}
+        </div>
         {status === 'loading' && (
           <div style={{ marginTop:8, fontSize:11, color:"#818cf8" }}>⏳ {progress}</div>
         )}

@@ -12,19 +12,23 @@ function mapGithubItem(raw) {
   const sprint = sprintMatch ? parseInt(sprintMatch[0], 10) : null;
   const area   = raw.labels && raw.labels.length > 0 ? raw.labels[0].name : 'Sin área';
   return {
-    id, sprint, area, title,
-    size:      raw.size      || null,
-    status:    raw.status    || 'Backlog',
-    equipo:    raw.equipo    || null,
-    assignees: raw.assignees || [],
-    url:       raw.url       || null,
-    state:     raw.state     || 'OPEN',
+    id, sprint, milestone: raw.milestone || null, area, title,
+    size:       raw.size       || null,
+    status:     raw.status     || 'Backlog',
+    equipo:     raw.equipo     || null,
+    tipo:       raw.tipo       || null,
+    assignees:  raw.assignees  || [],
+    url:        raw.url        || null,
+    state:      raw.state      || 'OPEN',
+    startDate:  raw.startDate  || null,
+    targetDate: raw.targetDate || null,
+    estimate:   raw.estimate   != null ? raw.estimate : null,
   };
 }
 
 // ── LIVE DATA (localStorage override) ────────────────────────
-const _storedLive = getLiveData();
-const _sourceData = (_storedLive && _storedLive.fetchedAt > rawData.fetchedAt) ? _storedLive : rawData;
+export const _storedLive = getLiveData();
+const _sourceData = _storedLive || rawData;
 
 // ── BUILD BACKLOG ────────────────────────────────────────────
 export const BACKLOG = _sourceData.items
@@ -39,4 +43,13 @@ export const BACKLOG = _sourceData.items
 
 // ── BUILD BACKLOG MAP (ID→Item) ────────────────────────────────
 export const BACKLOG_MAP = Object.fromEntries(BACKLOG.map(item => [item.id, item]));
+
+// ── SPRINTS (derived from milestones, sorted) ──────────────────
+// Each entry: { sprint: number, label: string }
+// Falls back to "Sprint N" if no milestone title stored.
+export const SPRINTS = [...new Map(
+  BACKLOG
+    .filter(i => i.sprint != null)
+    .map(i => [i.sprint, { sprint: i.sprint, label: i.milestone || `Sprint ${i.sprint}` }])
+).values()].sort((a, b) => a.sprint - b.sprint);
 

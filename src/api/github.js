@@ -77,6 +77,7 @@ export async function fetchFromGitHub(token) {
       size: fields["Size"] ?? null, estimate: fields["Estimate"] ?? null,
       startDate: fields["Start date"] ?? null, targetDate: fields["Target date"] ?? null,
       equipo: fields["Equipo"] ?? null,
+      tipo:   fields["Tipo"]   ?? null,
       milestone: fields["Milestone"] ?? c.milestone?.title ?? null,
       repository: fields["Repository"] ?? null,
       assignees: fields["Assignees"] ?? c.assignees.nodes,
@@ -92,6 +93,7 @@ export async function fetchFromGitHub(token) {
     priorities: rawData.priorities,
     sizes:      rawData.sizes,
     equipos:    rawData.equipos,
+    tipos:      [...new Set(normalized.map(i => i.tipo).filter(Boolean))].sort(),
     items: normalized,
   };
 }
