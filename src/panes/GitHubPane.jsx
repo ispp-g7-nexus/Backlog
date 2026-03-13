@@ -2,6 +2,7 @@ import { useState, useMemo, Fragment, useEffect } from 'react';
 import { TEAM_MEMBERS, EQUIPO_LOGINS } from '../constants.js';
 import { BACKLOG } from '../data.js';
 import { useGitHubStats } from '../hooks/useGitHubStats.js';
+import clockifyRaw from '../../data/clockify-entries.json';
 
 // fetchGitHubStats moved to hooks/useGitHubStats.js
 

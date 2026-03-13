@@ -1,7 +1,7 @@
 import { useState, useMemo, Fragment } from 'react';
-import { BACKLOG, DEFAULT_CLOCKIFY, BACKLOG_MAP } from '../data.js';
+import { BACKLOG, BACKLOG_MAP } from '../data.js';
 import { loadClockify, saveClockify } from '../lib/cache.js';
-import { parseClockifyCSV, buildReport } from '../clockify/report.js';
+import { parseClockifyCSV, buildReport, DEFAULT_CLOCKIFY } from '../clockify/parser.js';
 import { SC } from '../constants.js';
 
 function InfStatCard({ label, value, sub, color }) {

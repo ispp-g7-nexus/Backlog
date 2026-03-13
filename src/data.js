@@ -1,7 +1,5 @@
 import rawData from '../data/nexus-backlog.json';
-import clockifyRaw from '../data/clockify-entries.json';
 import { getLiveData } from './lib/cache.js';
-import { buildReport } from './clockify/report.js';
 
 export { rawData };
 
@@ -42,17 +40,3 @@ export const BACKLOG = _sourceData.items
 // ── BUILD BACKLOG MAP (ID→Item) ────────────────────────────────
 export const BACKLOG_MAP = Object.fromEntries(BACKLOG.map(item => [item.id, item]));
 
-// ── DEFAULT CLOCKIFY (from static JSON file) ────────────────────
-export const DEFAULT_CLOCKIFY = (() => {
-  if (!clockifyRaw || !clockifyRaw.entries || !clockifyRaw.entries.length) return null;
-  const entries = clockifyRaw.entries.map(e => ({
-    user: e.u, email: e.e, project: e.p,
-    taskId: e.t || null, hours: e.h, date: e.d,
-  }));
-  const rpt = buildReport(entries);
-  rpt.totalEntries   = entries.length;
-  rpt.matchedEntries = entries.filter(e => e.taskId).length;
-  rpt.fetchedAt      = clockifyRaw.fetchedAt;
-  rpt.sourceFile     = clockifyRaw.sourceFile;
-  return rpt;
-})();
