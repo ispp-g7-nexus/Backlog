@@ -18,7 +18,7 @@ export function SizeBadge({ s }) {
   );
 }
 export function StatusBadge({ s }) {
-  const meta = STATUS_META[s] || { bg:"#27272a", text:"#71717a" };
+  const meta = STATUS_META[s] || { bg:"var(--bdg-backlog-bg)", text:"var(--bdg-backlog-tx)" };
   return (
     <span style={{
       background:meta.bg, color:meta.text,

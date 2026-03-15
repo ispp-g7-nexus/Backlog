@@ -68,7 +68,7 @@ export default function App() {
       `}</style>
 
       <div style={{ background: "var(--bg2)", borderBottom: "1px solid var(--bdr)", position: "sticky", top: 0, zIndex: 30 }}>
-        <div style={{ maxWidth: 1080, margin: "0 auto", padding: "10px 16px", display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+        <div style={{ maxWidth: 1400, margin: "0 auto", padding: "10px 16px", display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
             <img src="https://github.com/ispp-g7-nexus.png" alt="NexUS" style={{ width: 29, height: 29, borderRadius: 7, border: "1px solid #6366f140", display: "block" }} />
             <div>
@@ -77,6 +77,7 @@ export default function App() {
             </div>
           </div>
 
+          <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
           <div style={{ display: "flex", gap: 3, background: "var(--bg0)", border: "1px solid var(--bdr)", borderRadius: 9, padding: 3 }}>
             {[
               { id: "project", label: "📋 Backlog" },
@@ -97,6 +98,7 @@ export default function App() {
                 transition: "all .12s"
               }}>{label}</button>
             ))}
+          </div>
           </div>
 
           <div style={{ marginLeft: "auto", display: "flex", gap: 6, alignItems: "center" }}>
@@ -144,7 +146,7 @@ export default function App() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1080, margin: "0 auto", padding: "16px 16px 32px" }}>
+      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "16px 16px 32px" }}>
         {tab === "project" && (
           <div>
             <div style={{ display: "flex", gap: 3, background: "var(--bg0)", border: "1px solid var(--bdr)", borderRadius: 9, padding: 3, marginBottom: 16, width: "fit-content" }}>

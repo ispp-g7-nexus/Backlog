@@ -6,19 +6,19 @@ export const MOSCOW_META = {
 };
 
 export const STATUS_META = {
-  "Backlog":     { bg:"#27272a", text:"#71717a" },
-  "Ready":       { bg:"#0c2d4a", text:"#38bdf8" },
-  "In progress": { bg:"#3b1f00", text:"#fbbf24" },
-  "In review":   { bg:"#2a1052", text:"#c4b5fd" },
-  "Done":        { bg:"#052e16", text:"#34d399" },
+  "Backlog":     { bg:"var(--bdg-backlog-bg)", text:"var(--bdg-backlog-tx)" },
+  "Ready":       { bg:"var(--bdg-ready-bg)",   text:"var(--bdg-ready-tx)"   },
+  "In progress": { bg:"var(--bdg-prog-bg)",    text:"var(--bdg-prog-tx)"    },
+  "In review":   { bg:"var(--bdg-rev-bg)",     text:"var(--bdg-rev-tx)"     },
+  "Done":        { bg:"var(--bdg-done-bg)",    text:"var(--bdg-done-tx)"    },
 };
 
 export const SIZE_META = {
-  XS:{ bg:"#1c1c1e", text:"#9ca3af" },
-  S: { bg:"#0f2235", text:"#60a5fa" },
-  M: { bg:"#172554", text:"#93c5fd" },
-  L: { bg:"#2d1b69", text:"#a78bfa" },
-  XL:{ bg:"#3b0764", text:"#c084fc" },
+  XS:{ bg:"var(--bdg-xs-bg)", text:"var(--bdg-xs-tx)" },
+  S: { bg:"var(--bdg-s-bg)",  text:"var(--bdg-s-tx)"  },
+  M: { bg:"var(--bdg-m-bg)",  text:"var(--bdg-m-tx)"  },
+  L: { bg:"var(--bdg-l-bg)",  text:"var(--bdg-l-tx)"  },
+  XL:{ bg:"var(--bdg-xl-bg)", text:"var(--bdg-xl-tx)" },
 };
 
 export const SC = {

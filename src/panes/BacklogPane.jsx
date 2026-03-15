@@ -1,7 +1,14 @@
-import { useState, useMemo, Fragment } from 'react';
+import { useState, useMemo, useEffect, useRef, Fragment } from 'react';
 import { BACKLOG, rawData, SPRINTS } from '../data.js';
 import { STATUS_META, AREA_COLORS, SIZE_META, SIZE_H_MAP, SC } from '../constants.js';
 import { SizeBadge, StatusBadge } from '../components/badges.jsx';
+import { updateIssueTitle, updateProjectField, fetchProjectSchema, addAssignee, removeAssignee } from '../api/github.js';
+import { TEAM_MEMBERS } from '../team.js';
+
+const FIELD_GH_MAP = {
+  status: 'Status', size: 'Size', equipo: 'Equipo', tipo: 'Tipo',
+  startDate: 'Start date', targetDate: 'Target date', estimate: 'Estimate',
+};
 
 const STATUSES = ["Backlog", "Ready", "In progress", "In review", "Done"];
 const STATUS_COLORS = {
@@ -26,9 +33,31 @@ export default function BacklogPane({ sprint }) {
   const toggleOpen = (id) => setOpen(p => ({ ...p, [id]: !p[id] }));
   const [edits,   setEdits]   = useState(() => { try { return JSON.parse(localStorage.getItem('nexus_edits_v1') || '{}'); } catch { return {}; } });
   const [editing, setEditing] = useState(null);
-  const [editVal, setEditVal] = useState('');
+  const editValRef = useRef('');
+  const [editVal, setEditValState] = useState('');
+  const setEditVal = (v) => { editValRef.current = v; setEditValState(v); };
   const [saved,   setSaved]   = useState(null);
   const [hovered, setHovered] = useState(null);
+  const [syncing, setSyncing] = useState(null); // { id, field } | null
+  const [syncErr, setSyncErr] = useState(null); // { id, field, msg } | null
+  const [schemaFields, setSchemaFields] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('nexus_project_schema_v1') || 'null')?.fields || {}; } catch { return {}; }
+  });
+  useEffect(() => {
+    if (Object.keys(schemaFields).length > 0) return;
+    const token = localStorage.getItem('nexus_gh_token');
+    if (!token) return;
+    fetchProjectSchema(token).then(s => setSchemaFields(s.fields)).catch(() => {});
+  }, []);
+  const [pickerOpen, setPickerOpen] = useState(null); // item.id | null
+  useEffect(() => {
+    if (!pickerOpen) return;
+    const handler = () => setPickerOpen(null);
+    setTimeout(() => document.addEventListener('click', handler), 0);
+    return () => document.removeEventListener('click', handler);
+  }, [pickerOpen]);
+  const [hoveredAssignee, setHoveredAssignee] = useState(null); // { itemId, login } | null
+  const hoverTimerRef = useRef(null);
 
   const items = useMemo(() => sprint === null ? BACKLOG : BACKLOG.filter(i => i.sprint === sprint), [sprint]);
   const areas = useMemo(() => [...new Set(items.map(i => i.area))].sort(), [items]);
@@ -44,6 +73,9 @@ export default function BacklogPane({ sprint }) {
     items.forEach(i => (i.assignees || []).forEach(a => { if (!m[a.login]) m[a.login] = a; }));
     return Object.values(m).sort((a, b) => a.login.localeCompare(b.login));
   }, [items]);
+
+  const allEquipos = useMemo(() => Object.keys(schemaFields['Equipo']?.options || {}).sort(), [schemaFields]);
+  const allTipos   = useMemo(() => Object.keys(schemaFields['Tipo']?.options   || {}).sort(), [schemaFields]);
 
   const toggle = (arr, set, v) => set(p => p.includes(v) ? p.filter(x => x !== v) : [...p, v]);
   const filtered = useMemo(() => items.filter(item => {
@@ -119,9 +151,16 @@ export default function BacklogPane({ sprint }) {
   };
 
   const getVal = (item, field) => edits[item.id]?.[field] ?? item[field];
-  const startEdit = (e, id, field, cur) => { e.stopPropagation(); setEditing({ id, field }); setEditVal(cur != null ? String(cur) : ''); };
+  const startEdit = (e, id, field, cur) => {
+    e.stopPropagation();
+    setEditing({ id, field });
+    const initVal = cur != null ? String(cur) : '';
+    editValRef.current = initVal;
+    setEditValState(initVal);
+  };
   const commitEdit = (id, field) => {
-    const v = field === 'estimate' ? (editVal === '' ? null : Number(editVal)) : (editVal === '' ? null : editVal);
+    const raw = editValRef.current;
+    const v = field === 'estimate' ? (raw === '' ? null : Number(raw)) : (raw === '' ? null : raw);
     const next = { ...edits, [id]: { ...(edits[id] || {}), [field]: v } };
     setEdits(next);
     try { localStorage.setItem('nexus_edits_v1', JSON.stringify(next)); } catch {}
@@ -140,8 +179,131 @@ export default function BacklogPane({ sprint }) {
     setEditing(null);
     setSaved({ id, field });
     setTimeout(() => setSaved(p => p?.id === id && p?.field === field ? null : p), 1600);
+
+    const token = localStorage.getItem('nexus_gh_token');
+    if (token && v != null) {
+      let syncPromise = null;
+      if (field === 'title') {
+        const item = items.find(i => i.id === id);
+        if (item?.url) syncPromise = updateIssueTitle(token, item.url, id, v);
+      } else if (FIELD_GH_MAP[field]) {
+        try {
+          const liveRaw = localStorage.getItem('nexus_live_data');
+          if (liveRaw) {
+            const nodeId = JSON.parse(liveRaw).items
+              .find(i => i.title?.match(/^\[([^\]]+)\]/)?.[1] === id)?.id;
+            if (nodeId) syncPromise = updateProjectField(token, nodeId, FIELD_GH_MAP[field], v);
+          }
+        } catch {}
+      }
+      if (syncPromise) {
+        setSyncing({ id, field });
+        setSyncErr(null);
+        syncPromise
+          .then(() => setSyncing(null))
+          .catch(err => {
+            setSyncing(null);
+            setSyncErr({ id, field, msg: err.message });
+            setTimeout(() => setSyncErr(p => p?.id === id ? null : p), 4000);
+          });
+      }
+    }
   };
-  function renderEditable(item, field, displayEl) {
+  const toggleAssignee = (item, member) => {
+    const current = (getVal(item, 'assignees') || []);
+    const isAssigned = current.some(a => a.login.toLowerCase() === member.login.toLowerCase());
+    const newAssignees = isAssigned
+      ? current.filter(a => a.login.toLowerCase() !== member.login.toLowerCase())
+      : [...current, { login: member.login, name: member.name, avatarUrl: `https://github.com/${member.login}.png` }];
+    const next = { ...edits, [item.id]: { ...(edits[item.id] || {}), assignees: newAssignees } };
+    setEdits(next);
+    try { localStorage.setItem('nexus_edits_v1', JSON.stringify(next)); } catch {}
+    const token = localStorage.getItem('nexus_gh_token');
+    if (token && item.url) {
+      setSyncing({ id: item.id, field: 'assignees' });
+      setSyncErr(null);
+      (isAssigned ? removeAssignee : addAssignee)(token, item.url, member.login)
+        .then(() => setSyncing(null))
+        .catch(err => {
+          setSyncing(null);
+          setSyncErr({ id: item.id, field: 'assignees', msg: err.message });
+          setTimeout(() => setSyncErr(p => p?.id === item.id ? null : p), 4000);
+        });
+    }
+  };
+
+  function renderAssignees(item) {
+    const current = getVal(item, 'assignees') || [];
+    const currentLogins = current.map(a => a.login.toLowerCase());
+    const isOpen = pickerOpen === item.id;
+    const isSyncing = syncing?.id === item.id && syncing?.field === 'assignees';
+    const isErr     = syncErr?.id  === item.id && syncErr?.field  === 'assignees';
+    return (
+      <div style={{ position:'relative', display:'flex', alignItems:'center', gap:2, flexWrap:'wrap' }}
+        onClick={e => e.stopPropagation()}>
+        <button
+          onClick={e => { e.stopPropagation(); setPickerOpen(isOpen ? null : item.id); }}
+          style={{ width:18, height:18, borderRadius:'50%', border:'1px dashed #6366f180', background:'transparent',
+            color:'#818cf8', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
+            padding:0, lineHeight:1, flexShrink:0 }}>+</button>
+        {current.slice(0, 5).map(a => {
+          const isHov = hoveredAssignee?.itemId === item.id && hoveredAssignee?.login === a.login;
+          return (
+            <div key={a.login} style={{ position:'relative', width:18, height:18, flexShrink:0 }}
+              onMouseEnter={() => {
+                hoverTimerRef.current = setTimeout(() => setHoveredAssignee({ itemId: item.id, login: a.login }), 1500);
+              }}
+              onMouseLeave={() => {
+                clearTimeout(hoverTimerRef.current);
+                setHoveredAssignee(null);
+              }}>
+              <img src={a.avatarUrl || `https://github.com/${a.login}.png`} title={a.login}
+                style={{ width:18, height:18, borderRadius:'50%', border:'1px solid var(--bdr2)', display:'block' }} />
+              {isHov && (
+                <div onClick={e => { e.stopPropagation(); setHoveredAssignee(null); toggleAssignee(item, a); }}
+                  style={{ position:'absolute', inset:0, borderRadius:'50%', background:'#dc262690',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    cursor:'pointer', fontSize:11, color:'#fff', fontWeight:700, lineHeight:1 }}>✕</div>
+              )}
+            </div>
+          );
+        })}
+        {current.length > 5 && (
+          <span style={{ fontSize:9, color:'var(--tx3)', background:'var(--bg0)', border:'1px solid var(--bdr)',
+            borderRadius:9, padding:'1px 4px', flexShrink:0, lineHeight:'16px' }}>+{current.length - 5}</span>
+        )}
+        {isSyncing && <span style={{ fontSize:9, color:'#94a3b8' }}>⟳</span>}
+        {isErr && <span style={{ fontSize:9, color:'#f87171' }} title={syncErr.msg}>✗</span>}
+        {isOpen && (
+          <div onClick={e => e.stopPropagation()}
+            style={{ position:'absolute', top:'calc(100% + 4px)', left:0, zIndex:200,
+              background:'var(--bg2)', border:'1px solid var(--bdr)', borderRadius:8,
+              padding:'4px 0', minWidth:200, maxHeight:220, overflowY:'auto',
+              boxShadow:'0 8px 24px #00000040' }}>
+            {TEAM_MEMBERS.map(m => {
+              const assigned = currentLogins.includes(m.login.toLowerCase());
+              return (
+                <div key={m.login} onClick={() => toggleAssignee(item, m)}
+                  style={{ display:'flex', alignItems:'center', gap:7, padding:'5px 10px',
+                    cursor:'pointer', background: assigned ? '#6366f115' : 'transparent',
+                    transition:'background .1s' }}
+                  onMouseEnter={e => e.currentTarget.style.background = assigned ? '#6366f125' : '#ffffff08'}
+                  onMouseLeave={e => e.currentTarget.style.background = assigned ? '#6366f115' : 'transparent'}>
+                  <img src={`https://github.com/${m.login}.png?size=28`}
+                    style={{ width:18, height:18, borderRadius:'50%', flexShrink:0 }} />
+                  <span style={{ fontSize:10, color: assigned ? '#818cf8' : 'var(--tx2)', flex:1 }}>{m.name}</span>
+                  <span style={{ fontSize:9, color:'var(--tx4)', flexShrink:0 }}>{m.team}</span>
+                  {assigned && <span style={{ fontSize:9, color:'#34d399', flexShrink:0 }}>✓</span>}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function renderEditable(item, field, displayEl, center = false) {
     const isEditing = editing?.id === item.id && editing?.field === field;
     const val = getVal(item, field);
     if (isEditing) {
@@ -154,27 +316,31 @@ export default function BacklogPane({ sprint }) {
       };
       if (field === 'status') return <select {...base} onChange={e => setEditVal(e.target.value)}>{STATUSES.map(s => <option key={s} value={s}>{s}</option>)}</select>;
       if (field === 'size')   return <select {...base} onChange={e => setEditVal(e.target.value)}>{['XS','S','M','L','XL'].map(s => <option key={s} value={s}>{s}</option>)}</select>;
-      if (field === 'equipo') { const opts = rawData.equipos || []; return <select {...base} onChange={e => setEditVal(e.target.value)}><option value="">—</option>{opts.map(o => <option key={o} value={o}>{o}</option>)}</select>; }
-      if (field === 'tipo')   { const opts = rawData.tipos || []; return opts.length ? <select {...base} onChange={e => setEditVal(e.target.value)}><option value="">—</option>{opts.map(o => <option key={o} value={o}>{o}</option>)}</select> : <input {...base} onChange={e => setEditVal(e.target.value)} />; }
+      if (field === 'equipo') { return <select {...base} onChange={e => setEditVal(e.target.value)}><option value="">—</option>{allEquipos.map(o => <option key={o} value={o}>{o}</option>)}</select>; }
+      if (field === 'tipo')   { return allTipos.length ? <select {...base} onChange={e => setEditVal(e.target.value)}><option value="">—</option>{allTipos.map(o => <option key={o} value={o}>{o}</option>)}</select> : <input {...base} onChange={e => setEditVal(e.target.value)} />; }
       if (field === 'startDate' || field === 'targetDate') return <input type="date" {...base} onChange={e => setEditVal(e.target.value)} />;
       if (field === 'estimate') return <input type="number" step="0.5" min="0" {...base} onChange={e => setEditVal(e.target.value)} />;
       return <input {...base} onChange={e => setEditVal(e.target.value)} />;
     }
-    const isSaved  = saved?.id   === item.id && saved?.field   === field;
-  const isHov    = hovered?.id === item.id && hovered?.field === field;
-  const isSelect = ['status','size','equipo','tipo'].includes(field);
+    const isSaved   = saved?.id    === item.id && saved?.field    === field;
+  const isHov     = hovered?.id  === item.id && hovered?.field  === field;
+  const isSyncing = syncing?.id  === item.id && syncing?.field  === field;
+  const isErr     = syncErr?.id  === item.id && syncErr?.field  === field;
+  const isSelect  = ['status','size','equipo','tipo'].includes(field);
   return (
     <span
       onMouseEnter={() => setHovered({ id: item.id, field })}
       onMouseLeave={() => setHovered(p => p?.id === item.id && p?.field === field ? null : p)}
       onClick={e => startEdit(e, item.id, field, val != null ? String(val) : '')}
-      style={{ cursor: isSelect ? 'pointer' : 'text', display:'flex', alignItems:'center', width:'100%', borderRadius:3, background: isSaved ? '#052e1650' : 'transparent', transition:'background 1s' }}
+      style={{ cursor: isSelect ? 'pointer' : 'text', display:'flex', alignItems:'center', justifyContent: center ? 'center' : 'flex-start', width:'100%', position: center ? 'relative' : undefined, borderRadius:3, background: isSaved ? '#052e1650' : 'transparent', transition:'background 1s' }}
     >
-      <span style={{ flex:1, minWidth:0 }}>
+      <span style={{ flex: center ? 'unset' : 1, minWidth:0, textAlign: center ? 'center' : undefined }}>
         {displayEl !== undefined ? displayEl : (val != null ? String(val) : '—')}
       </span>
-      {isSelect && <span style={{ color: isHov ? '#6366f199' : 'transparent', fontSize:9, flexShrink:0, transition:'color .12s', marginLeft:2 }}>▾</span>}
-      {isSaved && <span style={{ marginLeft:4, color:'#34d399', fontSize:9, fontWeight:700, flexShrink:0 }}>✓</span>}
+      {isSelect && <span style={{ color: isHov ? '#6366f199' : 'transparent', fontSize:9, flexShrink: center ? undefined : 0, transition:'color .12s', ...(center ? { position:'absolute', right:3 } : { marginLeft:2 }) }}>▾</span>}
+      {isSyncing && <span style={{ marginLeft:4, color:'#94a3b8', fontSize:9, flexShrink:0 }} title="Sincronizando con GitHub…">⟳</span>}
+      {!isSyncing && isSaved && !isErr && <span style={{ marginLeft:4, color:'#34d399', fontSize:9, fontWeight:700, flexShrink:0 }}>✓</span>}
+      {isErr && <span style={{ marginLeft:4, color:'#f87171', fontSize:9, fontWeight:700, flexShrink:0 }} title={syncErr.msg}>✗</span>}
     </span>
   );
   }
@@ -332,21 +498,23 @@ export default function BacklogPane({ sprint }) {
                 <div style={{ overflowX:"auto" }}>
                   <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12, tableLayout:"fixed" }}>
                     <colgroup>
+                      <col style={{ width:82 }} />
+                      <col style={{ width:240 }} />
+                      <col style={{ width:130 }} />
+                      <col style={{ width:110 }} />
+                      <col style={{ width:76 }} />
                       <col style={{ width:100 }} />
-                      <col />
-                      <col style={{ width:140 }} />
-                      <col style={{ width:100 }} />
-                      <col style={{ width:115 }} />
-                      <col style={{ width:70 }} />
-                      <col style={{ width:78 }} />
-                      <col style={{ width:78 }} />
+                      <col style={{ width:50 }} />
                       <col style={{ width:60 }} />
+                      <col style={{ width:60 }} />
+                      <col style={{ width:46 }} />
                     </colgroup>
                     <thead>
                       <tr style={{ borderBottom:"1px solid var(--bdr)" }}>
-                        {["ID","Historia de usuario","Equipo","Tipo","Estado","Talla","Inicio","Fin","Est."].map(h => (
-                          <th key={h} style={{ textAlign:"left", padding:"7px 14px", color:"var(--tx4)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:".07em", whiteSpace:"nowrap" }}>{h}</th>
-                        ))}
+                        {["ID","Historia de usuario","Asignados","Equipo","Tipo","Estado","Talla","Inicio","Fin","Est."].map((h, i) => {
+                          const pad = i >= 6 ? "7px 6px" : "7px 14px";
+                          return <th key={h} style={{ textAlign: i >= 2 ? "center" : "left", padding: pad, color:"var(--tx4)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:".07em", whiteSpace:"nowrap" }}>{h}</th>;
+                        })}
                       </tr>
                     </thead>
                     <tbody>
@@ -376,42 +544,33 @@ export default function BacklogPane({ sprint }) {
                                 )}
                               </td>
                               <td style={{ padding:"9px 14px", overflow:"hidden" }}>
-                                <div style={{ display:"flex", alignItems:"center", gap:6, overflow:"hidden" }}>
-                                  <div style={{ flex:1, overflow:"hidden", color:"var(--tx1)", fontSize:12 }}>
-                                    {renderEditable(item, 'title', <span style={{ overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", display:"block" }}>{getVal(item, 'title') || '—'}</span>)}
-                                  </div>
-                                  {item.assignees && item.assignees.length > 0 && (
-                                    <span style={{ display:"inline-flex", gap:2, flexShrink:0 }}>
-                                      {item.assignees.map(a => (
-                                        <img key={a.login} src={a.avatarUrl} title={a.name || a.login}
-                                          onClick={e => { e.stopPropagation(); toggle(pf, setPf, a.login); }}
-                                          style={{ width:16, height:16, borderRadius:"50%", border: pf.includes(a.login) ? "2px solid #818cf8" : "1px solid var(--bdr2)", verticalAlign:"middle", cursor:"pointer", transition:"border .12s" }}
-                                        />
-                                      ))}
-                                    </span>
-                                  )}
+                                <div style={{ overflow:"hidden", color:"var(--tx1)", fontSize:12 }}>
+                                  {renderEditable(item, 'title', <span style={{ overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", display:"block" }}>{getVal(item, 'title') || '—'}</span>)}
                                 </div>
                               </td>
+                              <td style={{ padding:"6px 14px", textAlign:"center" }}>
+                                {renderAssignees(item)}
+                              </td>
                               <td style={{ padding:"9px 14px", whiteSpace:"nowrap", fontSize:11 }}>
-                                {renderEditable(item, 'equipo', <span style={{ color:"var(--tx3)" }}>{getVal(item, 'equipo') || '—'}</span>)}
+                                {renderEditable(item, 'equipo', <span style={{ color:"var(--tx3)" }}>{getVal(item, 'equipo') || '—'}</span>, true)}
                               </td>
                               <td style={{ padding:"9px 14px", whiteSpace:"nowrap" }}>
-                                {renderEditable(item, 'tipo', (() => { const t = getVal(item, 'tipo'); return t ? <span style={{ fontSize:10, color: tf.includes(t) ? "#fff7ed" : "var(--tx3)", background: tf.includes(t) ? "#f97316" : "var(--bg0)", border:"1px solid #f9731640", borderRadius:4, padding:"1px 6px" }}>{t}</span> : <span style={{ color:"var(--tx4)", fontSize:10 }}>—</span>; })())}
+                                {renderEditable(item, 'tipo', (() => { const t = getVal(item, 'tipo'); return t ? <span style={{ fontSize:10, color: tf.includes(t) ? "#fff7ed" : "var(--tx3)", background: tf.includes(t) ? "#f97316" : "var(--bg0)", border:"1px solid #f9731640", borderRadius:4, padding:"1px 6px" }}>{t}</span> : <span style={{ color:"var(--tx4)", fontSize:10 }}>—</span>; })(), true)}
                               </td>
                               <td style={{ padding:"9px 14px" }}>
-                                {renderEditable(item, 'status', <StatusBadge s={getVal(item, 'status')} />)}
+                                {renderEditable(item, 'status', <StatusBadge s={getVal(item, 'status')} />, true)}
                               </td>
-                              <td style={{ padding:"9px 14px" }}>
-                                {renderEditable(item, 'size', getVal(item, 'size') ? <SizeBadge s={getVal(item, 'size')} /> : <span style={{ color:"var(--tx4)", fontSize:10 }}>—</span>)}
+                              <td style={{ padding:"9px 8px" }}>
+                                {renderEditable(item, 'size', getVal(item, 'size') ? <SizeBadge s={getVal(item, 'size')} /> : <span style={{ color:"var(--tx4)", fontSize:10 }}>—</span>, true)}
                               </td>
-                              <td style={{ padding:"9px 14px", color:"var(--tx4)", fontSize:10, whiteSpace:"nowrap" }}>
-                                {renderEditable(item, 'startDate', <span>{fmtDate(getVal(item, 'startDate')) ?? '—'}</span>)}
+                              <td style={{ padding:"9px 6px", color:"var(--tx4)", fontSize:10, whiteSpace:"nowrap" }}>
+                                {renderEditable(item, 'startDate', <span>{fmtDate(getVal(item, 'startDate')) ?? '—'}</span>, true)}
                               </td>
-                              <td style={{ padding:"9px 14px", color:"var(--tx4)", fontSize:10, whiteSpace:"nowrap" }}>
-                                {renderEditable(item, 'targetDate', <span>{fmtDate(getVal(item, 'targetDate')) ?? '—'}</span>)}
+                              <td style={{ padding:"9px 6px", color:"var(--tx4)", fontSize:10, whiteSpace:"nowrap" }}>
+                                {renderEditable(item, 'targetDate', <span>{fmtDate(getVal(item, 'targetDate')) ?? '—'}</span>, true)}
                               </td>
-                              <td style={{ padding:"9px 14px", color:"var(--tx4)", fontSize:10, whiteSpace:"nowrap" }}>
-                                {renderEditable(item, 'estimate', <span>{getVal(item, 'estimate') != null ? `${getVal(item, 'estimate')}h` : '—'}</span>)}
+                              <td style={{ padding:"9px 6px", color:"var(--tx4)", fontSize:10, whiteSpace:"nowrap" }}>
+                                {renderEditable(item, 'estimate', <span>{getVal(item, 'estimate') != null ? `${getVal(item, 'estimate')}h` : '—'}</span>, true)}
                               </td>
                             </tr>
                             {hasSubs && isOpen && item.subtasks.map((sub, si) => (
@@ -421,7 +580,7 @@ export default function BacklogPane({ sprint }) {
                               }}>
                                 <td style={{ padding:"6px 14px 6px 36px", color:"var(--bdr2)", fontSize:11, whiteSpace:"nowrap" }}>└</td>
                                 <td style={{ padding:"6px 14px", color:"var(--tx3)", fontSize:11, fontStyle:"italic" }}>{sub.title}</td>
-                                <td colSpan={7} style={{ padding:"6px 14px" }} />
+                                <td colSpan={8} style={{ padding:"6px 14px" }} />
                               </tr>
                             ))}
                           </Fragment>
