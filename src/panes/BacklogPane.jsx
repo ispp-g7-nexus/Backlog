@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef, Fragment } from 'react';
 import { BACKLOG, rawData, SPRINTS } from '../data.js';
 import { STATUS_META, AREA_COLORS, SIZE_META, SIZE_H_MAP, SC } from '../constants.js';
 import { SizeBadge, StatusBadge } from '../components/badges.jsx';
-import { updateIssueTitle, updateProjectField, fetchProjectSchema, addAssignee, removeAssignee } from '../api/github.js';
+import { updateIssueTitle, updateProjectField, fetchProjectSchema, addAssignee, removeAssignee, createIssue, addToProject, fetchIssueTemplates } from '../api/github.js';
 import { TEAM_MEMBERS } from '../team.js';
 
 const FIELD_GH_MAP = {
@@ -18,6 +18,170 @@ const STATUS_COLORS = {
   "In review":   "#c4b5fd",
   "Done":        "#34d399",
 };
+
+function CreateTaskModal({ sprint, area, nextId, defaultTipo, allEquipos, allTipos, statuses, onClose, onCreated }) {
+  const [form, setForm] = useState({
+    id: nextId, title: '', body: '', area,
+    tipo: defaultTipo || '', equipo: '', status: 'Backlog', size: '',
+    startDate: '', targetDate: '', estimate: '',
+  });
+  const [templates, setTemplates] = useState([]);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
+
+  useEffect(() => {
+    const token = localStorage.getItem('nexus_gh_token');
+    if (token) fetchIssueTemplates(token).then(setTemplates).catch(() => {});
+  }, []);
+
+  const buildItem = () => ({
+    id: form.id, sprint, milestone: `S${sprint}`, area: form.area,
+    title: form.title, size: form.size || null, status: form.status || 'Backlog',
+    equipo: form.equipo || null, tipo: form.tipo || null, assignees: [],
+    url: null, state: 'OPEN',
+    startDate: form.startDate || null, targetDate: form.targetDate || null,
+    estimate: form.estimate !== '' ? Number(form.estimate) : null,
+  });
+
+  const handleLocal = () => {
+    if (!form.title.trim()) { setError('El título es obligatorio'); return; }
+    onCreated(buildItem());
+  };
+
+  const handleGitHub = async () => {
+    if (!form.title.trim()) { setError('El título es obligatorio'); return; }
+    const token = localStorage.getItem('nexus_gh_token');
+    if (!token) { setError('No hay token de GitHub configurado'); return; }
+    setSaving(true); setError(null);
+    try {
+      const issue = await createIssue(token, {
+        title: `[${form.id}] ${form.title}`,
+        body: form.body,
+        labels: form.area ? [form.area] : [],
+        assignees: [],
+      });
+      // Intentar añadir al proyecto (requiere scope project:write)
+      try {
+        const projItem = await addToProject(token, issue.node_id);
+        const flds = [];
+        if (form.status) flds.push(updateProjectField(token, projItem.id, 'Status', form.status));
+        if (form.tipo)   flds.push(updateProjectField(token, projItem.id, 'Tipo', form.tipo));
+        if (form.equipo) flds.push(updateProjectField(token, projItem.id, 'Equipo', form.equipo));
+        if (form.size)   flds.push(updateProjectField(token, projItem.id, 'Size', form.size));
+        if (form.estimate) flds.push(updateProjectField(token, projItem.id, 'Estimate', Number(form.estimate)));
+        await Promise.allSettled(flds);
+      } catch (projErr) {
+        setError(`Issue creado en GitHub (#${issue.number}), pero no se pudo añadir al proyecto: ${projErr.message}. Asegúrate de que tu token tiene el scope "project" (PAT clásico) o el permiso "Projects: Read and write" (PAT fino). Aparecerá en el próximo sync.`);
+        onCreated({ ...buildItem(), url: issue.html_url });
+        return;
+      }
+      onCreated({ ...buildItem(), url: issue.html_url });
+    } catch (e) { setError(e.message); setSaving(false); }
+  };
+
+  const inp = { background:'var(--bg0)', border:'1px solid var(--bdr)', borderRadius:6, padding:'5px 8px', fontSize:11, color:'var(--tx1)', width:'100%', boxSizing:'border-box', marginTop:3 };
+  const lbl = { fontSize:10, color:'var(--tx4)', textTransform:'uppercase', letterSpacing:'.07em' };
+
+  return (
+    <div onClick={onClose} style={{ position:'fixed', inset:0, background:'#00000070', zIndex:9999, display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
+      <div onClick={e => e.stopPropagation()}
+        style={{ background:'var(--bg2)', border:'1px solid var(--bdr)', borderRadius:14, padding:'20px 24px', width:'100%', maxWidth:580, maxHeight:'90vh', overflowY:'auto', scrollbarWidth:'thin' }}
+        className="fdrop">
+        <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:16 }}>
+          <span style={{ background:'#6366f120', border:'1px solid #6366f140', borderRadius:6, padding:'2px 8px', fontSize:11, color:'#818cf8', fontWeight:700 }}>Nueva tarea</span>
+          <span style={{ color:'var(--tx3)', fontSize:12 }}>{area} · S{sprint}</span>
+        </div>
+
+        {templates.length > 0 && (
+          <div style={{ marginBottom:10 }}>
+            <label style={lbl}>Plantilla</label>
+            <select onChange={e => { const t = templates.find(t => t.name === e.target.value); if (t) set('body', t.body); }} style={{ ...inp }}>
+              <option value="">— Sin plantilla —</option>
+              {templates.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
+            </select>
+          </div>
+        )}
+
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:10 }}>
+          <div>
+            <label style={lbl}>ID</label>
+            <input value={form.id} onChange={e => set('id', e.target.value)} style={{ ...inp, fontFamily:'monospace' }} />
+          </div>
+          <div>
+            <label style={lbl}>Área / Etiqueta</label>
+            <input value={form.area} onChange={e => set('area', e.target.value)} style={inp} />
+          </div>
+        </div>
+
+        <div style={{ marginBottom:10 }}>
+          <label style={lbl}>Título *</label>
+          <input value={form.title} onChange={e => set('title', e.target.value)} placeholder="Como usuario quiero…" style={{ ...inp, fontSize:13, color:'var(--tx0)' }} autoFocus />
+        </div>
+
+        <div style={{ marginBottom:10 }}>
+          <label style={lbl}>Descripción</label>
+          <textarea value={form.body} onChange={e => set('body', e.target.value)} rows={5} style={{ ...inp, resize:'vertical', fontFamily:'inherit' }} />
+        </div>
+
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10 }}>
+          <div>
+            <label style={lbl}>Tipo</label>
+            <select value={form.tipo} onChange={e => set('tipo', e.target.value)} style={inp}>
+              <option value="">—</option>
+              {allTipos.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+          </div>
+          <div>
+            <label style={lbl}>Equipo</label>
+            <select value={form.equipo} onChange={e => set('equipo', e.target.value)} style={inp}>
+              <option value="">—</option>
+              {allEquipos.map(o => <option key={o} value={o}>{o}</option>)}
+            </select>
+          </div>
+          <div>
+            <label style={lbl}>Estado</label>
+            <select value={form.status} onChange={e => set('status', e.target.value)} style={inp}>
+              {statuses.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:10, marginBottom:16 }}>
+          <div>
+            <label style={lbl}>Talla</label>
+            <select value={form.size} onChange={e => set('size', e.target.value)} style={inp}>
+              <option value="">—</option>
+              {['XS','S','M','L','XL'].map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          <div>
+            <label style={lbl}>Inicio</label>
+            <input type="date" value={form.startDate} onChange={e => set('startDate', e.target.value)} style={inp} />
+          </div>
+          <div>
+            <label style={lbl}>Fin</label>
+            <input type="date" value={form.targetDate} onChange={e => set('targetDate', e.target.value)} style={inp} />
+          </div>
+          <div>
+            <label style={lbl}>Est. (h)</label>
+            <input type="number" step="0.5" min="0" value={form.estimate} onChange={e => set('estimate', e.target.value)} style={inp} />
+          </div>
+        </div>
+
+        {error && <div style={{ color:'#f87171', fontSize:11, marginBottom:10, padding:'6px 10px', background:'#dc262615', borderRadius:6 }}>{error}</div>}
+
+        <div style={{ display:'flex', gap:8, justifyContent:'flex-end' }}>
+          <button onClick={onClose} style={{ padding:'6px 14px', borderRadius:6, border:'1px solid var(--bdr)', background:'transparent', color:'var(--tx2)', cursor:'pointer', fontSize:12 }}>Cancelar</button>
+          <button onClick={handleLocal} disabled={saving} style={{ padding:'6px 14px', borderRadius:6, border:'1px solid #6366f150', background:'#6366f115', color:'#818cf8', cursor:'pointer', fontSize:12, fontWeight:600 }}>Solo local</button>
+          <button onClick={handleGitHub} disabled={saving} style={{ padding:'6px 14px', borderRadius:6, border:'none', background:'#6366f1', color:'#fff', cursor:'pointer', fontSize:12, fontWeight:700, opacity: saving ? .6 : 1 }}>
+            {saving ? 'Creando…' : '+ Crear en GitHub'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function BacklogPane({ sprint }) {
   const sc = sprint ? SC[sprint] : null;
@@ -50,16 +214,39 @@ export default function BacklogPane({ sprint }) {
     fetchProjectSchema(token).then(s => setSchemaFields(s.fields)).catch(() => {});
   }, []);
   const [pickerOpen, setPickerOpen] = useState(null); // item.id | null
+  const [pickerPos, setPickerPos] = useState({ top: 0, left: 0 });
   useEffect(() => {
     if (!pickerOpen) return;
-    const handler = () => setPickerOpen(null);
-    setTimeout(() => document.addEventListener('click', handler), 0);
-    return () => document.removeEventListener('click', handler);
+    const close = () => setPickerOpen(null);
+    setTimeout(() => document.addEventListener('click', close), 0);
+    window.addEventListener('scroll', close, true);
+    return () => { document.removeEventListener('click', close); window.removeEventListener('scroll', close, true); };
   }, [pickerOpen]);
+  const [fieldDropdown, setFieldDropdown] = useState(null); // { id, field } | null
+  const [fieldDropPos, setFieldDropPos] = useState({ top: 0, left: 0 });
+  useEffect(() => {
+    if (!fieldDropdown) return;
+    const close = () => setFieldDropdown(null);
+    setTimeout(() => document.addEventListener('click', close), 0);
+    window.addEventListener('scroll', close, true);
+    return () => { document.removeEventListener('click', close); window.removeEventListener('scroll', close, true); };
+  }, [fieldDropdown]);
   const [hoveredAssignee, setHoveredAssignee] = useState(null); // { itemId, login } | null
   const hoverTimerRef = useRef(null);
+  const [hoveredRow, setHoveredRow] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [deletedIds, setDeletedIds] = useState(() => { try { return new Set(JSON.parse(localStorage.getItem('nexus_deleted_v1') || '[]')); } catch { return new Set(); } });
+  const [createdItems, setCreatedItems] = useState(() => { try { return JSON.parse(localStorage.getItem('nexus_created_v1') || '[]'); } catch { return []; } });
+  const [createModal, setCreateModal] = useState(null); // { area, sprint } | null
 
   const items = useMemo(() => sprint === null ? BACKLOG : BACKLOG.filter(i => i.sprint === sprint), [sprint]);
+  const resolvedItems = useMemo(() => {
+    const base = items.filter(i => !deletedIds.has(i.id)).map(i => edits[i.id] ? { ...i, ...edits[i.id] } : i);
+    const created = createdItems
+      .filter(i => (sprint === null || i.sprint === sprint) && !deletedIds.has(i.id))
+      .map(i => edits[i.id] ? { ...i, ...edits[i.id] } : i);
+    return [...base, ...created];
+  }, [items, edits, deletedIds, createdItems, sprint]);
   const areas = useMemo(() => [...new Set(items.map(i => i.area))].sort(), [items]);
   const areaColor = useMemo(() => {
     const m = {};
@@ -70,15 +257,15 @@ export default function BacklogPane({ sprint }) {
   const tipos   = useMemo(() => [...new Set(items.map(i => i.tipo).filter(Boolean))].sort(), [items]);
   const persons = useMemo(() => {
     const m = {};
-    items.forEach(i => (i.assignees || []).forEach(a => { if (!m[a.login]) m[a.login] = a; }));
+    resolvedItems.forEach(i => (i.assignees || []).forEach(a => { if (!m[a.login]) m[a.login] = a; }));
     return Object.values(m).sort((a, b) => a.login.localeCompare(b.login));
-  }, [items]);
+  }, [resolvedItems]);
 
   const allEquipos = useMemo(() => Object.keys(schemaFields['Equipo']?.options || {}).sort(), [schemaFields]);
   const allTipos   = useMemo(() => Object.keys(schemaFields['Tipo']?.options   || {}).sort(), [schemaFields]);
 
   const toggle = (arr, set, v) => set(p => p.includes(v) ? p.filter(x => x !== v) : [...p, v]);
-  const filtered = useMemo(() => items.filter(item => {
+  const filtered = useMemo(() => resolvedItems.filter(item => {
     if (stf.length && !stf.includes(item.status)) return false;
     if (sf.length  && !sf.includes(item.size))    return false;
     if (af.length  && !af.includes(item.area))    return false;
@@ -90,7 +277,7 @@ export default function BacklogPane({ sprint }) {
       if (!item.title.toLowerCase().includes(q) && !item.id.toLowerCase().includes(q)) return false;
     }
     return true;
-  }), [items, stf, sf, af, ef, tf, pf, query]);
+  }), [resolvedItems, stf, sf, af, ef, tf, pf, query]);
 
   const byArea = useMemo(() => {
     const m = {};
@@ -151,6 +338,28 @@ export default function BacklogPane({ sprint }) {
   };
 
   const getVal = (item, field) => edits[item.id]?.[field] ?? item[field];
+
+  const nextIdForSprint = (sp) => {
+    const prefix = `NX-S${sp}.`;
+    const allIds = [
+      ...BACKLOG.filter(i => i.sprint === sp).map(i => i.id),
+      ...createdItems.filter(i => i.sprint === sp).map(i => i.id),
+    ];
+    const maxNum = allIds.reduce((mx, id) => {
+      if (!id.startsWith(prefix)) return mx;
+      const n = parseInt(id.slice(prefix.length), 10);
+      return isNaN(n) ? mx : Math.max(mx, n);
+    }, 0);
+    return `${prefix}${String(maxNum + 1).padStart(2, '0')}`;
+  };
+
+  const mostCommonTipoForArea = (area) => {
+    const areaItems = BACKLOG.filter(i => i.area === area && i.tipo);
+    if (!areaItems.length) return null;
+    const counts = {};
+    areaItems.forEach(i => { counts[i.tipo] = (counts[i.tipo] || 0) + 1; });
+    return Object.entries(counts).sort(([, a], [, b]) => b - a)[0]?.[0] || null;
+  };
   const startEdit = (e, id, field, cur) => {
     e.stopPropagation();
     setEditing({ id, field });
@@ -232,6 +441,13 @@ export default function BacklogPane({ sprint }) {
     }
   };
 
+  const doDelete = (item) => {
+    const next = new Set([...deletedIds, item.id]);
+    setDeletedIds(next);
+    try { localStorage.setItem('nexus_deleted_v1', JSON.stringify([...next])); } catch {}
+    setDeleteConfirm(null);
+  };
+
   function renderAssignees(item) {
     const current = getVal(item, 'assignees') || [];
     const currentLogins = current.map(a => a.login.toLowerCase());
@@ -239,10 +455,10 @@ export default function BacklogPane({ sprint }) {
     const isSyncing = syncing?.id === item.id && syncing?.field === 'assignees';
     const isErr     = syncErr?.id  === item.id && syncErr?.field  === 'assignees';
     return (
-      <div style={{ position:'relative', display:'flex', alignItems:'center', gap:2, flexWrap:'wrap' }}
+      <div style={{ position:'relative', display:'flex', alignItems:'center', gap:4, flexWrap:'wrap' }}
         onClick={e => e.stopPropagation()}>
         <button
-          onClick={e => { e.stopPropagation(); setPickerOpen(isOpen ? null : item.id); }}
+          onClick={e => { e.stopPropagation(); if (!isOpen) { const r = e.currentTarget.getBoundingClientRect(); setPickerPos({ top: r.bottom + 4, left: r.left }); } setPickerOpen(isOpen ? null : item.id); }}
           style={{ width:18, height:18, borderRadius:'50%', border:'1px dashed #6366f180', background:'transparent',
             color:'#818cf8', fontSize:12, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
             padding:0, lineHeight:1, flexShrink:0 }}>+</button>
@@ -276,7 +492,7 @@ export default function BacklogPane({ sprint }) {
         {isErr && <span style={{ fontSize:9, color:'#f87171' }} title={syncErr.msg}>✗</span>}
         {isOpen && (
           <div onClick={e => e.stopPropagation()}
-            style={{ position:'absolute', top:'calc(100% + 4px)', left:0, zIndex:200,
+            style={{ position:'fixed', top: pickerPos.top, left: pickerPos.left, zIndex:9999,
               background:'var(--bg2)', border:'1px solid var(--bdr)', borderRadius:8,
               padding:'4px 0', minWidth:200, maxHeight:220, overflowY:'auto',
               boxShadow:'0 8px 24px #00000040' }}>
@@ -314,10 +530,6 @@ export default function BacklogPane({ sprint }) {
         onClick: e => e.stopPropagation(),
         style: { width:'100%', background:'var(--bg0)', border:'1px solid #6366f1', borderRadius:4, padding:'2px 5px', fontSize:11, color:'var(--tx0)', outline:'none', fontFamily:'inherit' },
       };
-      if (field === 'status') return <select {...base} onChange={e => setEditVal(e.target.value)}>{STATUSES.map(s => <option key={s} value={s}>{s}</option>)}</select>;
-      if (field === 'size')   return <select {...base} onChange={e => setEditVal(e.target.value)}>{['XS','S','M','L','XL'].map(s => <option key={s} value={s}>{s}</option>)}</select>;
-      if (field === 'equipo') { return <select {...base} onChange={e => setEditVal(e.target.value)}><option value="">—</option>{allEquipos.map(o => <option key={o} value={o}>{o}</option>)}</select>; }
-      if (field === 'tipo')   { return allTipos.length ? <select {...base} onChange={e => setEditVal(e.target.value)}><option value="">—</option>{allTipos.map(o => <option key={o} value={o}>{o}</option>)}</select> : <input {...base} onChange={e => setEditVal(e.target.value)} />; }
       if (field === 'startDate' || field === 'targetDate') return <input type="date" {...base} onChange={e => setEditVal(e.target.value)} />;
       if (field === 'estimate') return <input type="number" step="0.5" min="0" {...base} onChange={e => setEditVal(e.target.value)} />;
       return <input {...base} onChange={e => setEditVal(e.target.value)} />;
@@ -331,7 +543,7 @@ export default function BacklogPane({ sprint }) {
     <span
       onMouseEnter={() => setHovered({ id: item.id, field })}
       onMouseLeave={() => setHovered(p => p?.id === item.id && p?.field === field ? null : p)}
-      onClick={e => startEdit(e, item.id, field, val != null ? String(val) : '')}
+      onClick={e => { e.stopPropagation(); if (isSelect) { const r = e.currentTarget.getBoundingClientRect(); setFieldDropPos({ top: r.bottom + 2, left: r.left }); setFieldDropdown({ id: item.id, field }); } else { startEdit(e, item.id, field, val != null ? String(val) : ''); } }}
       style={{ cursor: isSelect ? 'pointer' : 'text', display:'flex', alignItems:'center', justifyContent: center ? 'center' : 'flex-start', width:'100%', position: center ? 'relative' : undefined, borderRadius:3, background: isSaved ? '#052e1650' : 'transparent', transition:'background 1s' }}
     >
       <span style={{ flex: center ? 'unset' : 1, minWidth:0, textAlign: center ? 'center' : undefined }}>
@@ -494,6 +706,12 @@ export default function BacklogPane({ sprint }) {
                   <div style={{ width:4, height:14, borderRadius:3, background:areaColor[area] }} />
                   <span style={{ color:areaColor[area], fontWeight:700, fontSize:12 }}>{area}</span>
                   <span style={{ color:"var(--bdr2)", fontSize:10 }}>({its.length} HU)</span>
+                  <button
+                    onClick={e => { e.stopPropagation(); setCreateModal({ area, sprint: sprint ?? 3 }); }}
+                    title="Nueva tarea"
+                    style={{ marginLeft:'auto', padding:'2px 8px', borderRadius:5, border:'1px solid #6366f140', background:'#6366f110', color:'#818cf8', fontSize:11, fontWeight:700, cursor:'pointer', lineHeight:1.4 }}>
+                    + Nueva
+                  </button>
                 </div>
                 <div style={{ overflowX:"auto" }}>
                   <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12, tableLayout:"fixed" }}>
@@ -508,6 +726,7 @@ export default function BacklogPane({ sprint }) {
                       <col style={{ width:60 }} />
                       <col style={{ width:60 }} />
                       <col style={{ width:46 }} />
+                      <col style={{ width:32 }} />
                     </colgroup>
                     <thead>
                       <tr style={{ borderBottom:"1px solid var(--bdr)" }}>
@@ -515,6 +734,7 @@ export default function BacklogPane({ sprint }) {
                           const pad = i >= 6 ? "7px 6px" : "7px 14px";
                           return <th key={h} style={{ textAlign: i >= 2 ? "center" : "left", padding: pad, color:"var(--tx4)", fontWeight:700, fontSize:9, textTransform:"uppercase", letterSpacing:".07em", whiteSpace:"nowrap" }}>{h}</th>;
                         })}
+                        <th style={{ width:32 }} />
                       </tr>
                     </thead>
                     <tbody>
@@ -526,8 +746,10 @@ export default function BacklogPane({ sprint }) {
                           <Fragment key={item.id}>
                             <tr
                               onClick={hasSubs ? () => toggleOpen(item.id) : undefined}
+                              onMouseEnter={() => setHoveredRow(item.id)}
+                              onMouseLeave={() => setHoveredRow(null)}
                               style={{
-                                background: rowBg,
+                                background: hoveredRow === item.id ? '#ffffff0a' : rowBg,
                                 borderBottom: (!isOpen && idx < its.length - 1) ? "1px solid #1c1c1e" : "none",
                                 cursor: hasSubs ? "pointer" : "default",
                               }}
@@ -572,6 +794,12 @@ export default function BacklogPane({ sprint }) {
                               <td style={{ padding:"9px 6px", color:"var(--tx4)", fontSize:10, whiteSpace:"nowrap" }}>
                                 {renderEditable(item, 'estimate', <span>{getVal(item, 'estimate') != null ? `${getVal(item, 'estimate')}h` : '—'}</span>, true)}
                               </td>
+                              <td style={{ padding:"0 4px", textAlign:"center", verticalAlign:"middle" }}>
+                                {hoveredRow === item.id && (
+                                  <button onClick={e => { e.stopPropagation(); setDeleteConfirm(item); }}
+                                    style={{ background:'#dc262620', border:'1px solid #dc262640', borderRadius:4, color:'#f87171', fontSize:10, cursor:'pointer', padding:'2px 5px', lineHeight:1 }}>✕</button>
+                                )}
+                              </td>
                             </tr>
                             {hasSubs && isOpen && item.subtasks.map((sub, si) => (
                               <tr key={`${item.id}-${si}`} style={{
@@ -580,7 +808,7 @@ export default function BacklogPane({ sprint }) {
                               }}>
                                 <td style={{ padding:"6px 14px 6px 36px", color:"var(--bdr2)", fontSize:11, whiteSpace:"nowrap" }}>└</td>
                                 <td style={{ padding:"6px 14px", color:"var(--tx3)", fontSize:11, fontStyle:"italic" }}>{sub.title}</td>
-                                <td colSpan={8} style={{ padding:"6px 14px" }} />
+                                <td colSpan={9} style={{ padding:"6px 14px" }} />
                               </tr>
                             ))}
                           </Fragment>
@@ -787,6 +1015,78 @@ export default function BacklogPane({ sprint }) {
                   <span style={{ color:"var(--tx2)", fontSize:10 }}>{h}</span>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {fieldDropdown && (() => {
+        const { id, field } = fieldDropdown;
+        const fdItem = resolvedItems.find(i => i.id === id);
+        const curVal = fdItem ? String(getVal(fdItem, field) ?? '') : '';
+        let options = [];
+        if (field === 'status') options = STATUSES;
+        if (field === 'size')   options = ['XS','S','M','L','XL'];
+        if (field === 'equipo') options = ['', ...allEquipos];
+        if (field === 'tipo')   options = ['', ...allTipos];
+        return (
+          <>
+            <style>{`.fdrop::-webkit-scrollbar{width:4px}.fdrop::-webkit-scrollbar-track{background:transparent}.fdrop::-webkit-scrollbar-thumb{background:#3f3f46;border-radius:2px}`}</style>
+            <div className="fdrop" onClick={e => e.stopPropagation()}
+              style={{ position:'fixed', top: fieldDropPos.top, left: fieldDropPos.left, zIndex:9999,
+                background:'var(--bg2)', border:'1px solid var(--bdr)', borderRadius:8,
+                padding:'4px 0', minWidth:130, maxHeight:220, overflowY:'auto', scrollbarWidth:'thin',
+                boxShadow:'0 8px 24px #00000040' }}>
+              {options.map(opt => {
+                const isCur = opt === curVal || (opt === '' && curVal === '');
+                return (
+                  <div key={opt || '_empty'}
+                    onClick={() => { editValRef.current = opt; commitEdit(id, field); setFieldDropdown(null); }}
+                    style={{ padding:'6px 12px', cursor:'pointer', fontSize:11,
+                      color: isCur ? '#818cf8' : (opt ? 'var(--tx1)' : 'var(--tx4)'),
+                      background: isCur ? '#6366f115' : 'transparent',
+                      display:'flex', alignItems:'center', justifyContent:'space-between', gap:8 }}
+                    onMouseEnter={e => e.currentTarget.style.background = isCur ? '#6366f125' : '#ffffff08'}
+                    onMouseLeave={e => e.currentTarget.style.background = isCur ? '#6366f115' : 'transparent'}>
+                    {opt || '—'}
+                    {isCur && <span style={{ fontSize:9, color:'#818cf8' }}>✓</span>}
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        );
+      })()}
+
+      {createModal && (
+        <CreateTaskModal
+          sprint={createModal.sprint}
+          area={createModal.area}
+          nextId={nextIdForSprint(createModal.sprint)}
+          defaultTipo={mostCommonTipoForArea(createModal.area)}
+          allEquipos={allEquipos}
+          allTipos={allTipos}
+          statuses={STATUSES}
+          onClose={() => setCreateModal(null)}
+          onCreated={item => {
+            const next = [...createdItems, item];
+            setCreatedItems(next);
+            try { localStorage.setItem('nexus_created_v1', JSON.stringify(next)); } catch {}
+            setCreateModal(null);
+          }}
+        />
+      )}
+
+      {deleteConfirm && (
+        <div onClick={() => setDeleteConfirm(null)}
+          style={{ position:'fixed', inset:0, background:'#00000060', zIndex:9999, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div onClick={e => e.stopPropagation()}
+            style={{ background:'var(--bg2)', border:'1px solid var(--bdr)', borderRadius:12, padding:'20px 24px', maxWidth:360, width:'90%' }}>
+            <div style={{ color:'var(--tx0)', fontWeight:700, fontSize:14, marginBottom:8 }}>¿Eliminar tarea?</div>
+            <div style={{ color:'var(--tx2)', fontSize:12, marginBottom:16 }}>{deleteConfirm.id} — {deleteConfirm.title}</div>
+            <div style={{ display:'flex', gap:8, justifyContent:'flex-end' }}>
+              <button onClick={() => setDeleteConfirm(null)} style={{ padding:'6px 14px', borderRadius:6, border:'1px solid var(--bdr)', background:'transparent', color:'var(--tx2)', cursor:'pointer', fontSize:12 }}>Cancelar</button>
+              <button onClick={() => doDelete(deleteConfirm)} style={{ padding:'6px 14px', borderRadius:6, border:'none', background:'#dc2626', color:'#fff', cursor:'pointer', fontSize:12, fontWeight:700 }}>Eliminar</button>
             </div>
           </div>
         </div>

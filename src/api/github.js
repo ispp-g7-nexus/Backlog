@@ -66,7 +66,7 @@ export async function updateProjectField(token, itemNodeId, ghFieldName, value) 
         itemId: "${itemNodeId}"
         fieldId: "${f.id}"
         value: { ${valStr} }
-      }) { projectItem { id } }
+      }) { projectV2Item { id } }
     }` }),
   });
   const json = await res.json();
@@ -113,6 +113,56 @@ export async function updateIssueTitle(token, issueUrl, itemId, newTitle) {
   });
   if (!res.ok) throw new Error(`GitHub ${res.status}: ${await res.text()}`);
   return res.json();
+}
+
+export async function createIssue(token, { title, body, labels, assignees }) {
+  const res = await fetch('https://api.github.com/repos/ispp-g7-nexus/7-NexUS/issues', {
+    method: 'POST',
+    headers: { Authorization: `bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, body, labels, assignees: (assignees || []).map(a => a.login || a) }),
+  });
+  if (!res.ok) throw new Error(`GitHub ${res.status}: ${await res.text()}`);
+  return res.json();
+}
+
+export async function addToProject(token, issueNodeId) {
+  const schema = await fetchProjectSchema(token);
+  const res = await fetch('https://api.github.com/graphql', {
+    method: 'POST',
+    headers: { Authorization: `bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: `mutation {
+      addProjectV2ItemByContentId(input: {
+        projectId: "${schema.projectId}"
+        contentId: "${issueNodeId}"
+      }) { item { id } }
+    }` }),
+  });
+  const json = await res.json();
+  if (json.errors) throw new Error(json.errors[0].message);
+  return json.data.addProjectV2ItemByContentId.item;
+}
+
+export async function fetchIssueTemplates(token) {
+  try {
+    const res = await fetch('https://api.github.com/repos/ispp-g7-nexus/7-NexUS/contents/.github/ISSUE_TEMPLATE', {
+      headers: { Authorization: `bearer ${token}`, Accept: 'application/vnd.github.v3+json' },
+    });
+    if (!res.ok) return [];
+    const files = await res.json();
+    if (!Array.isArray(files)) return [];
+    const templates = await Promise.all(
+      files
+        .filter(f => /\.(md|yml|yaml)$/i.test(f.name))
+        .map(async f => {
+          const r = await fetch(f.download_url, { headers: { Authorization: `bearer ${token}` } });
+          const content = await r.text();
+          const nameMatch = content.match(/^name:\s*(.+)$/m);
+          const body = content.replace(/^---[\s\S]*?---\s*/m, '').trim();
+          return { name: nameMatch ? nameMatch[1].trim() : f.name.replace(/\.\w+$/, ''), body };
+        })
+    );
+    return templates;
+  } catch { return []; }
 }
 
 export async function fetchFromGitHub(token) {
