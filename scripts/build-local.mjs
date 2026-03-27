@@ -1,5 +1,5 @@
-// Build local: replica lo que hace el CI, produce dist/nexus-backlog.html
-import { execSync } from 'child_process';
+// Build local: produce dist/nexus-backlog.html (bundle único con JS + CSS inline)
+import { build } from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -13,23 +13,31 @@ const src = fs.readFileSync(srcPath, 'utf-8')
   .replace(/^export default function App/m, 'function App');
 
 fs.writeFileSync(entryPath,
-  `import { createRoot } from "react-dom/client";\n${src}\ncreateRoot(document.getElementById("root")).render(<App />);\n`
+  `import "./styles/index.css";\nimport { createRoot } from "react-dom/client";\n${src}\ncreateRoot(document.getElementById("root")).render(<App />);\n`
 );
 
-// 2. Bundle con esbuild
-const bundlePath = path.join(root, 'dist', '_bundle.js');
+// 2. Bundle con esbuild (JS + CSS)
+const bundleJsPath = path.join(root, 'dist', '_bundle.js');
+const bundleCssPath = path.join(root, 'dist', '_bundle.css');
 try {
-  execSync(
-    `npx esbuild "${entryPath}" --bundle --outfile="${bundlePath}" --platform=browser --jsx=automatic --minify`,
-    { stdio: 'inherit' }
-  );
+  await build({
+    entryPoints: [entryPath],
+    bundle: true,
+    outfile: bundleJsPath,
+    platform: 'browser',
+    jsx: 'automatic',
+    minify: true,
+    loader: { '.css': 'css' },
+  });
 } finally {
   fs.rmSync(entryPath, { force: true });
 }
 
 // 3. Ensamblar HTML
-const bundle = fs.readFileSync(bundlePath, 'utf-8');
-fs.rmSync(bundlePath, { force: true });
+const bundleJs = fs.readFileSync(bundleJsPath, 'utf-8');
+const bundleCss = fs.existsSync(bundleCssPath) ? fs.readFileSync(bundleCssPath, 'utf-8') : '';
+fs.rmSync(bundleJsPath, { force: true });
+if (fs.existsSync(bundleCssPath)) fs.rmSync(bundleCssPath, { force: true });
 
 const html = `<!DOCTYPE html>
 <html lang="es">
@@ -37,18 +45,11 @@ const html = `<!DOCTYPE html>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>NexUS — Product Backlog</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:#09090b;color:#e2e8f0;font-family:"Inter","Segoe UI",system-ui,sans-serif}
-    ::-webkit-scrollbar{width:6px;height:6px}
-    ::-webkit-scrollbar-track{background:#18181b}
-    ::-webkit-scrollbar-thumb{background:#3f3f46;border-radius:3px}
-    #root{min-height:100vh}
-  </style>
+  <style>${bundleCss}</style>
 </head>
 <body>
   <div id="root"></div>
-  <script>${bundle}</script>
+  <script>${bundleJs}</script>
 </body>
 </html>`;
 

@@ -1,0 +1,129 @@
+/* ========================================
+   NexUS Design Tokens
+   ======================================== */
+
+:root {
+  /* Spacing scale */
+  --sp-0: 0;
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* Font sizes */
+  --fs-xs: 10px;
+  --fs-sm: 11px;
+  --fs-base: 12px;
+  --fs-md: 13px;
+  --fs-lg: 15px;
+  --fs-xl: 18px;
+  --fs-2xl: 22px;
+  --fs-3xl: 28px;
+
+  /* Font weights */
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 9px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.3);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.4);
+
+  /* Transitions */
+  --transition-fast: all .12s ease;
+  --transition-base: all .2s ease;
+
+  /* Max widths */
+  --max-w-content: 1400px;
+
+  /* === DARK THEME (default) === */
+  --bg0: #09090b;
+  --bg1: #0c0c10;
+  --bg2: #111113;
+  --bg3: #18181b;
+  --bdr: #27272a;
+  --bdr2: #3f3f46;
+  --tx0: #e2e8f0;
+  --tx1: #cbd5e1;
+  --tx2: #a1a1aa;
+  --tx3: #71717a;
+  --tx4: #52525b;
+
+  /* Accent */
+  --accent: #818cf8;
+  --accent-bg: #6366f120;
+  --accent-border: #6366f145;
+
+  /* Status badges */
+  --bdg-backlog-bg: #27272a; --bdg-backlog-tx: #71717a;
+  --bdg-ready-bg: #0c2d4a;   --bdg-ready-tx: #38bdf8;
+  --bdg-prog-bg: #3b1f00;    --bdg-prog-tx: #fbbf24;
+  --bdg-rev-bg: #2a1052;     --bdg-rev-tx: #c4b5fd;
+  --bdg-done-bg: #052e16;    --bdg-done-tx: #34d399;
+
+  /* Size badges */
+  --bdg-xs-bg: #1c1c1e; --bdg-xs-tx: #9ca3af;
+  --bdg-s-bg: #0f2235;  --bdg-s-tx: #60a5fa;
+  --bdg-m-bg: #172554;  --bdg-m-tx: #93c5fd;
+  --bdg-l-bg: #2d1b69;  --bdg-l-tx: #a78bfa;
+  --bdg-xl-bg: #3b0764; --bdg-xl-tx: #c084fc;
+
+  /* Semantic colors */
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+  --color-info: #38bdf8;
+}
+
+/* === LIGHT THEME === */
+:root[data-theme="light"] {
+  --bg0: #f8fafc;
+  --bg1: #f1f5f9;
+  --bg2: #ffffff;
+  --bg3: #f8fafc;
+  --bdr: #e2e8f0;
+  --bdr2: #cbd5e1;
+  --tx0: #111827;
+  --tx1: #374151;
+  --tx2: #4b5563;
+  --tx3: #6b7280;
+  --tx4: #9ca3af;
+
+  --accent-bg: #6366f110;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
+
+  --bdg-backlog-bg: #f4f4f5; --bdg-backlog-tx: #71717a;
+  --bdg-ready-bg: #e0f2fe;   --bdg-ready-tx: #0284c7;
+  --bdg-prog-bg: #fef3c7;    --bdg-prog-tx: #b45309;
+  --bdg-rev-bg: #ede9fe;     --bdg-rev-tx: #7c3aed;
+  --bdg-done-bg: #dcfce7;    --bdg-done-tx: #059669;
+
+  --bdg-xs-bg: #f4f4f5; --bdg-xs-tx: #6b7280;
+  --bdg-s-bg: #dbeafe;  --bdg-s-tx: #1d4ed8;
+  --bdg-m-bg: #dbeafe;  --bdg-m-tx: #1e40af;
+  --bdg-l-bg: #ede9fe;  --bdg-l-tx: #6d28d9;
+  --bdg-xl-bg: #f3e8ff; --bdg-xl-tx: #7e22ce;
+}
+
+/* Auto dark/light from OS preference */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    /* Only apply if no explicit theme is set */
+  }
+}

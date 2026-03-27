@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const GH_OWNER = "ispp-g7-nexus", GH_REPO = "7-NexUS";
-const GH_STATS_KEY = "nexus_gh_stats_v5";
+export const GH_STATS_KEY = "nexus_gh_stats_v5";
 
 async function fetchGitHubStats(token) {
   const h = { "Authorization": `bearer ${token}`, "Content-Type": "application/json" };

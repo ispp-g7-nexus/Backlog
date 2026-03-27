@@ -1,10 +1,20 @@
 import { useState, useMemo, Fragment, useEffect } from 'react';
-import { TEAM_MEMBERS, EQUIPO_LOGINS, SIZE_H_MAP } from '../constants.js';
+import { TEAM_MEMBERS, EQUIPO_LOGINS, SIZE_H_MAP, SC as SPRINT_CONFIG } from '../constants.js';
 import { BACKLOG } from '../data.js';
 import { useGitHubStats } from '../hooks/useGitHubStats.js';
 import clockifyRaw from '../../data/clockify-entries.json';
 
 // fetchGitHubStats moved to hooks/useGitHubStats.js
+
+function InfStatCard({ label, value, sub, color }) {
+  return (
+    <div style={{ background:"var(--bg2)", border:`1px solid ${color}30`, borderRadius:10, padding:"14px 18px", flex:"1 1 150px", minWidth:130 }}>
+      <div style={{ color:"var(--tx4)", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>{label}</div>
+      <div style={{ color, fontSize:24, fontWeight:800, lineHeight:1.1 }}>{value}</div>
+      {sub && <div style={{ color:"var(--tx3)", fontSize:10, marginTop:4 }}>{sub}</div>}
+    </div>
+  );
+}
 
 export default function GitHubPane() {
   const TC = { A: "#3b82f6", B: "#22c55e", C: "#f59e0b", D: "#a855f7" };
@@ -653,7 +663,7 @@ export default function GitHubPane() {
                 const WEEK_S = 7 * 24 * 3600;
                 const actWeeks = stats.commitActivity;
                 // Extend to last sprint end
-                const lastSprintTs = Math.max(...Object.values(SC).map(s => Math.floor(new Date(s.end).getTime() / 1000)));
+                const lastSprintTs = Math.max(...Object.values(SPRINT_CONFIG).map(s => Math.floor(new Date(s.end).getTime() / 1000)));
                 const futureTs = [];
                 let fw = actWeeks[actWeeks.length - 1].week + WEEK_S;
                 while (fw <= lastSprintTs + WEEK_S) { futureTs.push(fw); fw += WEEK_S; }
@@ -689,7 +699,7 @@ export default function GitHubPane() {
                 const nzW = display.filter(w => w.total > 0);
                 const avgW = nzW.length > 0 ? nzW.reduce((s,w) => s + w.total, 0) / nzW.length : 0;
                 // Sprint milestone positions
-                const milestones = Object.values(SC).map(s => {
+                const milestones = Object.values(SPRINT_CONFIG).map(s => {
                   const ts = Math.floor(new Date(s.end).getTime() / 1000);
                   let best = 0, bestD = Infinity;
                   display.forEach(({ week }, i) => { const d = Math.abs(week - ts); if (d < bestD) { bestD = d; best = i; } });
@@ -852,7 +862,7 @@ export default function GitHubPane() {
                 const actWeeks = stats.commitActivity;
                 const teamsArr = ["A","B","C","D"];
                 // Extend to last sprint end
-                const lastSprintTs = Math.max(...Object.values(SC).map(s => Math.floor(new Date(s.end).getTime() / 1000)));
+                const lastSprintTs = Math.max(...Object.values(SPRINT_CONFIG).map(s => Math.floor(new Date(s.end).getTime() / 1000)));
                 const futureTs = [];
                 let fw = actWeeks[actWeeks.length - 1].week + WEEK_S;
                 while (fw <= lastSprintTs + WEEK_S) { futureTs.push(fw); fw += WEEK_S; }
@@ -888,7 +898,7 @@ export default function GitHubPane() {
                 const nzW = display.filter(w => Object.values(w.vals).some(v => v > 0));
                 const avgW = nzW.length > 0 ? nzW.reduce((s,w) => s + Object.values(w.vals).reduce((a,v)=>a+v,0), 0) / nzW.length : 0;
                 // Sprint milestones
-                const milestones = Object.values(SC).map(s => {
+                const milestones = Object.values(SPRINT_CONFIG).map(s => {
                   const ts = Math.floor(new Date(s.end).getTime() / 1000);
                   let best = 0, bestD = Infinity;
                   display.forEach(({ week }, i) => { const d = Math.abs(week - ts); if (d < bestD) { bestD = d; best = i; } });
@@ -1064,7 +1074,7 @@ export default function GitHubPane() {
                 const W=440, H=96, padL=26, padB=16, padT=8;
                 const WEEK_S = 7 * 24 * 3600;
                 const actWeeks = stats.prActivity;
-                const lastSprintTs = Math.max(...Object.values(SC).map(s => Math.floor(new Date(s.end).getTime() / 1000)));
+                const lastSprintTs = Math.max(...Object.values(SPRINT_CONFIG).map(s => Math.floor(new Date(s.end).getTime() / 1000)));
                 const futureTs = [];
                 let fw = actWeeks[actWeeks.length - 1].week + WEEK_S;
                 while (fw <= lastSprintTs + WEEK_S) { futureTs.push(fw); fw += WEEK_S; }
@@ -1087,7 +1097,7 @@ export default function GitHubPane() {
                 });
                 const nzW = display.filter(w => w.total > 0);
                 const avgW = nzW.length > 0 ? nzW.reduce((s,w) => s + w.total, 0) / nzW.length : 0;
-                const milestones = Object.values(SC).map(s => {
+                const milestones = Object.values(SPRINT_CONFIG).map(s => {
                   const ts = Math.floor(new Date(s.end).getTime() / 1000);
                   let best = 0, bestD = Infinity;
                   display.forEach(({ week }, i) => { const d = Math.abs(week - ts); if (d < bestD) { bestD = d; best = i; } });
@@ -1248,7 +1258,7 @@ export default function GitHubPane() {
                 const teamsArr = ["A","B","C","D"];
                 // Use last 26 weeks from prActivity
                 const actWeeks = stats.prActivity.slice(-26);
-                const lastSprintTs = Math.max(...Object.values(SC).map(s => Math.floor(new Date(s.end).getTime() / 1000)));
+                const lastSprintTs = Math.max(...Object.values(SPRINT_CONFIG).map(s => Math.floor(new Date(s.end).getTime() / 1000)));
                 const futureTs = [];
                 let fw = actWeeks[actWeeks.length - 1].week + WEEK_S;
                 while (fw <= lastSprintTs + WEEK_S) { futureTs.push(fw); fw += WEEK_S; }
@@ -1283,7 +1293,7 @@ export default function GitHubPane() {
                 });
                 const nzW = display.filter(w => Object.values(w.vals).some(v => v > 0));
                 const avgW = nzW.length > 0 ? nzW.reduce((s,w) => s + Object.values(w.vals).reduce((a,v)=>a+v,0), 0) / nzW.length : 0;
-                const milestones = Object.values(SC).map(s => {
+                const milestones = Object.values(SPRINT_CONFIG).map(s => {
                   const ts = Math.floor(new Date(s.end).getTime() / 1000);
                   let best = 0, bestD = Infinity;
                   display.forEach(({ week }, i) => { const d = Math.abs(week - ts); if (d < bestD) { bestD = d; best = i; } });

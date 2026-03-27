@@ -1,16 +1,25 @@
 {
   "name": "nexus-backlog",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "node scripts/dev.mjs",
+    "dev:server": "node --watch server/index.js",
     "build": "node scripts/build-local.mjs",
+    "start": "node server/index.js",
     "sync": "node scripts/fetch-project.mjs > data/nexus-backlog.json && node scripts/build-local.mjs",
-    "sync:data": "node scripts/fetch-project.mjs > data/nexus-backlog.json"
+    "sync:data": "node scripts/fetch-project.mjs > data/nexus-backlog.json",
+    "db:migrate": "psql -d nexus_backlog -f server/db/migrations/001_initial.sql"
   },
   "devDependencies": {
     "esbuild": "^0.25.0"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   }
