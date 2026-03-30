@@ -1,6 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { SC } from '../../constants.js';
-import { SPRINTS } from '../../data.js';
+import { detectCurrentSprint } from '../../lib/utils.js';
+import { useApp } from '../../context/AppContext.jsx';
+import { fetchRetro, saveRetro } from '../../api/backend.js';
 
 const COLUMNS = [
   { id: 'good', label: 'Fue bien', color: '#34d399', icon: '+' },
@@ -19,19 +21,21 @@ function saveRetros(data) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
 }
 
-function detectCurrentSprint() {
-  const now = Date.now();
-  for (const { sprint: s } of SPRINTS) {
-    const c = SC[s];
-    if (c && new Date(c.start).getTime() <= now && now <= new Date(c.end).getTime() + 86400000) return s;
-  }
-  return SPRINTS[SPRINTS.length - 1]?.sprint || 1;
-}
-
 export default function RetroPane() {
-  const [activeSprint, setActiveSprint] = useState(detectCurrentSprint);
+  const { project, activeSprint: globalSprint } = useApp();
+  const activeSprint = globalSprint || detectCurrentSprint();
   const [retros, setRetros] = useState(loadRetros);
   const [newText, setNewText] = useState({ good: '', improve: '', actions: '' });
+
+  // Load from backend when project is available
+  useEffect(() => {
+    if (!project?.id) return;
+    fetchRetro(project.id, activeSprint)
+      .then(items => {
+        setRetros(prev => ({ ...prev, [`sprint_${activeSprint}`]: items }));
+      })
+      .catch(() => { /* usar localStorage como fallback */ });
+  }, [project?.id, activeSprint]);
 
   const sprintKey = `sprint_${activeSprint}`;
   const items = retros[sprintKey] || { good: [], improve: [], actions: [] };
@@ -40,6 +44,9 @@ export default function RetroPane() {
     const next = { ...retros, [sprintKey]: { ...items, [col]: newItems } };
     setRetros(next);
     saveRetros(next);
+    if (project?.id) {
+      saveRetro(project.id, activeSprint, next[sprintKey]).catch(() => {});
+    }
   };
 
   const addItem = (col) => {
@@ -97,15 +104,7 @@ export default function RetroPane() {
       {/* Header */}
       <div className="card mb-3" style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <div style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
-            {SPRINTS.map(({ sprint: s }) => (
-              <button key={s} onClick={() => setActiveSprint(s)}
-                className={`btn btn-sm ${activeSprint === s ? 'btn-active' : ''}`}
-                style={activeSprint === s ? { background: `${SC[s].color}20`, color: SC[s].color, borderColor: `${SC[s].color}50` } : {}}>
-                {SC[s].label}
-              </button>
-            ))}
-          </div>
+          <div style={{ fontWeight: 700, color: SC[activeSprint]?.color }}>{SC[activeSprint]?.label}</div>
           <div style={{ color: 'var(--tx4)', fontSize: 11 }}>
             {totalItems} elemento{totalItems !== 1 ? 's' : ''}
             {actionsTotal > 0 && ` · ${actionsDone}/${actionsTotal} acciones completadas`}

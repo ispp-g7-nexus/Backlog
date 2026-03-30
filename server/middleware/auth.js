@@ -31,6 +31,21 @@ export async function authenticate(req, res, next) {
   }
 }
 
+// Use as: router.param('projectId', requireProjectAccess)
+export async function requireProjectAccess(req, res, next, projectId) {
+  try {
+    const result = await query(
+      'SELECT role FROM project_users WHERE project_id = $1 AND user_id = $2',
+      [projectId, req.user.id]
+    );
+    if (!result.rows[0]) return res.status(403).json({ error: 'Access denied' });
+    req.projectRole = result.rows[0].role;
+    next();
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to verify project access' });
+  }
+}
+
 export async function optionalAuth(req, res, next) {
   const header = req.headers.authorization;
   if (!header?.startsWith('Bearer ')) return next();

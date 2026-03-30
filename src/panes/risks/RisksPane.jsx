@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { BACKLOG, SPRINTS } from '../../data.js';
 import { SC, SIZE_H_MAP, TEAM_MEMBERS } from '../../constants.js';
+import { useApp } from '../../context/AppContext.jsx';
 
 function loadItems() {
   try {
@@ -54,23 +55,13 @@ function RiskCard({ title, value, unit, description, items, sem }) {
 
 export default function RisksPane() {
   const allItems = useMemo(loadItems, []);
+  const { activeSprint: selectedSprint } = useApp();
 
   const risks = useMemo(() => {
     const now = Date.now();
+    const sc = SC[selectedSprint];
 
-    // Find current sprint
-    let currentSprint = null;
-    for (const { sprint: s } of SPRINTS) {
-      const c = SC[s];
-      if (c && new Date(c.start).getTime() <= now && now <= new Date(c.end).getTime() + 86400000) {
-        currentSprint = s;
-        break;
-      }
-    }
-    if (!currentSprint) currentSprint = SPRINTS[SPRINTS.length - 1]?.sprint;
-
-    const sprintItems = allItems.filter(i => i.sprint === currentSprint);
-    const sc = SC[currentSprint];
+    const sprintItems = allItems.filter(i => i.sprint === selectedSprint);
     const sprintStart = new Date(sc.start).getTime();
     const sprintEnd = new Date(sc.end).getTime();
     const elapsed = Math.max(0, Math.min(1, (now - sprintStart) / (sprintEnd - sprintStart)));
@@ -117,12 +108,12 @@ export default function RisksPane() {
     const backlogPct = sprintItems.length > 0 ? Math.round(backlogCount / sprintItems.length * 100) : 0;
 
     return {
-      currentSprint, elapsed, completionPct, completionGap,
+      elapsed, completionPct, completionGap,
       noSize, noDates, noAssignee, overdue, stale,
       backlogCount, backlogPct, overloaded, maxLoad, avgLoad,
       sprintItems,
     };
-  }, [allItems]);
+  }, [allItems, selectedSprint]);
 
   const elapsedPct = Math.round(risks.elapsed * 100);
   const completionPct = Math.round(risks.completionPct * 100);
@@ -153,7 +144,7 @@ export default function RisksPane() {
             <div style={{ width: 14, height: 14, borderRadius: '50%', background: overallSem.color, boxShadow: `0 0 10px ${overallSem.color}60` }} />
             <span style={{ color: overallSem.color, fontWeight: 800, fontSize: 16 }}>{overallSem.label}</span>
           </div>
-          <div style={{ color: 'var(--tx3)', fontSize: 11 }}>Sprint {risks.currentSprint} · {activeRisks} riesgo{activeRisks !== 1 ? 's' : ''} activo{activeRisks !== 1 ? 's' : ''}</div>
+          <div style={{ color: 'var(--tx3)', fontSize: 11 }}>Sprint {selectedSprint} · {activeRisks} riesgo{activeRisks !== 1 ? 's' : ''} activo{activeRisks !== 1 ? 's' : ''}</div>
         </div>
         <div style={{ display: 'flex', gap: 16 }}>
           <div style={{ textAlign: 'center' }}>

@@ -2,22 +2,38 @@ import { Router } from 'express';
 import crypto from 'crypto';
 import { query } from '../db/pool.js';
 import { encrypt } from '../lib/encrypt.js';
-import { signToken } from '../middleware/auth.js';
+import { signToken, authenticate } from '../middleware/auth.js';
 import { getAuthUrl, exchangeCode, fetchGitHubUser } from '../lib/github-oauth.js';
 
 const router = Router();
 
+// In-memory CSRF state store: state -> expiry timestamp
+const pendingStates = new Map();
+const STATE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+function cleanExpiredStates() {
+  const now = Date.now();
+  for (const [s, exp] of pendingStates) {
+    if (now > exp) pendingStates.delete(s);
+  }
+}
+
 // GET /auth/github — redirect to GitHub OAuth
 router.get('/github', (req, res) => {
+  cleanExpiredStates();
   const state = crypto.randomBytes(16).toString('hex');
-  // In production, store state in session/cookie for CSRF protection
+  pendingStates.set(state, Date.now() + STATE_TTL_MS);
   res.redirect(getAuthUrl(state));
 });
 
 // GET /auth/callback — GitHub OAuth callback
 router.get('/callback', async (req, res) => {
-  const { code } = req.query;
+  const { code, state } = req.query;
   if (!code) return res.status(400).json({ error: 'No code provided' });
+  if (!state || !pendingStates.has(state) || Date.now() > pendingStates.get(state)) {
+    return res.status(403).json({ error: 'Invalid or expired OAuth state' });
+  }
+  pendingStates.delete(state);
 
   try {
     const githubToken = await exchangeCode(code);
@@ -48,8 +64,7 @@ router.get('/callback', async (req, res) => {
 });
 
 // GET /auth/me — get current user
-router.get('/me', async (req, res) => {
-  // authenticate middleware should be applied before this
+router.get('/me', authenticate, (req, res) => {
   res.json({
     id: req.user.id,
     login: req.user.github_login,

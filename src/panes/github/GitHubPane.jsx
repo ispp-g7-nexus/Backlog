@@ -9,16 +9,9 @@ import PRsPersona from './views/PRsPersona.jsx';
 import PRsEquipo from './views/PRsEquipo.jsx';
 import LineasPersona from './views/LineasPersona.jsx';
 import LineasEquipo from './views/LineasEquipo.jsx';
+import RamasView from './views/RamasView.jsx';
 
-function InfStatCard({ label, value, sub, color }) {
-  return (
-    <div style={{ background:"var(--bg2)", border:`1px solid ${color}30`, borderRadius:10, padding:"14px 18px", flex:"1 1 150px", minWidth:130 }}>
-      <div style={{ color:"var(--tx4)", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>{label}</div>
-      <div style={{ color, fontSize:24, fontWeight:800, lineHeight:1.1 }}>{value}</div>
-      {sub && <div style={{ color:"var(--tx3)", fontSize:10, marginTop:4 }}>{sub}</div>}
-    </div>
-  );
-}
+import InfStatCard from '../informe/components/InfStatCard.jsx';
 
 export default function GitHubPane() {
   const { stats, loading, error, refresh } = useGitHubStats();
@@ -42,6 +35,9 @@ export default function GitHubPane() {
             </span>
           )
         }
+        <span style={{ fontSize: 10, color: 'var(--tx4)', background: 'var(--bg0)', border: '1px solid var(--bdr)', borderRadius: 5, padding: '2px 8px' }}>
+          Métricas acumuladas del repositorio — no filtrables por sprint
+        </span>
         <button onClick={refresh} disabled={loading} style={{
           marginLeft: "auto", padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600,
           cursor: loading ? "default" : "pointer",
@@ -101,6 +97,7 @@ export default function GitHubPane() {
               { id:"commits", label:"💻 Commits", color:"#818cf8" },
               { id:"prs", label:"🔀 Pull Requests", color:"#34d399" },
               { id:"lineas", label:"📦 Líneas", color:"#38bdf8" },
+              { id:"ramas", label:"🌿 Ramas", color:"#4ade80" },
             ].map(t => {
               const active = ghTab === t.id;
               return (
@@ -123,29 +120,34 @@ export default function GitHubPane() {
             {ghTab === "prs" && <PRsHeatmap stats={stats} />}
             {ghTab === "lineas" && <LinesHeatmap stats={stats} />}
 
-            {/* Persona / Equipo toggle */}
-            <div style={{ display:"flex", gap:3, background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:9, padding:3, alignSelf:"flex-start" }}>
-              {[{ id:"persona", label:"👥 Persona" }, { id:"equipo", label:"👤 Equipo" }].map(vt => {
-                const active = ghView === vt.id;
-                return (
-                  <button key={vt.id} onClick={() => setGhView(vt.id)}
-                    style={{ padding:"5px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer",
-                      border: active ? "1px solid #94a3b845" : "1px solid transparent",
-                      background: active ? "#94a3b820" : "transparent",
-                      color: active ? "var(--tx2)" : "var(--tx3)", transition:"all .12s" }}>
-                    {vt.label}
-                  </button>
-                );
-              })}
-            </div>
+            {/* Ramas view */}
+            {ghTab === "ramas" && <RamasView stats={stats} />}
 
-            {/* Tab × View content */}
-            {ghTab === "commits" && ghView === "persona" && <CommitsPersona data={data} stats={stats} />}
-            {ghTab === "commits" && ghView === "equipo" && <CommitsEquipo data={data} stats={stats} />}
-            {ghTab === "prs" && ghView === "persona" && <PRsPersona data={data} stats={stats} />}
-            {ghTab === "prs" && ghView === "equipo" && <PRsEquipo data={data} stats={stats} />}
-            {ghTab === "lineas" && ghView === "persona" && <LineasPersona data={data} stats={stats} />}
-            {ghTab === "lineas" && ghView === "equipo" && <LineasEquipo data={data} stats={stats} />}
+            {/* Persona / Equipo toggle + content (hidden for ramas) */}
+            {ghTab !== "ramas" && <>
+              <div style={{ display:"flex", gap:3, background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:9, padding:3, alignSelf:"flex-start" }}>
+                {[{ id:"persona", label:"👥 Persona" }, { id:"equipo", label:"👤 Equipo" }].map(vt => {
+                  const active = ghView === vt.id;
+                  return (
+                    <button key={vt.id} onClick={() => setGhView(vt.id)}
+                      style={{ padding:"5px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer",
+                        border: active ? "1px solid #94a3b845" : "1px solid transparent",
+                        background: active ? "#94a3b820" : "transparent",
+                        color: active ? "var(--tx2)" : "var(--tx3)", transition:"all .12s" }}>
+                      {vt.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Tab × View content */}
+              {ghTab === "commits" && ghView === "persona" && <CommitsPersona data={data} stats={stats} />}
+              {ghTab === "commits" && ghView === "equipo" && <CommitsEquipo data={data} stats={stats} />}
+              {ghTab === "prs" && ghView === "persona" && <PRsPersona data={data} stats={stats} />}
+              {ghTab === "prs" && ghView === "equipo" && <PRsEquipo data={data} stats={stats} />}
+              {ghTab === "lineas" && ghView === "persona" && <LineasPersona data={data} stats={stats} />}
+              {ghTab === "lineas" && ghView === "equipo" && <LineasEquipo data={data} stats={stats} />}
+            </>}
 
           </div>
         </div>

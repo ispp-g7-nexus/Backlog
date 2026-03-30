@@ -45,29 +45,32 @@ export async function updateProjectField(token, itemNodeId, ghFieldName, value) 
   const f = schema.fields[ghFieldName];
   if (!f) throw new Error(`Campo "${ghFieldName}" no encontrado en el proyecto`);
   const hasOpts = Object.keys(f.options).length > 0;
-  let valStr;
+  let fieldValue;
   if (hasOpts) {
     const optId = f.options[value];
     if (!optId) throw new Error(`Opción "${value}" no válida para "${ghFieldName}"`);
-    valStr = `singleSelectOptionId: "${optId}"`;
+    fieldValue = { singleSelectOptionId: optId };
   } else if (typeof value === 'number') {
-    valStr = `number: ${value}`;
+    fieldValue = { number: value };
   } else if (/date/i.test(ghFieldName)) {
-    valStr = `date: "${value}"`;
+    fieldValue = { date: value };
   } else {
-    valStr = `text: "${String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+    fieldValue = { text: String(value) };
   }
   const res = await fetch('https://api.github.com/graphql', {
     method: 'POST',
     headers: { Authorization: `bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: `mutation {
-      updateProjectV2ItemFieldValue(input: {
-        projectId: "${schema.projectId}"
-        itemId: "${itemNodeId}"
-        fieldId: "${f.id}"
-        value: { ${valStr} }
-      }) { projectV2Item { id } }
-    }` }),
+    body: JSON.stringify({
+      query: `mutation UpdateField($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
+        updateProjectV2ItemFieldValue(input: {
+          projectId: $projectId
+          itemId: $itemId
+          fieldId: $fieldId
+          value: $value
+        }) { projectV2Item { id } }
+      }`,
+      variables: { projectId: schema.projectId, itemId: itemNodeId, fieldId: f.id, value: fieldValue },
+    }),
   });
   const json = await res.json();
   if (json.errors) throw new Error(json.errors[0].message);
@@ -130,16 +133,45 @@ export async function addToProject(token, issueNodeId) {
   const res = await fetch('https://api.github.com/graphql', {
     method: 'POST',
     headers: { Authorization: `bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: `mutation {
-      addProjectV2ItemByContentId(input: {
-        projectId: "${schema.projectId}"
-        contentId: "${issueNodeId}"
-      }) { item { id } }
-    }` }),
+    body: JSON.stringify({
+      query: `mutation AddItem($projectId: ID!, $contentId: ID!) {
+        addProjectV2ItemByContentId(input: {
+          projectId: $projectId
+          contentId: $contentId
+        }) { item { id } }
+      }`,
+      variables: { projectId: schema.projectId, contentId: issueNodeId },
+    }),
   });
   const json = await res.json();
   if (json.errors) throw new Error(json.errors[0].message);
   return json.data.addProjectV2ItemByContentId.item;
+}
+
+export async function updateIssueBody(token, issueUrl, body) {
+  const m = issueUrl.match(/github\.com\/([^/]+)\/([^/]+)\/issues\/(\d+)/);
+  if (!m) throw new Error('URL de issue no válida');
+  const [, owner, repo, number] = m;
+  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues/${number}`, {
+    method: 'PATCH',
+    headers: { Authorization: `bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ body }),
+  });
+  if (!res.ok) throw new Error(`GitHub ${res.status}`);
+  return res.json();
+}
+
+export async function closeIssue(token, issueUrl) {
+  const m = issueUrl.match(/github\.com\/([^/]+)\/([^/]+)\/issues\/(\d+)/);
+  if (!m) throw new Error('URL de issue no válida');
+  const [, owner, repo, number] = m;
+  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues/${number}`, {
+    method: 'PATCH',
+    headers: { Authorization: `bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ state: 'closed' }),
+  });
+  if (!res.ok) throw new Error(`GitHub ${res.status}`);
+  return res.json();
 }
 
 export async function fetchIssueTemplates(token) {

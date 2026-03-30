@@ -195,9 +195,12 @@ export default function InsightsPane() {
           </div>
           <div style={{ color: 'var(--tx3)', fontSize: 11 }}>Análisis ejecutivo del proyecto · {analysis.globalDone}/{analysis.globalTotal} tareas completadas ({analysis.globalPct}%)</div>
         </div>
-        <button onClick={handleExport} className="btn btn-sm" style={{ color: '#818cf8', borderColor: '#818cf840' }}>
-          Exportar Markdown
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 9, color: 'var(--tx4)', background: 'var(--bg0)', border: '1px solid var(--bdr)', borderRadius: 4, padding: '2px 7px' }}>Todos los sprints</span>
+          <button onClick={handleExport} className="btn btn-sm" style={{ color: '#818cf8', borderColor: '#818cf840' }}>
+            Exportar Markdown
+          </button>
+        </div>
       </div>
 
       {/* Sprint progress */}

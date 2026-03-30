@@ -34,9 +34,10 @@ export default function FilterBar({ stf, setStf, sf, setSf, af, setAf, ef, setEf
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
         <div className="tab-group w-fit">
           {[
-            { id:"tabla", label:"☰ Tabla" },
-            { id:"tablero", label:"⬜ Tablero" },
+            { id:"tabla", label:"📋 Tabla" },
+            { id:"tablero", label:"📌 Tablero" },
             { id:"roadmap", label:"📊 Hoja de ruta" },
+            { id:"burndown", label:"📉 Burndown" },
           ].map(({ id, label }) => (
             <button key={id} onClick={() => setView(id)} className={`tab-btn ${view === id ? 'active' : ''}`}>{label}</button>
           ))}

@@ -1,18 +1,10 @@
-import { useState, useMemo, Fragment } from 'react';
+import { useState, useMemo, useEffect, Fragment } from 'react';
+import { useApp } from '../context/AppContext.jsx';
 import { BACKLOG, BACKLOG_MAP } from '../data.js';
 import { loadClockify, saveClockify } from '../lib/cache.js';
-import { parseClockifyCSV, buildReport, DEFAULT_CLOCKIFY } from '../clockify/parser.js';
+import { parseClockifyCSV, buildReport, DEFAULT_CLOCKIFY, loadCustomMappings, saveCustomMappings, CLOCKIFY_MAPPINGS_KEY } from '../clockify/parser.js';
 import { SC } from '../constants.js';
-
-function InfStatCard({ label, value, sub, color }) {
-  return (
-    <div style={{ background:"var(--bg2)", border:`1px solid ${color}30`, borderRadius:10, padding:"14px 18px", flex:"1 1 150px", minWidth:130 }}>
-      <div style={{ color:"var(--tx4)", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>{label}</div>
-      <div style={{ color, fontSize:24, fontWeight:800, lineHeight:1.1 }}>{value}</div>
-      {sub && <div style={{ color:"var(--tx3)", fontSize:10, marginTop:4 }}>{sub}</div>}
-    </div>
-  );
-}
+import InfStatCard from './informe/components/InfStatCard.jsx';
 
 // ── EXPORT MD MODAL ──────────────────────────────────────────
 function ExportMdModal({ report, sprint, onClose }) {
@@ -425,8 +417,17 @@ export default function InformePane() {
   const [errMsg,   setErrMsg]   = useState("");
   const [report,   setReport]   = useState(initReport);
   const [fileName, setFileName] = useState(initFileName);
+  const [customMappings, setCustomMappings] = useState(loadCustomMappings);
+  const [showMappings, setShowMappings] = useState(false);
   const [view,     setView]     = useState("equipo"); // open on team tab by default
-  const [sprint,   setSprint]   = useState(0);
+  const { activeSprint: globalSprint } = useApp();
+  const [sprint,   setSprint]   = useState(() => globalSprint ?? 0);
+
+  // Sync local sprint when global changes (null → 0)
+  useEffect(() => {
+    if (globalSprint !== null && globalSprint !== undefined) setSprint(globalSprint);
+    else setSprint(0);
+  }, [globalSprint]);
   const [showExport, setShowExport] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState(null); // login string, drives persona tab
 
@@ -441,7 +442,8 @@ export default function InformePane() {
     const reader = new FileReader();
     reader.onload = e => {
       try {
-        const entries = parseClockifyCSV(e.target.result);
+        const mappings = loadCustomMappings();
+        const entries = parseClockifyCSV(e.target.result, mappings);
         if (!entries.length) throw new Error("No se encontraron entradas de tiempo en el CSV. Asegúrate de exportar el informe Detallado.");
         const rpt = buildReport(entries);
         const matched = entries.filter(e => e.taskId).length;
@@ -451,6 +453,7 @@ export default function InformePane() {
         setStatus("ok");
         setErrMsg("");
         saveClockify(rpt, file.name);
+        if (rpt.unmappedEntries?.length) setShowMappings(true);
       } catch(ex) {
         setErrMsg(ex.message); setStatus("error");
       }
@@ -2249,6 +2252,59 @@ export default function InformePane() {
 
       {errMsg && <div style={{ color:"#ef4444", fontSize:11, background:"#ef444415", borderRadius:7, padding:"10px 14px" }}>⚠️ {errMsg}</div>}
 
+      {/* Panel de mapeos — entradas sin tag */}
+      {status==="ok" && report?.unmappedEntries?.length > 0 && (
+        <div style={{ background:"#fbbf2408", border:"1px solid #fbbf2430", borderRadius:10, padding:"12px 16px" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8, cursor:"pointer" }}
+               onClick={() => setShowMappings(m => !m)}>
+            <span style={{ color:"#fbbf24", fontWeight:700, fontSize:12 }}>⚠ {report.unmappedEntries.length} tags sin mapear</span>
+            <span style={{ color:"var(--tx4)", fontSize:10 }}>{report.unmappedEntries.reduce((s,u)=>s+u.hours,0).toFixed(1)}h sin asignar a tarea</span>
+            <span style={{ marginLeft:"auto", color:"var(--tx4)", fontSize:10 }}>{showMappings?"▲ Ocultar":"▼ Ver y mapear"}</span>
+          </div>
+          {showMappings && (
+            <div>
+              <div style={{ color:"var(--tx4)", fontSize:10, marginBottom:8 }}>
+                Asigna cada tag a un ID de tarea (NX-S1.01). Los mapeos se guardan y se aplican automáticamente en el siguiente upload.
+              </div>
+              {report.unmappedEntries.map((u) => {
+                const cur = customMappings[u.rawTag] || '';
+                return (
+                  <div key={u.rawTag} style={{ display:"grid", gridTemplateColumns:"1fr auto auto", gap:8, alignItems:"center", marginBottom:5 }}>
+                    <div>
+                      <span style={{ color:"var(--tx2)", fontSize:10, background:"var(--bg3)", borderRadius:4, padding:"2px 8px" }}>{u.rawTag || "(sin tag)"}</span>
+                      <span style={{ color:"var(--tx4)", fontSize:9, marginLeft:8 }}>{u.count} entrada{u.count>1?'s':''} · {u.hours.toFixed(1)}h</span>
+                    </div>
+                    <input
+                      type="text" placeholder="NX-S1.01" value={cur}
+                      onChange={e => {
+                        const next = { ...customMappings, [u.rawTag]: e.target.value };
+                        setCustomMappings(next); saveCustomMappings(next);
+                      }}
+                      style={{ width:100, background:"var(--bg0)", border:"1px solid var(--bdr)", borderRadius:5,
+                        padding:"4px 8px", color:"var(--tx1)", fontSize:11, outline:"none" }}
+                    />
+                    <button onClick={() => {
+                      const next = { ...customMappings }; delete next[u.rawTag];
+                      setCustomMappings(next); saveCustomMappings(next);
+                    }} style={{ background:"none", border:"none", color:"var(--tx4)", cursor:"pointer", fontSize:14 }}>×</button>
+                  </div>
+                );
+              })}
+              <button onClick={() => {
+                const mappings = loadCustomMappings();
+                const reader2 = new FileReader();
+                const input = document.getElementById('csv-input');
+                if (input?.files?.[0]) processFile(input.files[0]);
+                else alert('Vuelve a cargar el CSV para aplicar los nuevos mapeos.');
+              }} style={{ marginTop:8, padding:"5px 12px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer",
+                background:"#fbbf2415", border:"1px solid #fbbf2440", color:"#fbbf24" }}>
+                Aplicar mapeos y re-procesar
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Dashboard */}
       {status==="ok" && report && (
         <>
@@ -2258,7 +2314,9 @@ export default function InformePane() {
             {[{v:0,l:"Todos"},{v:-1,l:"Sprint 0"},{v:1,l:"Sprint 1"},{v:2,l:"Sprint 2"},{v:3,l:"Sprint 3"}].map(({v,l})=>{
               const active = sprint===v;
               const c = v===0?"#10b981":v===-1?"#6366f1":sprintC[v];
-              return <button key={v} onClick={()=>setSprint(v)} style={{ padding:"4px 14px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer", border:`1px solid ${active?c+"60":"transparent"}`, background:active?`${c}20`:"transparent", color:active?c:"var(--tx4)", transition:"all .12s" }}>{l}</button>;
+              return <button key={v} onClick={()=>setSprint(v)}
+                className={`btn btn-sm ${active ? 'btn-active' : ''}`}
+                style={active ? { background:`${c}20`, color:c, borderColor:`${c}60` } : {}}>{l}</button>;
             })}
             <button onClick={() => setShowExport(true)} title="Exportar secciones Clockify a Markdown"
               style={{ marginLeft:"auto", padding:"4px 12px", borderRadius:6, fontSize:11, fontWeight:700, cursor:"pointer",

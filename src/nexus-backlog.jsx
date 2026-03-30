@@ -8,44 +8,54 @@ import CostesPane from './panes/CostesPane.jsx';
 import RisksPane from './panes/risks/RisksPane.jsx';
 import InsightsPane from './panes/insights/InsightsPane.jsx';
 import RetroPane from './panes/retro/RetroPane.jsx';
+import SettingsPane from './panes/settings/SettingsPane.jsx';
+import TeamPane from './panes/team/TeamPane.jsx';
 import SyncModal from './components/SyncModal.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { Tabs } from './components/ui/Tabs.jsx';
+import SprintSelector from './components/SprintSelector.jsx';
 import { fetchFromGitHub } from './api/github.js';
-import { SPRINTS, _storedLive } from './data.js';
-
-const DEFAULT_SPRINTS = [{ sprint: 1, label: "Sprint 1" }, { sprint: 2, label: "Sprint 2" }, { sprint: 3, label: "Sprint 3" }];
-const AVAIL_SPRINTS = SPRINTS.length > 0 ? SPRINTS : DEFAULT_SPRINTS;
-const ALL_SPRINT_TABS = [{ sprint: null, label: "Todo" }, ...AVAIL_SPRINTS];
+import { syncProject } from './api/backend.js';
+import { _storedLive } from './data.js';
+import { CACHE_KEYS } from './lib/cache.js';
+import { useApp } from './context/AppContext.jsx';
 
 const MAIN_TABS = [
   { id: "project", label: "📋 Backlog" },
   { id: "github",  label: "🐙 GitHub"  },
+  { id: "equipo",  label: "👥 Equipo"  },
   { id: "informe", label: "⏱️ Horas"   },
   { id: "cal",     label: "📅 Sprint"  },
   { id: "costes",  label: "💰 Costes"  },
-  { id: "risks",   label: "⚠ Riesgos"  },
+  { id: "risks",   label: "⚠️ Riesgos"  },
   { id: "insights", label: "📊 Conclusiones" },
   { id: "retro",    label: "🔄 Retro" },
+  { id: "settings", label: "⚙️ Config" },
 ];
 
-const SPRINT_TABS = ALL_SPRINT_TABS.map(s => ({ id: String(s.sprint), label: s.label }));
-
 function AppContent() {
+  const { user, project, activeSprint, setActiveSprint } = useApp();
   const [tab, setTab] = useState("project");
-  const [sprintTab, setSprintTab] = useState(AVAIL_SPRINTS[AVAIL_SPRINTS.length - 1].sprint);
   const [lightMode, setLightMode] = useState(false);
   const [syncOpen, setSyncOpen] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [syncErr, setSyncErr] = useState('');
 
   async function handleSync() {
-    const token = localStorage.getItem('nexus_gh_token');
-    if (!token) { setSyncOpen(true); return; }
     setSyncing(true); setSyncErr('');
     try {
-      const data = await fetchFromGitHub(token);
-      localStorage.setItem('nexus_live_data', JSON.stringify(data));
-      localStorage.removeItem('nexus_edits_v1');
+      let data;
+      if (project?.id) {
+        // Backend proxy — token almacenado cifrado en servidor
+        data = await syncProject(project.id);
+      } else {
+        // Fallback: PAT directo desde el navegador
+        const token = localStorage.getItem(CACHE_KEYS.GH_TOKEN);
+        if (!token) { setSyncing(false); setSyncOpen(true); return; }
+        data = await fetchFromGitHub(token);
+      }
+      localStorage.setItem(CACHE_KEYS.LIVE_DATA, JSON.stringify(data));
+      localStorage.removeItem(CACHE_KEYS.EDITS);
       window.location.reload();
     } catch(e) {
       setSyncing(false);
@@ -57,12 +67,12 @@ function AppContent() {
     document.documentElement.setAttribute("data-theme", lightMode ? "light" : "dark");
   }, [lightMode]);
 
-  const hasToken = localStorage.getItem('nexus_gh_token');
+  const hasToken = localStorage.getItem(CACHE_KEYS.GH_TOKEN);
   const syncBtnClass = `sync-btn ${_storedLive ? 'synced' : ''} ${hasToken ? 'has-config' : ''}`;
 
   return (
     <div className="app-root">
-      <div className="navbar">
+      <nav className="navbar" role="navigation" aria-label="Navegación principal">
         <div className="navbar-inner">
           <div className="navbar-brand">
             <img src="https://github.com/ispp-g7-nexus.png" alt="NexUS" />
@@ -82,36 +92,51 @@ function AppContent() {
                 {syncing ? "⏳ Sincronizando…" : syncErr ? "⚠ Error" : _storedLive ? "🔄 Sincronizado" : "🔄 Sincronizar"}
               </button>
               {hasToken && (
-                <button onClick={() => setSyncOpen(true)} title="Configurar token" className="sync-config-btn">⚙</button>
+                <button onClick={() => setSyncOpen(true)} title="Configurar token" aria-label="Configurar token de GitHub" className="sync-config-btn">⚙</button>
               )}
             </div>
-            <button onClick={() => setLightMode(lm => !lm)} className="btn-icon">
+            <button onClick={() => setLightMode(lm => !lm)} className="btn-icon" aria-label={lightMode ? "Cambiar a modo oscuro" : "Cambiar a modo claro"}>
               {lightMode ? "🌙" : "☀️"}
             </button>
+            {user ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "3px 10px", background: "var(--bg2)", border: "1px solid var(--bdr)", borderRadius: 20 }}>
+                {user.avatar_url && <img src={user.avatar_url} alt={user.login} style={{ width: 20, height: 20, borderRadius: "50%" }} />}
+                <span style={{ color: "var(--tx2)", fontSize: 11, fontWeight: 600 }}>{user.login}</span>
+                <button onClick={() => { localStorage.removeItem(CACHE_KEYS.JWT); window.location.reload(); }}
+                  style={{ background: "none", border: "none", color: "var(--tx4)", cursor: "pointer", fontSize: 14, lineHeight: 1, padding: 0, marginLeft: 2 }} title="Cerrar sesión" aria-label="Cerrar sesión">×</button>
+              </div>
+            ) : (
+              <button onClick={() => {
+                const apiUrl = localStorage.getItem(CACHE_KEYS.API_URL);
+                if (apiUrl) window.location.href = apiUrl.replace(/\/api\/?$/, '') + '/auth/github';
+                else setTab("settings");
+              }} style={{ padding: "5px 12px", borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: "pointer",
+                background: "#6366f115", border: "1px solid #6366f140", color: "#818cf8" }}>
+                Login
+              </button>
+            )}
           </div>
         </div>
-      </div>
+      </nav>
 
       <div style={{ maxWidth: 1400, margin: "0 auto", padding: "16px 16px 32px" }}>
-        {tab === "project" && (
-          <div>
-            <Tabs
-              tabs={SPRINT_TABS}
-              active={String(sprintTab)}
-              onChange={id => setSprintTab(id === "null" ? null : Number(id))}
-              variant="green"
-              className="mb-4"
-            />
-            <BacklogPane sprint={sprintTab} />
+        {["project", "github", "informe", "cal", "costes", "risks", "insights"].includes(tab) && (
+          <div className="card mb-3" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <SprintSelector value={activeSprint} onChange={setActiveSprint} />
           </div>
         )}
-        {tab === "github" && <GitHubPane />}
-        {tab === "informe" && <InformePane />}
-        {tab === "cal" && <SprintPane />}
-        {tab === "costes" && <CostesPane />}
-        {tab === "risks" && <RisksPane />}
-        {tab === "insights" && <InsightsPane />}
-        {tab === "retro" && <RetroPane />}
+        <ErrorBoundary key={tab}>
+          {tab === "project" && <BacklogPane sprint={activeSprint} />}
+          {tab === "github" && <GitHubPane />}
+          {tab === "equipo" && <TeamPane />}
+          {tab === "informe" && <InformePane />}
+          {tab === "cal" && <SprintPane />}
+          {tab === "costes" && <CostesPane />}
+          {tab === "risks" && <RisksPane />}
+          {tab === "insights" && <InsightsPane />}
+          {tab === "retro" && <RetroPane />}
+          {tab === "settings" && <SettingsPane />}
+        </ErrorBoundary>
       </div>
       {syncOpen && <SyncModal onClose={() => setSyncOpen(false)} />}
     </div>

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { updateIssueTitle, updateProjectField, fetchProjectSchema } from '../../../api/github.js';
+import { updateIssueTitle, updateIssueBody, updateProjectField, fetchProjectSchema } from '../../../api/github.js';
 
 const FIELD_GH_MAP = {
   status: 'Status', size: 'Size', equipo: 'Equipo', tipo: 'Tipo',
@@ -64,6 +64,9 @@ export function useInlineEdit(items, edits, setEdits) {
       if (field === 'title') {
         const item = items.find(i => i.id === id);
         if (item?.url) syncPromise = updateIssueTitle(token, item.url, id, v);
+      } else if (field === 'body') {
+        const item = items.find(i => i.id === id);
+        if (item?.url) syncPromise = updateIssueBody(token, item.url, v);
       } else if (FIELD_GH_MAP[field]) {
         try {
           const liveRaw = localStorage.getItem('nexus_live_data');

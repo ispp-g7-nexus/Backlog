@@ -2,7 +2,17 @@ import clockifyRaw from '../../data/clockify-entries.json';
 import { BACKLOG_MAP } from './backlog-map.js';
 
 // ── CLOCKIFY CSV PARSER ────────────────────────────────────────
-export function parseClockifyCSV(text) {
+export const CLOCKIFY_MAPPINGS_KEY = 'nexus_clockify_mappings_v1';
+
+export function loadCustomMappings() {
+  try { return JSON.parse(localStorage.getItem(CLOCKIFY_MAPPINGS_KEY) || '{}'); } catch { return {}; }
+}
+
+export function saveCustomMappings(m) {
+  try { localStorage.setItem(CLOCKIFY_MAPPINGS_KEY, JSON.stringify(m)); } catch {}
+}
+
+export function parseClockifyCSV(text, customMappings = {}) {
   // Clockify detailed CSV headers (may vary by language):
   // Project,Client,Description,Task,User,Group,Email,Tags,Billable,
   // Start Date,Start Time,End Date,End Time,Duration (h),Duration (decimal),...
@@ -59,11 +69,15 @@ export function parseClockifyCSV(text) {
     const combined = tags + " " + desc;
     const match = combined.match(/NX-S([1-3])\.(\d{1,3})/i);
     // Normalise to 2-digit task number to match BACKLOG_MAP keys (NX-S1.01, NX-S1.10…)
-    const taskId = match
-      ? `NX-S${match[1]}.${match[2].padStart(2, '0')}`
-      : null;
-
-    entries.push({ user, email, project, taskId, hours, date });
+    let taskId = match ? `NX-S${match[1]}.${match[2].padStart(2, '0')}` : null;
+    // Apply custom mappings: key = tag string, value = taskId
+    if (!taskId && customMappings) {
+      for (const [tagKey, tid] of Object.entries(customMappings)) {
+        if (combined.toLowerCase().includes(tagKey.toLowerCase())) { taskId = tid; break; }
+      }
+    }
+    const rawTag = tags.trim() || desc.trim() || '';
+    entries.push({ user, email, project, taskId, hours, date, rawTag });
   }
   return entries;
 }
@@ -116,7 +130,20 @@ export function buildReport(entries) {
     if (nd) dailyHours[nd] = (dailyHours[nd] || 0) + hours;
   });
 
-  return { byTask, byUser, byEmail, dailyHours, dailyHoursBySprint, dailyHoursByProject };
+  // Collect unmatched entries grouped by rawTag for mapping UI
+  const unmappedMap = {};
+  entries.filter(e => !e.taskId && e.rawTag).forEach(e => {
+    const k = e.rawTag;
+    if (!unmappedMap[k]) unmappedMap[k] = { rawTag: k, count: 0, hours: 0, users: new Set() };
+    unmappedMap[k].count++;
+    unmappedMap[k].hours += e.hours;
+    unmappedMap[k].users.add(e.user);
+  });
+  const unmappedEntries = Object.values(unmappedMap)
+    .map(u => ({ ...u, users: [...u.users] }))
+    .sort((a, b) => b.hours - a.hours);
+
+  return { byTask, byUser, byEmail, dailyHours, dailyHoursBySprint, dailyHoursByProject, unmappedEntries };
 }
 
 // Pre-load Clockify data bundled at build time (data/clockify-entries.json)

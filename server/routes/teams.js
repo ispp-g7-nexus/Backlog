@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { query } from '../db/pool.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, requireProjectAccess } from '../middleware/auth.js';
 
 const router = Router();
 router.use(authenticate);
+router.param('projectId', requireProjectAccess);
 
 // GET /api/projects/:projectId/teams
 router.get('/:projectId/teams', async (req, res) => {

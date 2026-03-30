@@ -318,9 +318,15 @@ export default function ExportMdModal({ report, sprint, onClose }) {
     ].join('\n');
   }
 
+  function genAll() {
+    const parts = [genDedication(), '', '---', '', genRetro(), '', '---', '', genVelocity(), '', '---', '', genBurndown()];
+    return parts.join('\n');
+  }
+
   const spLabel = sprint > 0 ? sprint : 'X';
   const docs = [
-    { id:'burndown',   label:'Burndown §4–5',     file:`7-DP-S${spLabel}-Burndown-Chart.md`,      gen:genBurndown   },
+    { id:'all',        label:'Informe Completo',   file:`7-DP-S${spLabel}-Informe-Completo.md`,    gen:genAll        },
+    { id:'burndown',   label:'Burndown §4–5',       file:`7-DP-S${spLabel}-Burndown-Chart.md`,      gen:genBurndown   },
     { id:'velocity',   label:'Velocity §3',         file:`7-DP-S1-Velocity-Chart.md`,               gen:genVelocity   },
     { id:'retro',      label:'Retro §1',            file:`7-DP-S${spLabel}-Retrospectiva.md`,       gen:genRetro      },
     { id:'dedication', label:'Dedication Template', file:`7-DP-S${spLabel}-Dedication-Template.md`, gen:genDedication },

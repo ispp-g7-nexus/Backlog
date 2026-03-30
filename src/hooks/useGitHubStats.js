@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const GH_OWNER = "ispp-g7-nexus", GH_REPO = "7-NexUS";
-export const GH_STATS_KEY = "nexus_gh_stats_v5";
+export const GH_STATS_KEY = "nexus_gh_stats_v6";
 
 async function fetchGitHubStats(token) {
   const h = { "Authorization": `bearer ${token}`, "Content-Type": "application/json" };
@@ -64,16 +64,18 @@ async function fetchGitHubStats(token) {
 
   // 6. PRs + reviews via GraphQL (paginated, with dates & line counts)
   const prs = {}, reviews = {}, mergeTs = {}, prDayMap = {}, prPunchRaw = {}, prLoginDayMap = {};
+  const allPRNodes = [];
   let cursor = null, hasMore = true;
   while (hasMore) {
     const af = cursor ? `, after:"${cursor}"` : "";
-    const q = `{repository(owner:"${GH_OWNER}",name:"${GH_REPO}"){pullRequests(first:100${af}){nodes{author{login}state createdAt mergedAt additions deletions reviews(first:50){nodes{author{login}}}}pageInfo{hasNextPage endCursor}}}}`;
+    const q = `{repository(owner:"${GH_OWNER}",name:"${GH_REPO}"){pullRequests(first:100${af}){nodes{author{login}headRefName baseRefName state createdAt mergedAt additions deletions reviews(first:50){nodes{author{login}}}}pageInfo{hasNextPage endCursor}}}}`;
     const gr = await fetch("https://api.github.com/graphql", { method: "POST", headers: h, body: JSON.stringify({ query: q }) });
     if (!gr.ok) throw new Error(`GraphQL ${gr.status}`);
     const { data, errors } = await gr.json();
     if (errors?.length) throw new Error(errors[0].message);
     const pg = data?.repository?.pullRequests; if (!pg) break;
     pg.nodes.forEach(pr => {
+      allPRNodes.push(pr);
       const a = pr.author?.login?.toLowerCase();
       if (a) {
         prs[a] = prs[a] || { total: 0, merged: 0, open: 0, additions: 0, deletions: 0 };
@@ -128,12 +130,50 @@ async function fetchGitHubStats(token) {
   const weeklyPRs = {};
   // Population of weeklyPRs deferred to component level to avoid circular dependency
 
+  // 7. Branches via GraphQL
+  let branchList = [];
+  try {
+    const brQ = `{repository(owner:"${GH_OWNER}",name:"${GH_REPO}"){refs(refPrefix:"refs/heads/",first:100,orderBy:{field:TAG_COMMIT_DATE,direction:DESC}){nodes{name target{... on Commit{committedDate author{name user{login}}}}}}}}`;
+    const brR = await fetch("https://api.github.com/graphql", { method: "POST", headers: h, body: JSON.stringify({ query: brQ }) });
+    if (brR.ok) {
+      const brData = await brR.json();
+      const branchRefs = brData?.data?.repository?.refs?.nodes || [];
+      const branchMap = {};
+      branchRefs.forEach(b => {
+        branchMap[b.name] = {
+          name: b.name,
+          lastCommit: b.target?.committedDate || null,
+          authorLogin: b.target?.author?.user?.login?.toLowerCase() || null,
+          pr: null,
+        };
+      });
+      allPRNodes.forEach(pr => {
+        const bn = pr.headRefName;
+        if (bn && branchMap[bn]) {
+          branchMap[bn].pr = {
+            state: pr.state,
+            createdAt: pr.createdAt,
+            mergedAt: pr.mergedAt,
+            additions: pr.additions || 0,
+            deletions: pr.deletions || 0,
+            authorLogin: pr.author?.login?.toLowerCase() || null,
+            baseRef: pr.baseRefName || "main",
+          };
+        }
+      });
+      branchList = Object.values(branchMap)
+        .filter(b => b.name !== "main" && b.name !== "master")
+        .sort((a, b) => (b.lastCommit || "") > (a.lastCommit || "") ? 1 : -1);
+    }
+  } catch (_) {}
+
   return {
     commits, lines, consistency, weeklyCommits,
     prs, reviews, avgMergeTime,
     commitActivity, punchCard, codeFreq,
     prActivity, prPunch, prLoginDayMap,
     linesActivity, weeklyPRs,
+    branchList,
     fetchedAt: new Date().toISOString(),
   };
 }

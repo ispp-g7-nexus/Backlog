@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { fetchFromGitHub } from '../api/github.js';
 import { _storedLive } from '../data.js';
+import { CACHE_KEYS } from '../lib/cache.js';
 
 export default function SyncModal({ onClose }) {
-  const [token,    setToken]    = useState(() => localStorage.getItem('nexus_gh_token') || '');
+  const [token,    setToken]    = useState(() => localStorage.getItem(CACHE_KEYS.GH_TOKEN) || '');
   const [remember, setRemember] = useState(() => localStorage.getItem('nexus_gh_token_remember') !== 'false');
   const [status,   setStatus]   = useState('idle'); // idle | loading | error
   const [error,    setError]    = useState('');
@@ -14,12 +15,12 @@ export default function SyncModal({ onClose }) {
     setStatus('loading'); setError(''); setProgress('Conectando con GitHub…');
     try {
       localStorage.setItem('nexus_gh_token_remember', remember ? 'true' : 'false');
-      if (remember) localStorage.setItem('nexus_gh_token', token.trim());
+      if (remember) localStorage.setItem(CACHE_KEYS.GH_TOKEN, token.trim());
       setProgress('Descargando datos del proyecto…');
       const data = await fetchFromGitHub(token.trim());
       setProgress(`✅ ${data.total} HU recibidas, recargando…`);
-      localStorage.setItem('nexus_live_data', JSON.stringify(data));
-      localStorage.removeItem('nexus_edits_v1');
+      localStorage.setItem(CACHE_KEYS.LIVE_DATA, JSON.stringify(data));
+      localStorage.removeItem(CACHE_KEYS.EDITS);
       setTimeout(() => window.location.reload(), 500);
     } catch(e) {
       setStatus('error');
@@ -53,9 +54,9 @@ export default function SyncModal({ onClose }) {
             <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)} />
             Recordar token en este navegador
           </label>
-          {localStorage.getItem('nexus_gh_token') && (
+          {localStorage.getItem(CACHE_KEYS.GH_TOKEN) && (
             <span style={{ fontSize:10, color:"#ef4444", cursor:"pointer", textDecoration:"underline" }}
-              onClick={() => { localStorage.removeItem('nexus_gh_token'); setToken(''); }}>
+              onClick={() => { localStorage.removeItem(CACHE_KEYS.GH_TOKEN); setToken(''); }}>
               olvidar
             </span>
           )}
@@ -82,7 +83,7 @@ export default function SyncModal({ onClose }) {
             Último sync: {new Date(_storedLive.fetchedAt).toLocaleString("es-ES")} · {_storedLive.total} HU
             {' '}·{' '}
             <span style={{ color:"#ef4444", cursor:"pointer", textDecoration:"underline" }}
-              onClick={() => { localStorage.removeItem('nexus_live_data'); window.location.reload(); }}>
+              onClick={() => { localStorage.removeItem(CACHE_KEYS.LIVE_DATA); window.location.reload(); }}>
               borrar cache
             </span>
           </div>

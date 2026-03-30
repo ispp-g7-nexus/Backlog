@@ -1,23 +1,21 @@
 import { useState, useMemo } from 'react';
 import { SC, SIZE_H_MAP } from '../../constants.js';
-import { BACKLOG, SPRINTS } from '../../data.js';
+import { BACKLOG } from '../../data.js';
+import { useApp } from '../../context/AppContext.jsx';
+import { detectCurrentSprint } from '../../lib/utils.js';
 import { StatusBadge, SizeBadge } from '../../components/badges.jsx';
 import SprintCalendar from './SprintCalendar.jsx';
 import SprintTimeline from './SprintTimeline.jsx';
+import CapacityPlanner from './CapacityPlanner.jsx';
+import ImpedimentTracker from './ImpedimentTracker.jsx';
+import MeetingMinutes from './MeetingMinutes.jsx';
 
 const STATUS_ORDER = ['Backlog', 'Ready', 'In progress', 'In review', 'Done'];
 
-function detectCurrentSprint() {
-  const now = Date.now();
-  for (const { sprint: s } of SPRINTS) {
-    const c = SC[s];
-    if (c && new Date(c.start).getTime() <= now && now <= new Date(c.end).getTime() + 86400000) return s;
-  }
-  return SPRINTS[SPRINTS.length - 1]?.sprint || 1;
-}
 
 export default function SprintPane() {
-  const [activeSprint, setActiveSprint] = useState(detectCurrentSprint);
+  const { activeSprint: globalSprint } = useApp();
+  const activeSprint = globalSprint || detectCurrentSprint();
   const [view, setView] = useState('resumen');
   const sc = SC[activeSprint];
 
@@ -62,17 +60,9 @@ export default function SprintPane() {
 
   return (
     <div>
-      {/* Sprint selector */}
+      {/* Sprint info */}
       <div className="card" style={{ marginBottom: 12, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', gap: 6 }}>
-          {SPRINTS.map(({ sprint: s }) => (
-            <button key={s} onClick={() => setActiveSprint(s)}
-              className={`btn btn-sm ${activeSprint === s ? 'btn-active' : ''}`}
-              style={activeSprint === s ? { background: `${SC[s].color}20`, color: SC[s].color, borderColor: `${SC[s].color}50` } : {}}>
-              {SC[s].label}
-            </button>
-          ))}
-        </div>
+        <div style={{ fontWeight: 700, color: sc.color }}>{sc.label}</div>
         <div style={{ color: 'var(--tx4)', fontSize: 11 }}>{sc.date}</div>
       </div>
 
@@ -122,6 +112,9 @@ export default function SprintPane() {
             { id: 'resumen', label: 'Resumen' },
             { id: 'timeline', label: 'Timeline' },
             { id: 'calendario', label: 'Calendario' },
+            { id: 'capacidad', label: '⚖ Capacidad' },
+            { id: 'impedimentos', label: '🚧 Impedimentos' },
+            { id: 'actas', label: '📝 Actas' },
           ].map(({ id, label }) => (
             <button key={id} onClick={() => setView(id)} className={`tab-btn ${view === id ? 'active' : ''}`}>{label}</button>
           ))}
@@ -181,6 +174,18 @@ export default function SprintPane() {
 
       {view === 'calendario' && (
         <SprintCalendar sprint={activeSprint} />
+      )}
+
+      {view === 'capacidad' && (
+        <CapacityPlanner items={items} sc={sc} activeSprint={activeSprint} />
+      )}
+
+      {view === 'impedimentos' && (
+        <ImpedimentTracker activeSprint={activeSprint} items={items} />
+      )}
+
+      {view === 'actas' && (
+        <MeetingMinutes activeSprint={activeSprint} />
       )}
     </div>
   );

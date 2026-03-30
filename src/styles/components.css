@@ -107,8 +107,6 @@
 }
 .btn-primary:hover { opacity: 0.9; color: #fff; }
 
-.btn-ghost { border-color: transparent; }
-.btn-ghost:hover { background: var(--bg3); }
 
 .btn-danger { color: var(--color-danger); border-color: var(--color-danger); }
 .btn-danger:hover { background: #f8717115; }
@@ -192,7 +190,6 @@
 .badge-size-l { background: var(--bdg-l-bg); color: var(--bdg-l-tx); }
 .badge-size-xl { background: var(--bdg-xl-bg); color: var(--bdg-xl-tx); }
 
-.badge-success { background: #052e16; color: var(--color-success); }
 .badge-warning { background: #3b1f00; color: var(--color-warning); }
 .badge-danger { background: #450a0a; color: var(--color-danger); }
 .badge-info { background: #0c2d4a; color: var(--color-info); }
@@ -433,23 +430,6 @@
 
 .drawer-date-input:focus { border-color: #818cf8; }
 
-.drawer-assignee {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: var(--bg0);
-  border: 1px solid var(--bdr);
-  border-radius: var(--radius-sm);
-  padding: 3px 8px 3px 3px;
-  font-size: 11px;
-  color: var(--tx2);
-}
-
-.drawer-assignee-avatar {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-}
 
 .drawer-section-title {
   color: var(--tx4);

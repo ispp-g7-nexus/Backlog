@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { query } from '../db/pool.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, requireProjectAccess } from '../middleware/auth.js';
 
 const router = Router();
 router.use(authenticate);
+router.param('projectId', requireProjectAccess);
 
 // --- Labels ---
 // GET /api/projects/:projectId/labels
@@ -202,6 +203,61 @@ router.delete('/:projectId/views/:id', async (req, res) => {
     res.json({ deleted: true });
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete view' });
+  }
+});
+
+// --- Generic project config (JSONB) ---
+// GET /api/projects/:projectId/config
+router.get('/:projectId/config', async (req, res) => {
+  try {
+    const result = await query('SELECT config FROM projects WHERE id = $1', [req.params.projectId]);
+    res.json(result.rows[0]?.config || {});
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get config' });
+  }
+});
+
+// PATCH /api/projects/:projectId/config/:section
+router.patch('/:projectId/config/:section', async (req, res) => {
+  try {
+    const patch = JSON.stringify({ [req.params.section]: req.body });
+    const result = await query(
+      'UPDATE projects SET config = config || $2::jsonb WHERE id = $1 RETURNING config',
+      [req.params.projectId, patch]
+    );
+    res.json(result.rows[0]?.config || {});
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update config section' });
+  }
+});
+
+// --- Retro boards (stored in retro_boards table, keyed by sprint number) ---
+// GET /api/projects/:projectId/retro/:sprint
+router.get('/:projectId/retro/:sprint', async (req, res) => {
+  try {
+    const result = await query(
+      'SELECT items FROM retro_boards WHERE project_id = $1 AND sprint_number = $2',
+      [req.params.projectId, parseInt(req.params.sprint)]
+    );
+    res.json(result.rows[0]?.items || { good: [], improve: [], actions: [] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get retro' });
+  }
+});
+
+// PUT /api/projects/:projectId/retro/:sprint
+router.put('/:projectId/retro/:sprint', async (req, res) => {
+  const { items } = req.body;
+  if (!items) return res.status(400).json({ error: 'items required' });
+  try {
+    await query(`
+      INSERT INTO retro_boards (project_id, sprint_number, items)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (project_id, sprint_number) DO UPDATE SET items = $3
+    `, [req.params.projectId, parseInt(req.params.sprint), JSON.stringify(items)]);
+    res.json({ saved: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to save retro' });
   }
 });
 

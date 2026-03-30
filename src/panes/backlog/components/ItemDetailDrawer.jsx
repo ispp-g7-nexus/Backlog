@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Drawer } from '../../../components/ui/Drawer.jsx';
 import { SizeBadge, StatusBadge } from '../../../components/badges.jsx';
 import { STATUSES } from '../hooks/useBacklogItems.js';
+import AssigneePicker from './AssigneePicker.jsx';
 
 const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
 const fmtDate = d => d ? `${d.slice(8,10)}/${d.slice(5,7)}/${d.slice(0,4)}` : '—';
@@ -63,10 +64,12 @@ function timeAgo(ts) {
 }
 
 export default function ItemDetailDrawer({ item, onClose, editProps, allEquipos, allTipos, areaColor, activityEntries }) {
-  const { getVal, commitEdit, editValRef, edits, setEdits } = editProps;
+  const { getVal, commitEdit, editValRef, edits, setEdits, syncing, setSyncing, syncErr, setSyncErr } = editProps;
 
   const [localTitle, setLocalTitle] = useState(getVal(item, 'title') || '');
   const titleTimeout = useRef(null);
+  const [localBody, setLocalBody] = useState(getVal(item, 'body') || item.body || '');
+  const bodyTimeout = useRef(null);
 
   const val = (field) => getVal(item, field);
 
@@ -88,6 +91,13 @@ export default function ItemDetailDrawer({ item, onClose, editProps, allEquipos,
 
   const handleEstimateChange = (value) => {
     changeField('estimate', value === '' ? '' : value);
+  };
+
+  const handleBodyChange = (e) => {
+    const v = e.target.value;
+    setLocalBody(v);
+    clearTimeout(bodyTimeout.current);
+    bodyTimeout.current = setTimeout(() => changeField('body', v), 800);
   };
 
   return (
@@ -116,6 +126,18 @@ export default function ItemDetailDrawer({ item, onClose, editProps, allEquipos,
           onChange={handleTitleChange}
           placeholder="Título de la tarea"
         />
+
+        {/* Body */}
+        <div style={{ marginBottom: 12 }}>
+          <div className="drawer-field-label" style={{ marginBottom: 4 }}>Descripción</div>
+          <textarea
+            className="drawer-date-input"
+            style={{ width: '100%', minHeight: 80, resize: 'vertical', fontFamily: 'inherit', fontSize: 12 }}
+            value={localBody}
+            onChange={handleBodyChange}
+            placeholder="Descripción de la tarea…"
+          />
+        </div>
 
         {/* Status */}
         <FieldRow label="Estado">
@@ -192,16 +214,16 @@ export default function ItemDetailDrawer({ item, onClose, editProps, allEquipos,
 
         {/* Assignees */}
         <FieldRow label="Asignados">
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {(item.assignees || []).length > 0
-              ? item.assignees.map(a => (
-                  <div key={a.login} className="drawer-assignee">
-                    <img src={a.avatarUrl} alt={a.login} className="drawer-assignee-avatar" />
-                    <span>{a.name || a.login}</span>
-                  </div>
-                ))
-              : <span style={{ color: 'var(--tx4)', fontSize: 11 }}>Sin asignar</span>}
-          </div>
+          <AssigneePicker
+            item={item}
+            getVal={getVal}
+            edits={edits}
+            setEdits={setEdits}
+            syncing={syncing}
+            setSyncing={setSyncing}
+            syncErr={syncErr}
+            setSyncErr={setSyncErr}
+          />
         </FieldRow>
 
         {/* Sprint */}

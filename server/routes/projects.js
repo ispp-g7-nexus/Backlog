@@ -125,18 +125,38 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/projects/:id
-router.delete('/:id', async (req, res) => {
+// POST /api/projects/link — link user to existing GitHub project (register if first time)
+router.post('/link', async (req, res) => {
+  const { github_org, github_repo, project_number, name } = req.body;
+  if (!github_org || !github_repo || !project_number || !name) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
   try {
-    const result = await query(`
-      DELETE FROM projects
-      WHERE id = $1 AND owner_id = $2
-      RETURNING id
-    `, [req.params.id, req.user.id]);
-    if (!result.rows[0]) return res.status(404).json({ error: 'Project not found or not owner' });
-    res.json({ deleted: true });
+    // Find existing registration or create it
+    let project;
+    const existing = await query(
+      'SELECT * FROM projects WHERE github_org = $1 AND github_repo = $2 AND project_number = $3',
+      [github_org, github_repo, parseInt(project_number)]
+    );
+    if (existing.rows[0]) {
+      project = existing.rows[0];
+    } else {
+      const result = await query(
+        'INSERT INTO projects (owner_id, github_org, github_repo, project_number, name) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        [req.user.id, github_org, github_repo, parseInt(project_number), name]
+      );
+      project = result.rows[0];
+    }
+    // Add user if not already a member
+    await query(`
+      INSERT INTO project_users (project_id, user_id, role)
+      VALUES ($1, $2, 'member')
+      ON CONFLICT (project_id, user_id) DO NOTHING
+    `, [project.id, req.user.id]);
+    res.json(project);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to delete project' });
+    console.error('[Projects] link error:', err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 

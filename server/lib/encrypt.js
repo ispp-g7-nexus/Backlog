@@ -7,7 +7,7 @@ const TAG_LENGTH = 16;
 function getKey() {
   const secret = process.env.ENCRYPTION_KEY;
   if (!secret) throw new Error('ENCRYPTION_KEY env var is required');
-  return crypto.scryptSync(secret, 'nexus-salt', 32);
+  return crypto.scryptSync(secret, process.env.ENCRYPTION_SALT || 'nexus-salt', 32);
 }
 
 export function encrypt(text) {

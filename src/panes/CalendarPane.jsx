@@ -141,7 +141,10 @@ export default function CalendarPane() {
       {/* Header */}
       <div style={{ background:"var(--bg2)", border:"1px solid var(--bdr)", borderRadius:12, padding:"12px 18px", marginBottom:12, display:"flex", flexWrap:"wrap", gap:14, alignItems:"center", justifyContent:"space-between" }}>
         <div>
-          <div style={{ color:"#38bdf8", fontWeight:700, fontSize:13, marginBottom:2 }}>📅 Calendario de Asistencia</div>
+          <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
+            <span style={{ color:"#38bdf8", fontWeight:700, fontSize:13 }}>📅 Calendario de Asistencia</span>
+            <span style={{ fontSize:9, color:'var(--tx4)', background:'var(--bg0)', border:'1px solid var(--bdr)', borderRadius:4, padding:'1px 6px', fontWeight:600 }}>Datos fijos</span>
+          </div>
           <div style={{ color:"var(--tx3)", fontSize:11 }}>Clases y ceremonias Scrum · Feb – Abr 2026</div>
         </div>
         <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { SC } from '../../constants.js';
 import { STATUS_META } from '../../constants.js';
 import { SizeBadge, StatusBadge } from '../../components/badges.jsx';
+import { closeIssue } from '../../api/github.js';
 import { SPRINTS, BACKLOG } from '../../data.js';
 import { useBacklogItems, STATUSES } from './hooks/useBacklogItems.js';
 import { useInlineEdit } from './hooks/useInlineEdit.js';
@@ -11,6 +12,7 @@ import CreateTaskModal from './components/CreateTaskModal.jsx';
 import TableView from './views/TableView.jsx';
 import KanbanView from './views/KanbanView.jsx';
 import RoadmapView from './views/RoadmapView.jsx';
+import BurndownView from './views/BurndownView.jsx';
 import ItemDetailDrawer from './components/ItemDetailDrawer.jsx';
 import BulkActionBar from './components/BulkActionBar.jsx';
 
@@ -184,6 +186,10 @@ export default function BacklogPane({ sprint }) {
         )
       )}
 
+      {view === "burndown" && (
+        <BurndownView items={backlog.filtered} sc={sc} sprint={sprint} />
+      )}
+
       {/* Bulk action bar */}
       {selected.size > 0 && (
         <BulkActionBar
@@ -277,7 +283,12 @@ export default function BacklogPane({ sprint }) {
             <div className="text-muted mb-4">{deleteConfirm.id} — {deleteConfirm.title}</div>
             <div className="flex justify-end gap-2">
               <button onClick={() => setDeleteConfirm(null)} className="btn">Cancelar</button>
-              <button onClick={() => { backlog.doDelete(deleteConfirm); setDeleteConfirm(null); }} className="btn btn-danger" style={{ background: '#dc2626', color: '#fff', borderColor: '#dc2626' }}>Eliminar</button>
+              <button onClick={() => {
+                backlog.doDelete(deleteConfirm);
+                const token = localStorage.getItem('nexus_gh_token');
+                if (token && deleteConfirm.url) closeIssue(token, deleteConfirm.url).catch(() => {});
+                setDeleteConfirm(null);
+              }} className="btn btn-danger" style={{ background: '#dc2626', color: '#fff', borderColor: '#dc2626' }}>Eliminar</button>
             </div>
           </div>
         </div>

@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { query } from '../db/pool.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, requireProjectAccess } from '../middleware/auth.js';
 
 const router = Router();
 router.use(authenticate);
+router.param('projectId', requireProjectAccess);
 
 const GH_API = 'https://api.github.com';
 const GH_GQL = 'https://api.github.com/graphql';
@@ -31,7 +32,12 @@ async function ghGraphQL(token, queryStr, variables = {}) {
   return data.data;
 }
 
-// Helper: log activity
+async function getProject(projectId) {
+  const proj = await query('SELECT * FROM projects WHERE id = $1', [projectId]);
+  if (!proj.rows[0]) throw Object.assign(new Error('Project not found'), { status: 404 });
+  return proj.rows[0];
+}
+
 async function logActivity(projectId, userId, taskId, field, oldValue, newValue) {
   await query(
     'INSERT INTO activity_log (project_id, task_id, user_id, field, old_value, new_value) VALUES ($1, $2, $3, $4, $5, $6)',
@@ -39,15 +45,10 @@ async function logActivity(projectId, userId, taskId, field, oldValue, newValue)
   );
 }
 
-// POST /api/github/sync — fetch all items from GitHub Project
-router.post('/sync', async (req, res) => {
-  const { project_id } = req.body;
-  if (!project_id) return res.status(400).json({ error: 'project_id required' });
-
+// POST /api/projects/:projectId/github/sync
+router.post('/:projectId/github/sync', async (req, res) => {
   try {
-    const proj = await query('SELECT * FROM projects WHERE id = $1', [project_id]);
-    if (!proj.rows[0]) return res.status(404).json({ error: 'Project not found' });
-    const { github_org, project_number } = proj.rows[0];
+    const { github_org, project_number } = await getProject(req.params.projectId);
 
     const items = [];
     let cursor = null;
@@ -99,7 +100,6 @@ router.post('/sync', async (req, res) => {
           if (!fname) continue;
           fields[fname] = fv.name || fv.text || fv.number || fv.date || fv.title;
         }
-
         items.push({
           id: node.id,
           number: node.content.number,
@@ -131,20 +131,16 @@ router.post('/sync', async (req, res) => {
     res.json({ fetchedAt: new Date().toISOString(), total: items.length, items });
   } catch (err) {
     console.error('[GitHub Proxy] sync error:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(err.status || 500).json({ error: err.message });
   }
 });
 
-// POST /api/github/update-field — update a project field
-router.post('/update-field', async (req, res) => {
-  const { project_id, item_id, field_name, value, task_id, old_value } = req.body;
-
+// POST /api/projects/:projectId/github/update-field
+router.post('/:projectId/github/update-field', async (req, res) => {
+  const { item_id, field_name, value, task_id, old_value } = req.body;
   try {
-    const proj = await query('SELECT * FROM projects WHERE id = $1', [project_id]);
-    if (!proj.rows[0]) return res.status(404).json({ error: 'Project not found' });
-    const { github_org, project_number } = proj.rows[0];
+    const { github_org, project_number } = await getProject(req.params.projectId);
 
-    // Get project schema
     const schema = await ghGraphQL(req.githubToken, `
       query($org: String!, $num: Int!) {
         organization(login: $org) {
@@ -166,7 +162,6 @@ router.post('/update-field', async (req, res) => {
     const field = schema.organization.projectV2.fields.nodes.find(f => f.name === field_name);
     if (!field) return res.status(400).json({ error: `Field "${field_name}" not found` });
 
-    // Determine value type
     let fieldValue;
     if (field.options) {
       const opt = field.options.find(o => o.name === value);
@@ -188,25 +183,22 @@ router.post('/update-field', async (req, res) => {
       }
     `, { projectId: projectGhId, itemId: item_id, fieldId: field.id, value: fieldValue });
 
-    // Log activity
     if (task_id) {
-      await logActivity(project_id, req.user.id, task_id, field_name, old_value, String(value));
+      await logActivity(req.params.projectId, req.user.id, task_id, field_name, old_value, String(value));
     }
 
     res.json({ updated: true });
   } catch (err) {
     console.error('[GitHub Proxy] update-field error:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(err.status || 500).json({ error: err.message });
   }
 });
 
-// POST /api/github/issues — create issue
-router.post('/issues', async (req, res) => {
-  const { project_id, title, body, labels, assignees } = req.body;
+// POST /api/projects/:projectId/github/issues
+router.post('/:projectId/github/issues', async (req, res) => {
+  const { title, body, labels, assignees, task_id } = req.body;
   try {
-    const proj = await query('SELECT * FROM projects WHERE id = $1', [project_id]);
-    if (!proj.rows[0]) return res.status(404).json({ error: 'Project not found' });
-    const { github_org, github_repo } = proj.rows[0];
+    const { github_org, github_repo } = await getProject(req.params.projectId);
 
     const issue = await ghFetch(req.githubToken, `${GH_API}/repos/${github_org}/${github_repo}/issues`, {
       method: 'POST',
@@ -214,44 +206,39 @@ router.post('/issues', async (req, res) => {
       body: JSON.stringify({ title, body, labels, assignees }),
     });
 
-    if (req.body.task_id) {
-      await logActivity(project_id, req.user.id, req.body.task_id, 'created', null, title);
+    if (task_id) {
+      await logActivity(req.params.projectId, req.user.id, task_id, 'created', null, title);
     }
 
     res.status(201).json(issue);
   } catch (err) {
     console.error('[GitHub Proxy] create issue error:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(err.status || 500).json({ error: err.message });
   }
 });
 
-// PATCH /api/github/issues/:number — update issue (title, body, state, milestone, labels)
-router.patch('/issues/:number', async (req, res) => {
-  const { project_id, ...updates } = req.body;
+// PATCH /api/projects/:projectId/github/issues/:number
+router.patch('/:projectId/github/issues/:number', async (req, res) => {
   try {
-    const proj = await query('SELECT * FROM projects WHERE id = $1', [project_id]);
-    if (!proj.rows[0]) return res.status(404).json({ error: 'Project not found' });
-    const { github_org, github_repo } = proj.rows[0];
+    const { github_org, github_repo } = await getProject(req.params.projectId);
 
     const issue = await ghFetch(req.githubToken, `${GH_API}/repos/${github_org}/${github_repo}/issues/${req.params.number}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updates),
+      body: JSON.stringify(req.body),
     });
 
     res.json(issue);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(err.status || 500).json({ error: err.message });
   }
 });
 
-// POST /api/github/issues/:number/assignees
-router.post('/issues/:number/assignees', async (req, res) => {
-  const { project_id, assignees } = req.body;
+// POST /api/projects/:projectId/github/issues/:number/assignees
+router.post('/:projectId/github/issues/:number/assignees', async (req, res) => {
+  const { assignees } = req.body;
   try {
-    const proj = await query('SELECT * FROM projects WHERE id = $1', [project_id]);
-    if (!proj.rows[0]) return res.status(404).json({ error: 'Project not found' });
-    const { github_org, github_repo } = proj.rows[0];
+    const { github_org, github_repo } = await getProject(req.params.projectId);
 
     const result = await ghFetch(req.githubToken, `${GH_API}/repos/${github_org}/${github_repo}/issues/${req.params.number}/assignees`, {
       method: 'POST',
@@ -260,17 +247,15 @@ router.post('/issues/:number/assignees', async (req, res) => {
     });
     res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(err.status || 500).json({ error: err.message });
   }
 });
 
-// DELETE /api/github/issues/:number/assignees
-router.delete('/issues/:number/assignees', async (req, res) => {
-  const { project_id, assignees } = req.body;
+// DELETE /api/projects/:projectId/github/issues/:number/assignees
+router.delete('/:projectId/github/issues/:number/assignees', async (req, res) => {
+  const { assignees } = req.body;
   try {
-    const proj = await query('SELECT * FROM projects WHERE id = $1', [project_id]);
-    if (!proj.rows[0]) return res.status(404).json({ error: 'Project not found' });
-    const { github_org, github_repo } = proj.rows[0];
+    const { github_org, github_repo } = await getProject(req.params.projectId);
 
     const result = await ghFetch(req.githubToken, `${GH_API}/repos/${github_org}/${github_repo}/issues/${req.params.number}/assignees`, {
       method: 'DELETE',
@@ -279,17 +264,14 @@ router.delete('/issues/:number/assignees', async (req, res) => {
     });
     res.json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(err.status || 500).json({ error: err.message });
   }
 });
 
-// GET /api/github/stats — repo statistics
-router.get('/stats', async (req, res) => {
-  const { project_id } = req.query;
+// GET /api/projects/:projectId/github/stats
+router.get('/:projectId/github/stats', async (req, res) => {
   try {
-    const proj = await query('SELECT * FROM projects WHERE id = $1', [project_id]);
-    if (!proj.rows[0]) return res.status(404).json({ error: 'Project not found' });
-    const { github_org, github_repo } = proj.rows[0];
+    const { github_org, github_repo } = await getProject(req.params.projectId);
 
     const [contributors, commitActivity, codeFreq] = await Promise.all([
       ghFetch(req.githubToken, `${GH_API}/repos/${github_org}/${github_repo}/stats/contributors`),
@@ -297,7 +279,6 @@ router.get('/stats', async (req, res) => {
       ghFetch(req.githubToken, `${GH_API}/repos/${github_org}/${github_repo}/stats/code_frequency`),
     ]);
 
-    // Fetch PRs via GraphQL
     const prData = await ghGraphQL(req.githubToken, `
       query($owner: String!, $repo: String!) {
         repository(owner: $owner, name: $repo) {
@@ -322,13 +303,13 @@ router.get('/stats', async (req, res) => {
     });
   } catch (err) {
     console.error('[GitHub Proxy] stats error:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(err.status || 500).json({ error: err.message });
   }
 });
 
-// GET /api/github/activity — activity log for a project
-router.get('/activity', async (req, res) => {
-  const { project_id, limit = 50 } = req.query;
+// GET /api/projects/:projectId/github/activity
+router.get('/:projectId/github/activity', async (req, res) => {
+  const { limit = 50 } = req.query;
   try {
     const result = await query(`
       SELECT al.*, u.github_login, u.name as user_name, u.avatar_url
@@ -337,7 +318,7 @@ router.get('/activity', async (req, res) => {
       WHERE al.project_id = $1
       ORDER BY al.created_at DESC
       LIMIT $2
-    `, [project_id, Math.min(parseInt(limit), 200)]);
+    `, [req.params.projectId, Math.min(parseInt(limit), 200)]);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch activity' });
